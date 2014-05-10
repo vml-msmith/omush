@@ -1,4 +1,8 @@
-// Copyright 2014 Michael Smith
+///
+/// game.h
+///
+/// Copyright 2014 Michael Smith
+///
 
 #ifndef OMUSH_HDRS_OMUSH_GAME_H_
 #define OMUSH_HDRS_OMUSH_GAME_H_
@@ -7,6 +11,10 @@
 
 namespace omush {
 
+  ///
+  /// This is the main class that is the the game. Everything is handled from
+  /// here.
+  ///
   class Game : public SignalHandlerDelegate {
    public:
     Game();

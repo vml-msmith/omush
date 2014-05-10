@@ -1,4 +1,8 @@
-// Copyright 2014 Michael Smith
+///
+/// signalhandler.h
+///
+/// Copyright 2014 Michael Smith
+///
 
 #ifndef OMUSH_HDRS_OMUSH_SIGNALHANDLER_H_
 #define OMUSH_HDRS_OMUSH_SIGNALHANDLER_H_
@@ -10,14 +14,27 @@
 
 namespace omush {
 
+  ///
+  /// Delegatge interface for any object that needs to handle signals.
+  ///
   class SignalHandlerDelegate {
    public:
     virtual void handleSignal(int signal) = 0;
   };
 
+  ///
+  /// Multimap holding sginal -> delegate.
+  ///
   typedef std::multimap<int, SignalHandlerDelegate*> SignalDelegateMap;
+
+  ///
+  /// Pair holding singal -> delegate.
+  ///
   typedef std::pair<int, SignalHandlerDelegate*> SignalDelegatePair;
 
+  ///
+  /// Static class that handles catching signals.
+  ///
   class SignalHandler {
    public:
     static void registerDelegate(SignalHandlerDelegate*, int);
