@@ -1,4 +1,4 @@
-// Copyright 2014 Michael Smith
+/// Copyright 2014 Michael Smith
 
 #include "omush/signalhandler.h"
 #include <signal.h>

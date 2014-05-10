@@ -1,4 +1,4 @@
-// Copyright 2014 Michael Smith
+/// Copyright 2014 Michael Smith
 
 #import "omush/game.h"
 #import "omush/signalhandler.h"
@@ -6,14 +6,30 @@
 #import "time.h"
 
 #import <stdio.h>
+
+
 namespace omush {
 
+  ///
+  /// Constructor. Do any initial resetting or setup of theg game that doesn't
+  /// require on external configuration.
+  ///
   Game::Game() : shutdown(false) {
   }
 
+
+  ///
+  /// Destructor. Free up any resources that were allocated during the lifetime
+  /// of the game.
+  ///
   Game::~Game() {
   }
 
+
+  ///
+  /// The main loop of the program. When this method returns, the program
+  /// should end.
+  ///
   void Game::run() {
     // Setup signals.
     SignalHandler::setupSignalHandling();
@@ -46,6 +62,12 @@ namespace omush {
     }
   }
 
+
+  ///
+  /// Handle SIGINT by setting the shutdown flag on the game.
+  ///
+  /// @param signum Signal caught by SignalHandler.
+  ///
   void Game::handleSignal(int signum) {
     this->shutdown = true;
   }
