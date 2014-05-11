@@ -2,6 +2,7 @@
 
 #import "omush/game.h"
 #import "omush/signalhandler.h"
+#import "omush/network/network.h"
 #import "signal.h"
 #import "time.h"
 
@@ -34,8 +35,11 @@ namespace omush {
     // Setup signals.
     SignalHandler::setupSignalHandling();
     SignalHandler::registerDelegate(this, SIGINT);
-    // Do stuff.
 
+
+    // Setup network.
+    omush::network::Network server;
+    server.listen(1701);
 
     int number_of_runs = 20;
     double interval = 0.5f;
@@ -56,10 +60,12 @@ namespace omush {
       if (time_counter >= clock_threshhold) {
         time_counter = 0;
         printf("Loop: %d\n", loop);
-
+        server.poll();
         ++loop;
       }
     }
+
+    server.shutdown();
   }
 
 

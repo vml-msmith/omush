@@ -1,6 +1,6 @@
 // Copyright 2014 Michael Smith
 
-#import "omush/game.h"
+#include "omush/game.h"
 
 int main(int argc, char **argv) {
   omush::Game game;
