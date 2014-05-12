@@ -11,10 +11,12 @@ namespace omush {
   namespace Network {
     class Server;
   }
-  class Database;
+  namespace database {
+    class Database;
+  }
 
   struct Environment {
-    Database *database;
+    database::Database *database;
     Network::Server *server;
   };
 

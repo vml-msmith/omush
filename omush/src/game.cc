@@ -42,8 +42,12 @@ namespace omush {
     SignalHandler::registerDelegate(this, SIGINT);
 
     Environment env;
-    env.database = new Database();
+    env.database = new database::Database();
 
+    env.database->registerObject(new database::Player("Othic", "pass_1", 1));
+    env.database->registerObject(new database::Player("Michael", "pass", 2));
+
+    database::Player::findByNameAndPass(env.database, "Michael", "pass");
     // Setup network.
     omush::network::InputQueue inputQueue;
     omush::network::Network server;
