@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['signalhandler',['SignalHandler',['../classomush_1_1_signal_handler.html',1,'omush']]],
-  ['signalhandlerdelegate',['SignalHandlerDelegate',['../classomush_1_1_signal_handler_delegate.html',1,'omush']]]
+  ['database',['Database',['../classomush_1_1_database.html',1,'omush']]],
+  ['databaseobject',['DatabaseObject',['../classomush_1_1_database_object.html',1,'omush']]],
+  ['descriptor',['Descriptor',['../classomush_1_1network_1_1_descriptor.html',1,'omush::network']]]
 ];

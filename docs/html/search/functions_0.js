@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['registerdelegate',['registerDelegate',['../classomush_1_1_signal_handler.html#af5c48427c63f6b41ce3436d585607377',1,'omush::SignalHandler']]]
+  ['game',['Game',['../classomush_1_1_game.html#a6e4e5e9f6edf99893895d0261423afc1',1,'omush::Game']]]
 ];

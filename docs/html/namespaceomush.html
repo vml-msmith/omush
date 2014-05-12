@@ -82,14 +82,32 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <div class="title">omush Namespace Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Copyright 2014 Michael Smith.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classomush_1_1_database_object.html">DatabaseObject</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classomush_1_1_player.html">Player</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classomush_1_1_thing.html">Thing</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classomush_1_1_exit.html">Exit</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classomush_1_1_room.html">Room</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classomush_1_1_database.html">Database</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structomush_1_1_environment.html">Environment</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classomush_1_1_game.html">Game</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classomush_1_1_signal_handler_delegate.html">SignalHandlerDelegate</a></td></tr>
@@ -99,15 +117,44 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:a4f95cdc9f7b25130afd760fb7f175dcc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4f95cdc9f7b25130afd760fb7f175dcc"></a>
+typedef int&#160;</td><td class="memItemRight" valign="bottom"><b>dbref</b></td></tr>
+<tr class="separator:a4f95cdc9f7b25130afd760fb7f175dcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d7529318966c643d1dd1eec7d619ebc"><td class="memItemLeft" align="right" valign="top">typedef std::multimap&lt; int, <br class="typebreak"/>
 <a class="el" href="classomush_1_1_signal_handler_delegate.html">SignalHandlerDelegate</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceomush.html#a1d7529318966c643d1dd1eec7d619ebc">SignalDelegateMap</a></td></tr>
 <tr class="separator:a1d7529318966c643d1dd1eec7d619ebc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac30cad3dc5c8f3a450a56b1fcc88028d"><td class="memItemLeft" align="right" valign="top">typedef std::pair&lt; int, <br class="typebreak"/>
 <a class="el" href="classomush_1_1_signal_handler_delegate.html">SignalHandlerDelegate</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceomush.html#ac30cad3dc5c8f3a450a56b1fcc88028d">SignalDelegatePair</a></td></tr>
 <tr class="separator:ac30cad3dc5c8f3a450a56b1fcc88028d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:af6dadcf97014046fd6d2fbcede691cb8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>DatabaseObjectType</b> { <b>DBPlayer</b>, 
+<b>DBThing</b>, 
+<b>DBExit</b>, 
+<b>DBRoom</b>
+ }</td></tr>
+<tr class="separator:af6dadcf97014046fd6d2fbcede691cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="game_8h_source.html">game.h</a></p>
+<div class="textblock"><p>Copyright 2014 Michael Smith. </p>
+<p>command.cc</p>
+<p>Copyright 2014 Michael Smith</p>
+<p>descriptor.cc</p>
+<p>Copyright 2014 Michael Smith</p>
+<p><a class="el" href="command_8h_source.html">command.h</a></p>
+<p>Copyright 2014 Michael Smith</p>
+<p><a class="el" href="database_8h_source.html">database.h</a></p>
+<p>Copyright 2014 Michael Smith</p>
+<p><a class="el" href="environment_8h_source.html">environment.h</a></p>
+<p>Copyright 2014 Michael Smith</p>
+<p><a class="el" href="game_8h_source.html">game.h</a></p>
+<p>Copyright 2014 Michael Smith</p>
+<p><a class="el" href="descriptor_8h_source.html">Descriptor.h</a></p>
+<p>Copyright 2014 Michael Smith</p>
+<p><a class="el" href="network_8h_source.html">network.h</a></p>
+<p>Copyright 2014 Michael Smith</p>
+<p><a class="el" href="queue_8h_source.html">queue.h</a></p>
 <p>Copyright 2014 Michael Smith</p>
 <p><a class="el" href="signalhandler_8h_source.html">signalhandler.h</a></p>
 <p>Copyright 2014 Michael Smith </p>
@@ -141,7 +188,7 @@ Typedefs</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 9 2014 20:34:26 for oMush by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 12 2014 14:52:57 for oMush by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

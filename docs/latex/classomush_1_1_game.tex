@@ -14,16 +14,63 @@ Inheritance diagram for omush\-:\-:Game\-:\begin{figure}[H]
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classomush_1_1_game_aae6eb03bcbc479ce68eaf6a1b449665a}{void {\bfseries run} ()}\label{classomush_1_1_game_aae6eb03bcbc479ce68eaf6a1b449665a}
-
+\hyperlink{classomush_1_1_game_a6e4e5e9f6edf99893895d0261423afc1}{Game} ()
 \item 
-\hypertarget{classomush_1_1_game_a90582895228ea196287a36d35d21f3ba}{virtual void {\bfseries handle\-Signal} (int signal)}\label{classomush_1_1_game_a90582895228ea196287a36d35d21f3ba}
-
+\hyperlink{classomush_1_1_game_a8dd181346e8a62be54585a20b5e52588}{$\sim$\-Game} ()
+\item 
+void \hyperlink{classomush_1_1_game_aae6eb03bcbc479ce68eaf6a1b449665a}{run} ()
+\item 
+virtual void \hyperlink{classomush_1_1_game_a90582895228ea196287a36d35d21f3ba}{handle\-Signal} (int signal)
 \end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}
 This is the main class that is the the game. Everything is handled from here. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classomush_1_1_game_a6e4e5e9f6edf99893895d0261423afc1}{\index{omush\-::\-Game@{omush\-::\-Game}!Game@{Game}}
+\index{Game@{Game}!omush::Game@{omush\-::\-Game}}
+\subsubsection[{Game}]{\setlength{\rightskip}{0pt plus 5cm}omush\-::\-Game\-::\-Game (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classomush_1_1_game_a6e4e5e9f6edf99893895d0261423afc1}
+Constructor. Do any initial resetting or setup of theg game that doesn't require on external configuration. \hypertarget{classomush_1_1_game_a8dd181346e8a62be54585a20b5e52588}{\index{omush\-::\-Game@{omush\-::\-Game}!$\sim$\-Game@{$\sim$\-Game}}
+\index{$\sim$\-Game@{$\sim$\-Game}!omush::Game@{omush\-::\-Game}}
+\subsubsection[{$\sim$\-Game}]{\setlength{\rightskip}{0pt plus 5cm}omush\-::\-Game\-::$\sim$\-Game (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classomush_1_1_game_a8dd181346e8a62be54585a20b5e52588}
+Destructor. Free up any resources that were allocated during the lifetime of the game. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classomush_1_1_game_a90582895228ea196287a36d35d21f3ba}{\index{omush\-::\-Game@{omush\-::\-Game}!handle\-Signal@{handle\-Signal}}
+\index{handle\-Signal@{handle\-Signal}!omush::Game@{omush\-::\-Game}}
+\subsubsection[{handle\-Signal}]{\setlength{\rightskip}{0pt plus 5cm}void omush\-::\-Game\-::handle\-Signal (
+\begin{DoxyParamCaption}
+\item[{int}]{signum}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classomush_1_1_game_a90582895228ea196287a36d35d21f3ba}
+Handle S\-I\-G\-I\-N\-T by setting the shutdown flag on the game.
+
+
+\begin{DoxyParams}{Parameters}
+{\em signum} & Signal caught by \hyperlink{classomush_1_1_signal_handler}{Signal\-Handler}. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{classomush_1_1_signal_handler_delegate}{omush\-::\-Signal\-Handler\-Delegate}.
+
+\hypertarget{classomush_1_1_game_aae6eb03bcbc479ce68eaf6a1b449665a}{\index{omush\-::\-Game@{omush\-::\-Game}!run@{run}}
+\index{run@{run}!omush::Game@{omush\-::\-Game}}
+\subsubsection[{run}]{\setlength{\rightskip}{0pt plus 5cm}void omush\-::\-Game\-::run (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classomush_1_1_game_aae6eb03bcbc479ce68eaf6a1b449665a}
+The main loop of the program. When this method returns, the program should end. 
 
 The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
 \item 
