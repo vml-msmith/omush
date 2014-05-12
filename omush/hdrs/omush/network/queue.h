@@ -32,7 +32,7 @@ namespace omush {
 
     class OutputQueue {
     };
-  }  /namespace network
+  }  // namespace network
 }  // namespace omush
 
 
