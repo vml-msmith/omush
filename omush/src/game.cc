@@ -3,6 +3,7 @@
 #import "omush/game.h"
 #import "omush/signalhandler.h"
 #import "omush/network/network.h"
+#include "omush/network/queue.h"
 #import "signal.h"
 #import "time.h"
 
@@ -38,10 +39,12 @@ namespace omush {
 
 
     // Setup network.
+omush::network::InputQueue inputQueue;
     omush::network::Network server;
     server.listen(1701);
+    server.setupQueues(inputQueue);
 
-    int number_of_runs = 20;
+    int number_of_runs = 40;
     double interval = 0.5f;
     double clocks_per_ms = CLOCKS_PER_SEC / 1;
     double clock_threshhold = clocks_per_ms * interval;
@@ -62,6 +65,7 @@ namespace omush {
         printf("Loop: %d\n", loop);
         server.poll();
         ++loop;
+if (inputQueue.hasMessages()) { std::cout <<  inputQueue.popMessage() <<  std::endl; }
       }
     }
 
