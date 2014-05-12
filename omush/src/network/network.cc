@@ -56,7 +56,7 @@ namespace omush {
 
     void Network::shutdown() {
       server_.stop_listening();
-      std::map<websocketpp::connection_hdl, Descriptor*>::iterator
+      std::map<websocketpp::connection_hdl, Descriptor*>::iterator it;
       for (it = connectedDescriptors_.begin();
            it != connectedDescriptors_.end();
            ++it) {
@@ -72,7 +72,7 @@ namespace omush {
       server_.poll();
     }
 
-    void Network::setupQueues(const InputQueue& input) {
+    void Network::setupQueues(InputQueue& input) {
       this->inputQueue_ = &input;
     }
 

@@ -10,13 +10,24 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <iostream>
+#include "omush/network/descriptor.h"
 
 namespace omush {
   namespace command {
     class Command {
      public:
-      std::string name = "Test";
+      std::string name_;
+      void init(network::Descriptor *d, std::string command, std::string input);
       virtual void run() = 0;
+      std::string getName() { return this->name_; }
+      std::vector<std::string> getAlias() {  std::vector<std::string> v; return v;}
+
+    protected:
+      std::string input_;
+      std::string command_;
+      network::Descriptor *descriptor_;
+      std::string complain_;
     };
 
     template <typename T> Command* createT() { return new T; }
@@ -58,17 +69,20 @@ namespace omush {
 
     class CommandQuit : public Command {
      public:
-      void run() {
-      }
+      void run() {}
+
+      std::string getName() { return "QUIT"; }
+      std::vector<std::string> getAlias() {  std::vector<std::string> v; return v;}
+
      private:
       static CommandRegister<CommandQuit> reg;
     };
 
     class CommandWho  : public Command {
      public:
-      std::string name = "Who";
-      void run() {
-      }
+      CommandWho() { name_ = "WHO"; }
+      void run();
+
      private:
       static CommandRegister<CommandWho> reg;
     };
@@ -76,12 +90,25 @@ namespace omush {
     class CommandParser {
      public:
       void run(std::string);
-      void registerCommand(std::string str) {
-        list.push_back(str);
+      void registerCommand(std::string str);
+      ~CommandParser() {
+        for (std::map<std::string, Command*>::iterator i = list.begin();
+             i != list.end(); ++i) {
+          delete i->second;
+        }
+        list.clear();
       }
+
      private:
-      std::vector<std::string> list;
+      Command* lookupByName(std::string str);
+      Command* lookupByAlias(std::string);
+
+      std::map<std::string, Command*> list;
+      std::map<std::string, Command*> namedList_;
+      std::map<std::string, Command*> aliasList_;
     };
+
+    
   }  // namespace command
 }  // namespace omush
 

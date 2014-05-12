@@ -1,6 +1,10 @@
 /// Copyright 2014 Michael Smith
 
 #import "omush/game.h"
+
+#import "omush/environment.h"
+#include "omush/database.h"
+
 #import "omush/signalhandler.h"
 #import "omush/network/network.h"
 #include "omush/network/queue.h"
@@ -37,10 +41,13 @@ namespace omush {
     SignalHandler::setupSignalHandling();
     SignalHandler::registerDelegate(this, SIGINT);
 
+    Environment env;
+    env.database = new Database();
 
     // Setup network.
-omush::network::InputQueue inputQueue;
+    omush::network::InputQueue inputQueue;
     omush::network::Network server;
+
     server.listen(1701);
     server.setupQueues(inputQueue);
 

@@ -19,6 +19,8 @@ namespace omush {
       command::CommandParser p;
       p.registerCommand("CommandQuit");
       p.registerCommand("CommandWho");
+
+      p.run("who");
     }
 
     Descriptor::~Descriptor() {

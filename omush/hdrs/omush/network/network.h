@@ -36,7 +36,7 @@ namespace omush {
       void listen(int port);
       void shutdown();
       void poll();
-      void setupQueues(const InputQueue& input);
+      void setupQueues(InputQueue& input);
 
      private:
       Descriptor* getDescriptorFromHdl(websocketpp::connection_hdl hdl);
