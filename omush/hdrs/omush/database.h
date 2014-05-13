@@ -13,7 +13,7 @@
 #include <boost/algorithm/string.hpp>
 
 namespace omush {
-  namespace database { 
+  namespace database {
     class Database;
     enum DatabaseObjectType {
       DBGarbage,
@@ -44,7 +44,7 @@ if (boost::iequals(name, name_) && boost::equals(pass,password_)) {
           std::cout << "MATCH (" << name_ << ") " << pass << std::endl;
 return true;
         }
-return false;
+ return false;
       }
    private:
       std::string password_;
@@ -63,14 +63,14 @@ return false;
       Database();
       void registerObject(DatabaseObject* db_object);
       DatabaseObject* getObjectByDbref(dbref ref);
- 
+
     private:
       dbref highRef_;
       typedef std::map<dbref, DatabaseObject*> DBObjectMap;
       DBObjectMap allObjects_;
       std::map<DatabaseObjectType, DBObjectMap> objectsByType_;
     };
-  }  // namespace database  
+  }  // namespace database
 }  // namespace omush
 
 #endif  // OMUSH_HDRS_OMUSH_DATABASE_H_

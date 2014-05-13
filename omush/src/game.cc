@@ -8,6 +8,9 @@
 #import "omush/signalhandler.h"
 #import "omush/network/network.h"
 #include "omush/network/queue.h"
+
+#include "omush/command/command.h"
+
 #import "signal.h"
 #import "time.h"
 
@@ -47,6 +50,14 @@ namespace omush {
     env.database->registerObject(new database::Player("Othic", "pass_1", 1));
     env.database->registerObject(new database::Player("Michael", "pass", 2));
 
+    env.descriptorCommands.registerEnvironment(env);
+    env.welcomeCommands.registerEnvironment(env);
+    env.descriptorCommands.registerCommand("CommandQuit");
+    env.descriptorCommands.registerCommand("CommandWho");
+
+    env.welcomeCommands.registerCommand("CommandConnect");
+    env.welcomeCommands.registerCommand("CommandWelcomeCreate");
+
     database::Player::findByNameAndPass(env.database, "Michael", "pass");
     // Setup network.
     omush::network::InputQueue inputQueue;
@@ -54,6 +65,7 @@ namespace omush {
 
     server.listen(1701);
     server.setupQueues(inputQueue);
+    server.setupEnvironment(env);
 
     int number_of_runs = 40;
     double interval = 0.5f;
@@ -76,7 +88,10 @@ namespace omush {
         printf("Loop: %d\n", loop);
         server.poll();
         ++loop;
-if (inputQueue.hasMessages()) { std::cout <<  inputQueue.popMessage() <<  std::endl; }
+        if (inputQueue.hasMessages()) {
+          std::cout << inputQueue.popMessage() << std::endl;
+        }
+        server.push();
       }
     }
 

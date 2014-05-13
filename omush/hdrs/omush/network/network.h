@@ -16,6 +16,7 @@
 
 
 namespace omush {
+  class Environment;
   namespace network {
 
     extern class Descriptor;
@@ -36,7 +37,9 @@ namespace omush {
       void listen(int port);
       void shutdown();
       void poll();
+      void push();
       void setupQueues(InputQueue& input);
+      void setupEnvironment(Environment& env);
 
      private:
       Descriptor* getDescriptorFromHdl(websocketpp::connection_hdl hdl);
@@ -49,6 +52,8 @@ namespace omush {
       con_list connectedDescriptors_;
 
       InputQueue *inputQueue_;
+      OutputQueue* outputQueue_;
+      Environment *environment_;
 
       Network(const Network&);
       void operator=(const Network&);

@@ -11,7 +11,16 @@
 #include <queue>
 
 namespace omush {
+  namespace database {
+  class DatabaseObject;
+  }
   namespace network {
+    class Network;
+    class Descriptor;
+    struct OutputMessage {
+      Descriptor *d;
+      std::string message;
+    };
 
     class NetworkQueue {
      protected:
@@ -21,7 +30,7 @@ namespace omush {
 
     class InputQueue : public NetworkQueue {
      public:
-      void addMessage(std::string str) { this->buffer.push(str); }
+      void addMessage(database::DatabaseObject *dbo, std::string str) { this->buffer.push(str); }
       std::string popMessage() { 
         std::string buf = this->buffer.back();
         this->buffer.pop();
@@ -31,7 +40,13 @@ namespace omush {
     };
 
     class OutputQueue {
+      friend class Network;
+    public:
+      void addByDescriptor(Descriptor *d, std::string message);
+    protected:
+      std::queue<OutputMessage> queue_;
     };
+
   }  // namespace network
 }  // namespace omush
 

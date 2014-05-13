@@ -26,18 +26,24 @@ namespace omush {
       return allObjects_[ref];
     }
 
-    Player* Player::findByNameAndPass(Database* db, std::string name, std::string pass) {
+    Player* Player::findByNameAndPass(Database* db,
+                                      std::string name,
+                                      std::string pass) {
       if (db->objectsByType_.count(DBPlayer) == 0) {
         return NULL;
       }
 
       std::map<dbref, DatabaseObject*>::iterator i;
-      for (i = db->objectsByType_[DBPlayer].begin(); i != db->objectsByType_[DBPlayer].end(); ++i) {
-        Player *p = (Player*)i->second;
-        p->matchNameAndPass(name, pass);
+      for (i = db->objectsByType_[DBPlayer].begin();
+           i != db->objectsByType_[DBPlayer].end();
+           ++i) {
+        database::Player *p = reinterpret_cast<Player*>(i->second);
+        if (p->matchNameAndPass(name, pass)) {
+          return p;
+        }
       }
       return NULL;
     }
 
   }  // namespace database
-}  // namespace mush
+}  // namespace omush

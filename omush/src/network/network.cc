@@ -9,6 +9,7 @@
 namespace omush {
   namespace network {
     Network::Network() {
+      outputQueue_ = new OutputQueue();
       server_.init_asio();
       server_.set_open_handler(bind(&Network::onOpen, this, ::_1));
       server_.set_close_handler(bind(&Network::onClose, this, ::_1));
@@ -20,7 +21,6 @@ namespace omush {
 
     void Network::onMessage(websocketpp::connection_hdl hdl,
                             WSServer::message_ptr msg) {
-      std::cout << "The message: " << msg << std::endl;
       Descriptor* desc = getDescriptorFromHdl(hdl);
       desc->receivedMessage(msg);
     }
@@ -40,14 +40,19 @@ namespace omush {
     void Network::onOpen(websocketpp::connection_hdl hdl) {
       std::cout << "Opened" << std::endl;
 
-      Descriptor *desc = new Descriptor(this->inputQueue_);
+      Descriptor *desc = new Descriptor(hdl,
+                                        environment_,
+                                        inputQueue_,
+                                        outputQueue_);
       connectedDescriptors_[hdl] = desc;
     }
 
     void Network::onClose(websocketpp::connection_hdl hdl) {
-      std::cout << "Closed" << std::endl;
+      delete connectedDescriptors_[hdl];
+      connectedDescriptors_.erase(hdl);
+      server_.close(hdl, websocketpp::close::status::blank,
+                    "Shutdown");
     }
-
 
     void Network::listen(int port) {
       server_.listen(port);
@@ -72,8 +77,22 @@ namespace omush {
       server_.poll();
     }
 
+    void Network::push() {
+      while (!outputQueue_->queue_.empty()) {
+        OutputMessage msg = outputQueue_->queue_.front();
+        outputQueue_->queue_.pop();
+        server_.send(msg.d->getHdl(),
+                     msg.message,
+                     websocketpp::frame::opcode::value::TEXT);
+      }
+    }
+
     void Network::setupQueues(InputQueue& input) {
       this->inputQueue_ = &input;
+    }
+
+    void Network::setupEnvironment(Environment& env) {
+      this->environment_ = &env;
     }
 
   }  // namespace network
