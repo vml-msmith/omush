@@ -1,6 +1,6 @@
 /// Copyright 2014 Michael Smith
 
-#include "omush/database.h"
+#include "omush/database/database.h"
 #include <string>
 
 namespace omush {

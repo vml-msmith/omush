@@ -3,7 +3,7 @@
 #import "omush/game.h"
 
 #import "omush/environment.h"
-#include "omush/database.h"
+#include "omush/database/database.h"
 
 #import "omush/signalhandler.h"
 #import "omush/network/network.h"
@@ -109,4 +109,3 @@ namespace omush {
   }
 
 }  // namespace omush
-

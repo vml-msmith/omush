@@ -8,7 +8,7 @@
 #include "omush/network/queue.h"
 #include "omush/command/command.h"
 #include "omush/environment.h"
-#include "omush/database.h"
+#include "omush/database/database.h"
 
 namespace omush {
   namespace network {
@@ -36,7 +36,7 @@ namespace omush {
         return;
       }
       std::cout << "Trt welcom" << std::endl;
-      if (player_ == NULL && 
+      if (player_ == NULL &&
           environment_->welcomeCommands.run(this,
                                             NULL,
                                             msg->get_payload())) {
@@ -91,5 +91,3 @@ namespace omush {
 
   }  // namespace network
 }  // namespace omush
-
-

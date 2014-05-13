@@ -8,7 +8,7 @@
 #include <iostream>
 #include "omush/network/descriptor.h"
 #include "omush/command/commandfactory.h"
-#include "omush/database.h"
+#include "omush/database/database.h"
 #include "omush/environment.h"
 
 namespace omush {

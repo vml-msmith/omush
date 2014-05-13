@@ -9,7 +9,7 @@
 #include "omush/network/descriptor.h"
 #include <boost/algorithm/string.hpp>
 
-#include "omush/database.h"
+#include "omush/database/database.h"
 #include "omush/environment.h"
 
 
