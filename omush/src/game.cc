@@ -1,4 +1,8 @@
-/// Copyright 2014 Michael Smith
+/**
+ * \file game.cc
+ *
+ * Copyright 2014 Michael Smith
+ */
 
 #import "omush/game.h"
 
@@ -48,18 +52,9 @@ namespace omush {
   };
 
 
-  ///
-  /// Constructor. Do any initial resetting or setup of theg game that doesn't
-  /// require on external configuration.
-  ///
   Game::Game() : shutdown_(false) {
   }
 
-
-  ///
-  /// Destructor. Free up any resources that were allocated during the lifetime
-  /// of the game.
-  ///
   Game::~Game() {
   }
 
@@ -178,10 +173,7 @@ namespace omush {
     return shutdown_;
   }
 
-  /**
-   * The main loop of the program. When this method returns, the program
-   * should end.
-   */
+
   void Game::run() {
     // Setup signals.
     SignalHandler::setupSignalHandling();
@@ -211,6 +203,9 @@ namespace omush {
   }
 
   void Game::shutdown() {
+
+
+    shutdown_ = true;
     // Loop through and boot everyone.
   }
 
@@ -220,7 +215,7 @@ namespace omush {
    * @param signum Signal caught by SignalHandler.
    */
   void Game::handleSignal(int signum) {
-    shutdown_ = true;
+    shutdown();
   }
 
 }  // namespace omush
