@@ -1,76 +1,62 @@
-///
-/// commandparser.cc
-///
-/// Copyright Michael Smith 2014.
-///
+/**
+ * \file commandparser.cc
+ *
+ * Copyright 2014 Michael Smith
+ */
 
 #include "omush/command/commandparser.h"
-
+#include "omush/command/command.h"
+#include <vector>
 #include <boost/algorithm/string.hpp>
 
-#include "omush/command/command.h"
-#include "omush/command/commandfactory.h"
-
 namespace omush {
-  namespace command {
-    void CommandParser::registerEnvironment(Environment& env) {
-      environment_ = &env;
+  CommandParser::~CommandParser() {
+    for (std::map<std::string,Command*>::iterator iter = commandDictionary_.begin();
+         iter != commandDictionary_.end();
+         ++iter) {
+      delete iter->second;
     }
+  }
 
-    CommandParser::~CommandParser() {
-      for (CommandMap::iterator i = list.begin();
-           i != list.end(); ++i) {
-        delete i->second;
-      }
-      list.clear();
-    }
+  void CommandParser::registerCommand(Command *cmd) {
+    commandDictionary_.insert(std::make_pair(cmd->name(), cmd));
+  }
 
-    bool CommandParser::run(network::Descriptor *d,
-                            database::DatabaseObject *obj,
-                            std::string str) {
-      boost::trim(str);
-      std::string input = str;
+  bool CommandParser::run(std::string input, CommandContext context) {
+    Command *cmd = lookupByName(input);
 
-      unsigned int spacePos = str.find(' ');
-      if (spacePos != std::string::npos) {
-        str = str.substr(0, spacePos);
-      }
-      boost::to_upper(str);
-      Command *c = lookupByName(str);
-      if (c == NULL) {
-        c = lookupByAlias(str);
-      }
-
-      if (c == NULL) {
-        return false;
-      }
-      c->init(environment_, d, obj, str, input);
-      c->run();
+    if (cmd != NULL) {
+      cmd->run(input, input, context);
       return true;
     }
 
-    Command* CommandParser::lookupByName(std::string str) {
-      if (namedList_.count(str)) {
-        return namedList_[str];
-      }
+    // Lookup by short code.
+
+    std::vector<std::string> inputParts;
+    boost::split(inputParts, input, boost::is_any_of(" "));
+    std::string command = inputParts[0];
+    std::vector<std::string> commandParts;
+    boost::split(commandParts, command, boost::is_any_of("/"));
+    command = commandParts[0];
+    boost::to_upper(command);
+    cmd = lookupByName(command);
+
+    if (cmd != NULL) {
+      cmd->run(command, input, context);
+      return true;
+    }
+
+    // Lookup by alias.
+
+
+    return false;
+  }
+
+  Command* CommandParser::lookupByName(std::string name) {
+    if (commandDictionary_.find(name) == commandDictionary_.end()) {
       return NULL;
     }
+    return (commandDictionary_.find(name)->second);
+  }
 
-    Command* CommandParser::lookupByAlias(std::string str) {
-      if (aliasList_.count(str)) {
-        return aliasList_[str];
-      }
-      return NULL;
-    }
-
-    void CommandParser::registerCommand(std::string str) {
-      Command *c = CommandFactory::createInstance(str);
-      list.insert(std::make_pair(str, c));
-      namedList_.insert(std::make_pair(c->getName(), c));
-      for (std::string i : c->getAlias()) {
-        aliasList_.insert(std::make_pair(i, c));
-      }
-    }
-
-  }  // namespace command
 }  // namespace omush

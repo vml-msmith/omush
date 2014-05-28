@@ -1,36 +1,29 @@
-///
-/// commandfactory.h
-///
-///
+/**
+ * \file commandparser.h
+ *
+ * Copyright 2014 Michael Smith
+ */
 
 #ifndef OMUSH_HDRS_OMUSH_COMMAND_COMMANDPARSER_H_
 #define OMUSH_HDRS_OMUSH_COMMAND_COMMANDPARSER_H_
 
-#include <string>
-
 #include "omush/command/command.h"
+#include <map>
+#include <string>
+#include <vector>
+#include <boost/algorithm/string.hpp>
 
 namespace omush {
-  namespace command {
-    class CommandParser {
-     public:
-      bool run(network::Descriptor *d,
-               database::DatabaseObject *obj,
-               std::string str);
-      void registerEnvironment(Environment& env);
-      void registerCommand(std::string str);
-      ~CommandParser();
+  class CommandParser {
+  public:
+    void registerCommand(Command *cmd);
+    bool run(std::string input, CommandContext context);
+    ~CommandParser();
 
-     private:
-      Command* lookupByName(std::string str);
-      Command* lookupByAlias(std::string);
-
-      Environment *environment_;
-      CommandMap list;
-      CommandMap namedList_;
-      CommandMap aliasList_;
-    };
-  }  // namespace command
-}  // namespace omush
+  protected:
+    Command* lookupByName(std::string name);
+    std::map<std::string,Command*> commandDictionary_;
+  };
+}
 
 #endif  // OMUSH_HDRS_OMUSH_COMMAND_COMMANDPARSER_H_

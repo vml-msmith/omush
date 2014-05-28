@@ -2,28 +2,57 @@
 
 #import "omush/game.h"
 
-#import "omush/environment.h"
-#include "omush/database/database.h"
-
-#import "omush/signalhandler.h"
-#import "omush/network/network.h"
-#include "omush/network/queue.h"
-
-#include "omush/command/command.h"
 
 #import "signal.h"
 #import "time.h"
 
 #import <stdio.h>
 
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/thread.hpp>
+
+#include <queue>
+#include <vector>
+
+#include "omush/gametimer.h"
+#include "omush/network/networkservice.h"
+#include "omush/command.h"
+#include "omush/utility.h"
 
 namespace omush {
+
+  class WelcomeScreenCommandParser : public CommandParser {
+   public:
+    WelcomeScreenCommandParser() {
+      registerCommand(new CommandQuit());
+      registerCommand(new CommandConnect());
+    }
+  };
+
+  class WelcomeScreen {
+   public:
+    static std::string getRandomText() {
+      return getRandomHeader() + std::string("\n") + getInstructions();
+    }
+
+    static std::string getRandomHeader() {
+      return "---\n\n---";
+    }
+
+    static std::string getInstructions() {
+      return "x1b[color:red]Commands:x1b[end]\n  connect <name> <password>\n  create <name> <password>\n  HELP\n  QUIT";
+    }
+
+  };
+
 
   ///
   /// Constructor. Do any initial resetting or setup of theg game that doesn't
   /// require on external configuration.
   ///
-  Game::Game() : shutdown(false) {
+  Game::Game() : shutdown_(false) {
   }
 
 
@@ -34,78 +63,164 @@ namespace omush {
   Game::~Game() {
   }
 
+  bool Game::handleNewConnections() {
+    server_->poll();
+    std::vector<network::ConnectionId> connections = server_->connections();
+    std::vector<network::ConnectionId> newConnections;
+    std::vector<network::ConnectionId> closedConnections;
 
-  ///
-  /// The main loop of the program. When this method returns, the program
-  /// should end.
-  ///
+    for (std::vector<network::ConnectionId>::iterator it = connections.begin();
+         it != connections.end();
+         ++it) {
+      if (clientList_.find(*it) == clientList_.end()) {
+        newConnections.push_back(*it);
+        Client newClient;
+        clientList_.insert(std::make_pair(*it, newClient));
+        sendNetworkMessage(*it, WelcomeScreen::getRandomText());
+      }
+    }
+
+    if (newConnections.size() > 0) {
+      std::cout << "New Connections: " << newConnections.size() << std::endl;
+    }
+
+    return false;
+  }
+
+  bool Game::handleIncommingMessages() {
+    unsigned long numberOfMessages = server_->getIncommingMessageCount();
+    if (numberOfMessages > 0) {
+      network::IncommingMessage msg = server_->popIncommingMessage();
+
+      if (clientList_.find(msg.id) == clientList_.end())
+        return false;
+
+      Client *c = &(clientList_[msg.id]);
+
+      CommandContext context;
+      context.game = this;
+      context.descriptor = msg.id;
+      context.client = c;
+
+      if (c->isConnected == true) {
+      } else {
+        WelcomeScreenCommandParser cmds = WelcomeScreenCommandParser();
+        if (!cmds.run(msg.rawString, context)) {
+          // Multiple cases.
+          sendNetworkMessage(msg.id, "I don't recognize that command.");
+          sendNetworkMessage(msg.id, WelcomeScreen::getRandomText());
+        }
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
+  void Game::sendNetworkMessage(network::ConnectionId id, std::string message) {
+
+
+    std::queue<std::string> msgQueue = encodeString(message);
+    while (!msgQueue.empty()) {
+      ColorString msgString = ColorString(msgQueue.front());
+      msgQueue.pop();
+      network::NetworkMessage msg;
+      msg.id = id;
+      msg.rawString = msgString.outString();
+      server_->pushMessage(msg);
+    }
+  }
+
+  std::queue<std::string> Game::encodeString(std::string message) {
+    std::queue<std::string> responseQueue;
+
+    typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
+    boost::char_separator<char> sep("\n");
+    tokenizer tokens(message, sep);
+    for (tokenizer::iterator tok_iter = tokens.begin();
+         tok_iter != tokens.end(); ++tok_iter) {
+
+      std::string m = *tok_iter;
+
+      // Characters to be transformed.
+      std::map<char, std::string> transformations;
+      transformations['&']  = std::string("&amp;");
+      transformations['\''] = std::string("&apos;");
+      transformations['"']  = std::string("&quot;");
+      transformations['>']  = std::string("&gt;");
+      transformations['<']  = std::string("&lt;");
+      transformations[' ']  = std::string("&nbsp;");
+
+      // Build list of characters to be searched for.
+      std::string reserved_chars;
+      for (auto ti = transformations.begin(); ti != transformations.end(); ++ti) {
+        reserved_chars += ti->first;
+      }
+
+      size_t pos = 0;
+      while (std::string::npos != (pos = m.find_first_of(reserved_chars, pos))) {
+        m.replace(pos, 1, transformations[m[pos]]);
+        ++pos;
+      }
+
+      responseQueue.push(m);
+    }
+    return responseQueue;
+  }
+
+
+  void Game::closeNetworkConnection(network::ConnectionId id) {
+    server_->closeNetworkConnection(id);
+  }
+
+  bool Game::inShutdown() {
+    return shutdown_;
+  }
+
+  /**
+   * The main loop of the program. When this method returns, the program
+   * should end.
+   */
   void Game::run() {
     // Setup signals.
     SignalHandler::setupSignalHandling();
     SignalHandler::registerDelegate(this, SIGINT);
 
-    Environment env;
-    env.database = new database::Database();
 
-    env.database->registerObject(new database::Player("Othic", "pass_1", 1));
-    env.database->registerObject(new database::Player("Michael", "pass", 2));
+    network::NetworkServiceConfig options;
+    options.port = 1701;
 
-    env.descriptorCommands.registerEnvironment(env);
-    env.welcomeCommands.registerEnvironment(env);
-    env.descriptorCommands.registerCommand("CommandQuit");
-    env.descriptorCommands.registerCommand("CommandWho");
+    server_ = new network::NetworkService(options);
 
-    env.welcomeCommands.registerCommand("CommandConnect");
-    env.welcomeCommands.registerCommand("CommandWelcomeCreate");
+    GameTimer timer(.05f, 0);
+    timer.registerInterupt(boost::bind(&Game::inShutdown, this));
+    timer.registerCallback(0.001f,
+                           boost::bind(&omush::Game::handleNewConnections,
+                                       this));
 
-    database::Player::findByNameAndPass(env.database, "Michael", "pass");
-    // Setup network.
-    omush::network::InputQueue inputQueue;
-    omush::network::Network server;
+    timer.registerCallback(0.001f,
+                           boost::bind(&omush::Game::handleIncommingMessages,
+                                       this));
 
-    server.listen(1701);
-    server.setupQueues(inputQueue);
-    server.setupEnvironment(env);
+    server_->start();
+    timer.run();
+    shutdown();
 
-    int number_of_runs = 40;
-    double interval = 0.5f;
-    double clocks_per_ms = CLOCKS_PER_SEC / 1;
-    double clock_threshhold = clocks_per_ms * interval;
-
-    double time_counter = 0;
-    clock_t this_time = clock();
-    clock_t last_time = this_time;
-    int loop = 0;
-
-    while (loop < number_of_runs && !this->shutdown) {
-      this_time = clock();
-
-      time_counter += static_cast<double>(this_time - last_time);
-      last_time = this_time;
-
-      if (time_counter >= clock_threshhold) {
-        time_counter = 0;
-        printf("Loop: %d\n", loop);
-        server.poll();
-        ++loop;
-        if (inputQueue.hasMessages()) {
-          std::cout << inputQueue.popMessage() << std::endl;
-        }
-        server.push();
-      }
-    }
-
-    server.shutdown();
+    delete server_;
   }
 
+  void Game::shutdown() {
+    // Loop through and boot everyone.
+  }
 
-  ///
-  /// Handle SIGINT by setting the shutdown flag on the game.
-  ///
-  /// @param signum Signal caught by SignalHandler.
-  ///
+  /**
+   * Handle SIGINT by setting the shutdown flag on the game.
+   *
+   * @param signum Signal caught by SignalHandler.
+   */
   void Game::handleSignal(int signum) {
-    this->shutdown = true;
+    shutdown_ = true;
   }
 
 }  // namespace omush
