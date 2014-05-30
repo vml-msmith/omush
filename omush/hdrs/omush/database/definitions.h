@@ -19,7 +19,9 @@ namespace omush {
     struct DatabaseAttribute;
     class DatabaseObject;
     class DatabaseObjectFactory;
-  }
-}
+    class PlayerUtilities;
+    class Database;
+  }  // namespace database
+}  // namespace omush
 
-#endif
+#endif  // OMUSH_HDRS_OMUSH_DATABASE_DEFINITIONS_H_
