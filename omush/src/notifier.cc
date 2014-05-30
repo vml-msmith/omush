@@ -8,6 +8,7 @@
 #import "omush/game.h"
 #import <iostream>
 #import "omush/database/database.h"
+#import "omush/database/databaseobject.h"
 //#import "utility.h"
 
 namespace omush {

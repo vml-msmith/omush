@@ -5,45 +5,11 @@
  */
 
 #include "omush/database/database.h"
+#include "omush/database/databaseobject.h"
 #include <map>
 
 namespace omush {
   namespace database {
-    dbref DatabaseObject::ref() {
-      return ref_;
-    }
-
-    std::string DatabaseObject::getProperty(std::string propertyName) {
-      if (properties_.find(propertyName) == properties_.end()) {
-        return "";
-      }
-      return properties_[propertyName];
-    }
-
-    DatabaseAttribute DatabaseObject::getAttribute(std::string name) {
-      if (attributes_.find(name) == attributes_.end()) {
-        return DatabaseAttribute();
-      }
-      return attributes_[name];
-    }
-
-    void DatabaseObject::setProperty(std::string name, std::string value) {
-      properties_[name] = value;
-    }
-
-    void DatabaseObject::setAttribute(std::string name, std::string value) {
-      if (attributes_.find(name) == attributes_.end()) {
-        attributes_[name] = DatabaseAttribute();
-      }
-
-      attributes_[name].value = value;
-    }
-
-    DbObjectType DatabaseObject::type() { return type_; }
-
-    dbref DatabaseObject::location() { return location_; }
-    std::vector<dbref> DatabaseObject::contents() { return contents_; }
-
     DatabaseObject* Database::findObjectByDbref(dbref ref) {
       if (allObjects_.find(ref) == allObjects_.end()) {
         return NULL;

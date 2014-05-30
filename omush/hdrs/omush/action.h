@@ -8,6 +8,7 @@
 #define OMUSH_HDRS_OMUSH_ACTION_H_
 
 #include "omush/database/database.h"
+#include "omush/database/databaseobject.h"
 #include "omush/utility.h"
 #include <boost/algorithm/string.hpp>
 #include "omush/notifier.h"
