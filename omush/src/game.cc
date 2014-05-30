@@ -25,6 +25,7 @@
 #include "omush/command.h"
 #include "omush/utility.h"
 #include "omush/database/database.h"
+#include "omush/database/databaseobjectfactory.h"
 #include "omush/action.h"
 #include "omush/notifier.h"
 

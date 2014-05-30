@@ -10,12 +10,12 @@
 
 namespace omush {
   namespace database {
-    DatabaseObject* Database::findObjectByDbref(Dbref ref) {
-      if (allObjects_.find(ref) == allObjects_.end()) {
+    DatabaseObject* Database::findObjectByDbref(Dbref dbref) {
+      if (allObjects_.find(dbref) == allObjects_.end()) {
         return NULL;
       }
 
-      return allObjects_[ref];
+      return allObjects_[dbref];
     }
 
     bool Database::hasObjectByRef(Dbref dbref) {

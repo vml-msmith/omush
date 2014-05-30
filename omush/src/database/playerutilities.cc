@@ -1,6 +1,7 @@
 #include "omush/database/playerutilities.h"
 #include "omush/database/database.h"
 #include "omush/database/databaseobject.h"
+#include <boost/algorithm/string.hpp>
 
 namespace omush {
   namespace database {

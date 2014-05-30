@@ -7,7 +7,6 @@
 #ifndef OMUSH_HDRS_OMUSH_DATABASE_DATABASE_H_
 #define OMUSH_HDRS_OMUSH_DATABASE_DATABASE_H_
 
-#include <boost/algorithm/string.hpp>
 #include <map>
 #include "omush/database/definitions.h"
 
@@ -59,7 +58,7 @@ namespace omush {
        * @return true - The Dbref is being used by the Database.
        * @return false - The Dbref is NOT being used by the Database.
        */
-      bool hasObjectByRef(Dbref ref);
+      bool hasObjectByRef(Dbref dbref);
 
       /**
        * Return the next free dbref.
@@ -76,21 +75,24 @@ namespace omush {
        * Move one obbject's location to another object.
        *
        * The previous location's contents and the new location's contents will
-       * both be updated.
+       * both be updated accordingly.
        *
+       * If the DatabaseObject location() is not a real object, location_ will
+       * be updated to -1.
        */
       void moveObject(DatabaseObject* obj, DatabaseObject *location);
-      DatabaseObject* findObjectByDbref(Dbref ref);
+
+      /**
+       * Retrieve a DatabaseObject for the refrerence given.
+       *
+       * If the reference isn't in the database, will return NULL.
+       */
+      DatabaseObject* findObjectByDbref(Dbref dbref);
+
      private:
       DbMap allObjects_;
       DbTypeMap typedObjects_;
       Dbref top_;
-    };
-
-    class DatabaseObjectFactory {
-     public:
-      static DatabaseObject* createPlayer(Database* db);
-      static DatabaseObject* createRoom(Database* db);
     };
 
   }  // namespace database

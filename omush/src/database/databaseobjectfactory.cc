@@ -1,3 +1,4 @@
+#include "omush/database/databaseobjectfactory.h"
 #include "omush/database/database.h"
 #include "omush/database/databaseobject.h"
 
