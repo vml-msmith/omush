@@ -28,24 +28,24 @@ namespace omush {
       friend class DatabaseObjectFactory;
       friend class Database;
      public:
-      dbref ref();
+      Dbref ref();
       std::string getProperty(std::string propertyName);
       DatabaseAttribute getAttribute(std::string name);
       void setProperty(std::string name, std::string value);
       void setAttribute(std::string name, std::string value);
       DbObjectType type();
-      dbref location();
-      std::vector<dbref> contents();
+      Dbref location();
+      std::vector<Dbref> contents();
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;
       typedef std::map<std::string,DatabaseAttribute> AttributeMap;
-      dbref ref_;
+      Dbref ref_;
       PropertyMap properties_;
       AttributeMap attributes_;
       DbObjectType type_;
-      dbref location_;
-      std::vector<dbref> contents_;
+      Dbref location_;
+      std::vector<Dbref> contents_;
     };
   }
 }

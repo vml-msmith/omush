@@ -14,12 +14,10 @@
 
 namespace omush {
   namespace database {
-    class DatabaseObject;
 
-    class DatabaseObjectFactory;
 
-typedef std::map<dbref,DatabaseObject*> dbMap;
-typedef std::map<DbObjectType,dbMap> dbTypeMap;
+typedef std::map<Dbref,DatabaseObject*> DbMap;
+typedef std::map<DbObjectType,DbMap> DbTypeMap;
 
     class PlayerUtilities;
     class Database {
@@ -27,13 +25,13 @@ typedef std::map<DbObjectType,dbMap> dbTypeMap;
     public:
       Database() : top_(0) {}
       void addObject(DatabaseObject* obj);
-      dbref getNextRef();
-      void moveObject(DatabaseObject* obj, dbref ref);
-      DatabaseObject* findObjectByDbref(dbref ref);
+      Dbref getNextRef();
+      void moveObject(DatabaseObject* obj, Dbref ref);
+      DatabaseObject* findObjectByDbref(Dbref ref);
     private:
-      dbMap allObjects_;
-      dbTypeMap typedObjects_;
-      dbref top_;
+      DbMap allObjects_;
+      DbTypeMap typedObjects_;
+      Dbref top_;
     };
 
     class DatabaseObjectFactory {

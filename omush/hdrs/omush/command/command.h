@@ -27,7 +27,7 @@ namespace omush {
     Game *game;
     Client *client;
     database::Database *db;
-    database::dbref ref;
+    database::Dbref ref;
     network::ConnectionId descriptor;
   };
 

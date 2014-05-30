@@ -10,13 +10,15 @@
 
 namespace omush {
   namespace database {
-    typedef long dbref;
+    typedef long Dbref;
     enum DbObjectType {
       DbObjectTypePlayer,
       DbObjectTypeThing,
       DbObjectTypeRoom,
     };
     struct DatabaseAttribute;
+    class DatabaseObject;
+    class DatabaseObjectFactory;
   }
 }
 

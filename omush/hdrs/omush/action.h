@@ -41,8 +41,8 @@ namespace omush {
             return enactor
         elif ustring == 'HERE':
             return enactor.location
-        elif DbrefFormatter().is_dbref(target_string) == True:
-            item = global_database.get_object_by_dbref(target_string)
+        elif DbrefFormatter().is_Dbref(target_string) == True:
+            item = global_database.get_object_by_Dbref(target_string)
 
             if self.type == None or item == None or item.type in self.type:
                 return item
@@ -92,7 +92,7 @@ namespace omush {
 
       return ColorString::color(output, color);
     }
-    std::string formatDbref(database::dbref ref) {
+    std::string formatDbref(database::Dbref ref) {
       return "#" + boost::lexical_cast<std::string>(ref);
     }
   private:
@@ -140,9 +140,9 @@ namespace omush {
         response += desc;
       }
 
-      std::vector<database::dbref> contents = what_->contents();
+      std::vector<database::Dbref> contents = what_->contents();
       std::string contentString = "";
-      for (std::vector<database::dbref>::iterator iter = contents.begin();
+      for (std::vector<database::Dbref>::iterator iter = contents.begin();
            iter != contents.end();
            ++iter) {
         if (*iter != object_->ref()) {

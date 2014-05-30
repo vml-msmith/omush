@@ -10,7 +10,7 @@
 
 namespace omush {
   namespace database {
-    DatabaseObject* Database::findObjectByDbref(dbref ref) {
+    DatabaseObject* Database::findObjectByDbref(Dbref ref) {
       if (allObjects_.find(ref) == allObjects_.end()) {
         return NULL;
       }
@@ -29,7 +29,7 @@ namespace omush {
       moveObject(obj, obj->location_);
     }
 
-    void Database::moveObject(DatabaseObject* obj, dbref ref) {
+    void Database::moveObject(DatabaseObject* obj, Dbref ref) {
       DatabaseObject *newLocation = findObjectByDbref(ref);
       if (newLocation == NULL) {
         obj->location_ = -1;
@@ -45,7 +45,7 @@ namespace omush {
       }
     }
 
-    dbref Database::getNextRef() {
+    Dbref Database::getNextRef() {
       return top_;
     }
 

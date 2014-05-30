@@ -25,19 +25,19 @@ namespace omush {
     typedef boost::uuids::uuid ConnectionId;
   }
   namespace database {
-    typedef long dbref;
+    typedef long Dbref;
   }
 
   struct InternalCommand {
     std::string cmd;
-    database::dbref ref;
-    InternalCommand(database::dbref r, std::string c) : cmd(c), ref(r) {}
+    database::Dbref ref;
+    InternalCommand(database::Dbref r, std::string c) : cmd(c), ref(r) {}
   };
 
   struct Client {
     std::string name;
     bool isConnected;
-    database::dbref ref;
+    database::Dbref ref;
 
     Client() : isConnected(false) {}
   };

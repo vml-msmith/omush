@@ -18,7 +18,7 @@ namespace omush {
   void Notifier::notify(database::DatabaseObject *object, std::string str) {
     lowNotify(object->ref(), str);
   }
-  void Notifier::lowNotify(database::dbref ref, std::string str) {
+  void Notifier::lowNotify(database::Dbref ref, std::string str) {
     std::cout << str << std::endl;
     ClientMap& clients = game_.clientList();
     for (ClientMap::iterator iter = clients.begin();
@@ -40,7 +40,7 @@ namespace omush {
   }
   */
 
-  Notifier& Notifier::exclude(database::dbref ref) {
+  Notifier& Notifier::exclude(database::Dbref ref) {
     exclude_.push_back(ref);
     return *this;
   }

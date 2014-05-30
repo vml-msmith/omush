@@ -2,7 +2,7 @@
 
 namespace omush {
   namespace database {
-    dbref DatabaseObject::ref() {
+    Dbref DatabaseObject::ref() {
       return ref_;
     }
 
@@ -34,7 +34,7 @@ namespace omush {
 
     DbObjectType DatabaseObject::type() { return type_; }
 
-    dbref DatabaseObject::location() { return location_; }
-    std::vector<dbref> DatabaseObject::contents() { return contents_; }
+    Dbref DatabaseObject::location() { return location_; }
+    std::vector<Dbref> DatabaseObject::contents() { return contents_; }
   }
 }

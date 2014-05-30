@@ -13,7 +13,7 @@
 namespace omush {
   class Game;
   namespace database {
-    typedef long dbref;
+    typedef long Dbref;
     class DatabaseObject;
   }  // namespace database
 
@@ -22,10 +22,10 @@ namespace omush {
     Notifier(Game& game);
 
     void notify(database::DatabaseObject *object, std::string str);
-    Notifier& exclude(database::dbref ref);
+    Notifier& exclude(database::Dbref ref);
   protected:
-    void lowNotify(database::dbref ref, std::string str);
-    std::vector<database::dbref> exclude_;
+    void lowNotify(database::Dbref ref, std::string str);
+    std::vector<database::Dbref> exclude_;
     Game& game_;
   };
 }  // namespace omush

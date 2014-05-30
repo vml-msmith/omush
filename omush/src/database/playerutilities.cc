@@ -5,7 +5,7 @@ namespace omush {
   namespace database {
 
     DatabaseObject* PlayerUtilities::findPlayerByName(Database *db, std::string name) {
-      for (dbMap::iterator iter = db->typedObjects_[DbObjectTypePlayer].begin();
+      for (DbMap::iterator iter = db->typedObjects_[DbObjectTypePlayer].begin();
            iter != db->typedObjects_[DbObjectTypePlayer].end();
            ++iter) {
         if (boost::iequals(iter->second->getProperty("name"), name)) {
