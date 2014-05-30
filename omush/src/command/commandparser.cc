@@ -27,6 +27,7 @@ namespace omush {
 
     if (cmd != NULL) {
       cmd->run(input, input, context);
+      std::cout << "Run" << std::endl;
       return true;
     }
 
@@ -43,6 +44,7 @@ namespace omush {
 
     if (cmd != NULL) {
       cmd->run(command, input, context);
+      std::cout << "Run2" << std::endl;
       return true;
     }
 

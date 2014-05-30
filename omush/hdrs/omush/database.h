@@ -65,7 +65,7 @@ typedef std::map<DbObjectType,dbMap> dbTypeMap;
       void addObject(DatabaseObject* obj);
       dbref getNextRef();
       void moveObject(DatabaseObject* obj, dbref ref);
-DatabaseObject* findObjectByDbref(dbref ref);
+      DatabaseObject* findObjectByDbref(dbref ref);
     private:
       dbMap allObjects_;
       dbTypeMap typedObjects_;
@@ -106,6 +106,7 @@ DatabaseObject* findObjectByDbref(dbref ref);
             return iter->second;
           }
         }
+        return NULL;
       }
     };
   }

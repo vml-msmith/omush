@@ -14,6 +14,7 @@
 #include <string>
 
 namespace omush {
+
   class Game;
   namespace database {
     class Database;
@@ -26,13 +27,23 @@ namespace omush {
   namespace database {
     typedef long dbref;
   }
+
+  struct InternalCommand {
+    std::string cmd;
+    database::dbref ref;
+    InternalCommand(database::dbref r, std::string c) : cmd(c), ref(r) {}
+  };
+
   struct Client {
     std::string name;
-    NetworkService service_;
     bool isConnected;
     database::dbref ref;
+
     Client() : isConnected(false) {}
   };
+
+
+  typedef std::map<network::ConnectionId, Client> ClientMap;
 
   /**
    * This is the main class that is the the game. Everything is handled from
@@ -90,6 +101,8 @@ namespace omush {
      */
     bool handleIncommingMessages();
 
+    bool processCommands();
+
     /**
      * Send a string message to a connected descriptor.
      */
@@ -105,8 +118,13 @@ namespace omush {
      */
     void shutdown();
 
+
+    ClientMap& clientList() {
+      return clientList_;
+    }
    protected:
-    std::map<network::ConnectionId, Client> clientList_;
+    std::queue<InternalCommand> commandList_;
+    ClientMap clientList_;
     network::NetworkService *server_;
     bool shutdown_;
     database::Database *db_;

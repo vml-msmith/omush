@@ -18,10 +18,10 @@ namespace omush {
   public:
     void registerCommand(Command *cmd);
     bool run(std::string input, CommandContext context);
+    Command* lookupByName(std::string name);
     ~CommandParser();
 
   protected:
-    Command* lookupByName(std::string name);
     std::map<std::string,Command*> commandDictionary_;
   };
 }

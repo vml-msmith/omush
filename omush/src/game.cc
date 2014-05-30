@@ -26,6 +26,7 @@
 #include "omush/utility.h"
 #include "omush/database.h"
 #include "omush/action.h"
+#include "omush/notifier.h"
 
 namespace omush {
 
@@ -34,6 +35,23 @@ namespace omush {
     WelcomeScreenCommandParser() {
       registerCommand(new CommandQuit());
       registerCommand(new CommandConnect());
+    }
+  };
+
+  class DescriptorCommandParser : public CommandParser {
+  public:
+    DescriptorCommandParser() {
+      registerCommand(new CommandQuit());
+    }
+  };
+
+  class HCCommandParser : public CommandParser {
+  public:
+    HCCommandParser() {
+      registerCommand(new CommandHuh());
+      registerCommand(new CommandLook());
+      registerCommand(new CommandSay());
+      //registerCommand(new CommandQuit());
     }
   };
 
@@ -84,6 +102,26 @@ namespace omush {
     return false;
   }
 
+  bool Game::processCommands() {
+    if (commandList_.empty())
+      return false;
+
+    InternalCommand command = commandList_.front();
+    commandList_.pop();
+
+    CommandContext context;
+    context.game = this;
+    context.db = db_;
+    context.ref = command.ref;
+
+    HCCommandParser cmds = HCCommandParser();
+    if (!cmds.run(command.cmd, context)) {
+      !cmds.run("HUH", context);
+    }
+
+    return true;
+  }
+
   bool Game::handleIncommingMessages() {
     unsigned long numberOfMessages = server_->getIncommingMessageCount();
     if (numberOfMessages > 0) {
@@ -99,7 +137,12 @@ namespace omush {
       context.descriptor = msg.id;
       context.client = c;
       context.db = db_;
+
       if (c->isConnected == true) {
+        DescriptorCommandParser descCmds = DescriptorCommandParser();
+        if (!descCmds.run(msg.rawString, context)) {
+          commandList_.push(InternalCommand(c->ref,msg.rawString));
+        }
       } else {
         WelcomeScreenCommandParser cmds = WelcomeScreenCommandParser();
         if (!cmds.run(msg.rawString, context)) {
@@ -130,6 +173,7 @@ namespace omush {
   }
 
   void Game::closeNetworkConnection(network::ConnectionId id) {
+    sendNetworkMessage(id, "Going Down");
     server_->closeNetworkConnection(id);
   }
 
@@ -153,6 +197,7 @@ namespace omush {
     database::DatabaseObject *p=database::DatabaseObjectFactory::createPlayer(db_);
     database::DatabaseObject *p1=database::DatabaseObjectFactory::createPlayer(db_);
     p->setProperty("name", "Othic");
+    p1->setProperty("name", "Michael");
     r->setProperty("name", "Room Zero");
     db_->moveObject(p, r->ref());
     db_->moveObject(p1, r->ref());
@@ -165,6 +210,10 @@ namespace omush {
 
     timer.registerCallback(0.001f,
                            boost::bind(&omush::Game::handleIncommingMessages,
+                                       this));
+
+    timer.registerCallback(0.001f,
+                           boost::bind(&omush::Game::processCommands,
                                        this));
 
     server_->start();
@@ -182,6 +231,7 @@ namespace omush {
          ++iter) {
       closeNetworkConnection((iter->first));
     }
+    server_->poll();
 
     shutdown_ = true;
   }

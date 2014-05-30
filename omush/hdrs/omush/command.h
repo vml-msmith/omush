@@ -13,4 +13,8 @@
 #include "omush/command/commandquit.h"
 #include "omush/command/commandconnect.h"
 
+#include "omush/command/commandhuh.h"
+#include "omush/command/commandlook.h"
+#include "omush/command/commandsay.h"
+
 #endif  // OMUSH_HDRS_OMUSH_COMMAND_H_

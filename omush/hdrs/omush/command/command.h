@@ -14,6 +14,7 @@
 namespace omush {
   class Game;
   class Client;
+  class Notifier;
   namespace database {
     class Database;
   }
@@ -26,6 +27,7 @@ namespace omush {
     Game *game;
     Client *client;
     database::Database *db;
+    database::dbref ref;
     network::ConnectionId descriptor;
   };
 
