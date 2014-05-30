@@ -15,14 +15,22 @@
 
 namespace omush {
   class Game;
+  namespace database {
+    class Database;
+  };
+
   namespace network {
     class NetworkService;
     typedef boost::uuids::uuid ConnectionId;
   }
-
+  namespace database {
+    typedef long dbref;
+  }
   struct Client {
     std::string name;
+    NetworkService service_;
     bool isConnected;
+    database::dbref ref;
     Client() : isConnected(false) {}
   };
 
@@ -98,10 +106,10 @@ namespace omush {
     void shutdown();
 
    protected:
-    std::queue<std::string> encodeString(std::string message);
     std::map<network::ConnectionId, Client> clientList_;
     network::NetworkService *server_;
     bool shutdown_;
+    database::Database *db_;
 
     Game(const Game&);
     void operator=(const Game&);

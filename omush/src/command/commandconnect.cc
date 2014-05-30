@@ -6,6 +6,8 @@
 
 #include "omush/command/commandconnect.h"
 #include <boost/algorithm/string.hpp>
+#include "omush/database.h"
+#include "omush/action.h"
 
 namespace omush {
   CommandConnect::CommandConnect() {
@@ -20,10 +22,13 @@ namespace omush {
     boost::split(inputParts, input, boost::is_any_of(" "));
 
     if (inputParts.size() == 3) {
-      context.client->isConnected = true;
-      context.client->name = inputParts[1];
-      context.game->sendNetworkMessage(context.descriptor, "** Connected **");
-      return true;
+      database::DatabaseObject *obj = database::PlayerUtilities::findPlayerByName(context.db, inputParts[1]);
+      if (obj != NULL) {
+        context.client->isConnected = true;
+        context.game->sendNetworkMessage(context.descriptor, "** Connected **");
+        ActionConnect(context.db, obj).enact();
+        return true;
+      }
     }
 
     context.game->sendNetworkMessage(context.descriptor, "I can't find a player with the username and password.");

@@ -14,6 +14,9 @@
 namespace omush {
   class Game;
   class Client;
+  namespace database {
+    class Database;
+  }
 
   namespace network {
     typedef boost::uuids::uuid ConnectionId;
@@ -22,6 +25,7 @@ namespace omush {
   struct CommandContext {
     Game *game;
     Client *client;
+    database::Database *db;
     network::ConnectionId descriptor;
   };
 

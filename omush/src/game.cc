@@ -24,6 +24,8 @@
 #include "omush/network/networkservice.h"
 #include "omush/command.h"
 #include "omush/utility.h"
+#include "omush/database.h"
+#include "omush/action.h"
 
 namespace omush {
 
@@ -96,7 +98,7 @@ namespace omush {
       context.game = this;
       context.descriptor = msg.id;
       context.client = c;
-
+      context.db = db_;
       if (c->isConnected == true) {
       } else {
         WelcomeScreenCommandParser cmds = WelcomeScreenCommandParser();
@@ -113,10 +115,10 @@ namespace omush {
     return false;
   }
 
-  void Game::sendNetworkMessage(network::ConnectionId id, std::string message) {
-
-
+  void Game::sendNetworkMessage(network::ConnectionId id,
+                                std::string message) {
     std::queue<std::string> msgQueue = encodeString(message);
+
     while (!msgQueue.empty()) {
       ColorString msgString = ColorString(msgQueue.front());
       msgQueue.pop();
@@ -126,44 +128,6 @@ namespace omush {
       server_->pushMessage(msg);
     }
   }
-
-  std::queue<std::string> Game::encodeString(std::string message) {
-    std::queue<std::string> responseQueue;
-
-    typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-    boost::char_separator<char> sep("\n");
-    tokenizer tokens(message, sep);
-    for (tokenizer::iterator tok_iter = tokens.begin();
-         tok_iter != tokens.end(); ++tok_iter) {
-
-      std::string m = *tok_iter;
-
-      // Characters to be transformed.
-      std::map<char, std::string> transformations;
-      transformations['&']  = std::string("&amp;");
-      transformations['\''] = std::string("&apos;");
-      transformations['"']  = std::string("&quot;");
-      transformations['>']  = std::string("&gt;");
-      transformations['<']  = std::string("&lt;");
-      transformations[' ']  = std::string("&nbsp;");
-
-      // Build list of characters to be searched for.
-      std::string reserved_chars;
-      for (auto ti = transformations.begin(); ti != transformations.end(); ++ti) {
-        reserved_chars += ti->first;
-      }
-
-      size_t pos = 0;
-      while (std::string::npos != (pos = m.find_first_of(reserved_chars, pos))) {
-        m.replace(pos, 1, transformations[m[pos]]);
-        ++pos;
-      }
-
-      responseQueue.push(m);
-    }
-    return responseQueue;
-  }
-
 
   void Game::closeNetworkConnection(network::ConnectionId id) {
     server_->closeNetworkConnection(id);
@@ -179,11 +143,19 @@ namespace omush {
     SignalHandler::setupSignalHandling();
     SignalHandler::registerDelegate(this, SIGINT);
 
-
     network::NetworkServiceConfig options;
     options.port = 1701;
 
     server_ = new network::NetworkService(options);
+    db_ = new database::Database();
+
+    database::DatabaseObject *r=database::DatabaseObjectFactory::createRoom(db_);
+    database::DatabaseObject *p=database::DatabaseObjectFactory::createPlayer(db_);
+    database::DatabaseObject *p1=database::DatabaseObjectFactory::createPlayer(db_);
+    p->setProperty("name", "Othic");
+    r->setProperty("name", "Room Zero");
+    db_->moveObject(p, r->ref());
+    db_->moveObject(p1, r->ref());
 
     GameTimer timer(.05f, 0);
     timer.registerInterupt(boost::bind(&Game::inShutdown, this));
@@ -199,21 +171,21 @@ namespace omush {
     timer.run();
     shutdown();
 
+    delete db_;
     delete server_;
   }
 
   void Game::shutdown() {
-
+    std::map<network::ConnectionId, Client>::iterator iter;
+    for (iter = clientList_.begin();
+         iter != clientList_.end();
+         ++iter) {
+      closeNetworkConnection((iter->first));
+    }
 
     shutdown_ = true;
-    // Loop through and boot everyone.
   }
 
-  /**
-   * Handle SIGINT by setting the shutdown flag on the game.
-   *
-   * @param signum Signal caught by SignalHandler.
-   */
   void Game::handleSignal(int signum) {
     shutdown();
   }

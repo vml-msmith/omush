@@ -9,10 +9,13 @@
 
 #include <string>
 #include <boost/algorithm/string.hpp>
+#include<boost/tokenizer.hpp>
 #include <queue>
 #include <vector>
 
 namespace omush {
+std::queue<std::string> encodeString(std::string message);
+
   class ColorSequence {
   public:
     ColorSequence(std::string s, std::size_t iter) {
@@ -65,6 +68,17 @@ namespace omush {
 
   class ColorString {
   public:
+
+    static std::string wrap(std::string str, std::string sequence) {
+      return "x1b[" + sequence + "]" +  str + "x1b[end]";
+    }
+
+    static std::string color(std::string str, std::string color) {
+      color[0] = std::toupper(color[0]);
+      color = "ansi" + color;
+      return ColorString::wrap(str, "class:" + color);
+    }
+
     ColorString(std::string const& s) : string_(s) {
       std::deque<ColorSequence> sequences;
       std::string myString = s;
