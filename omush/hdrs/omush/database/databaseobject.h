@@ -12,10 +12,6 @@
 #include <vector>
 #include <map>
 
-//#include <boost/algorithm/string.hpp>
-//#include <map>
-//#include <vector>
-
 namespace omush {
   namespace database {
 
@@ -36,6 +32,9 @@ namespace omush {
       DbObjectType type();
       Dbref location();
       std::vector<Dbref> contents();
+
+      void removeFromContents(Dbref dbref);
+      void addToContents(Dbref dbref);
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;

@@ -18,7 +18,12 @@ namespace omush {
       return allObjects_[ref];
     }
 
-    void Database::addObject(DatabaseObject* obj) {
+    bool Database::hasObjectByRef(Dbref dbref) {
+      return (allObjects_.find(dbref) != allObjects_.end());
+    }
+
+
+    bool Database::addObject(DatabaseObject* obj) {
       if (obj->ref() >= top_) {
         ++top_;
       }
@@ -26,22 +31,24 @@ namespace omush {
       allObjects_.insert(std::make_pair(obj->ref(), obj));
       typedObjects_[obj->type_].insert(std::make_pair(obj->ref(), obj));
       // Move it to it's new home.
-      moveObject(obj, obj->location_);
-    }
 
-    void Database::moveObject(DatabaseObject* obj, Dbref ref) {
-      DatabaseObject *newLocation = findObjectByDbref(ref);
-      if (newLocation == NULL) {
+      DatabaseObject *location = findObjectByDbref(obj->location());
+      if (location == NULL) {
         obj->location_ = -1;
-        return;
       }
 
-      obj->location_ = ref;
-      if (obj->type_ != DbObjectTypeRoom &&
-          std::find(newLocation->contents_.begin(),
-                    newLocation->contents_.end(),
-                    ref) == newLocation->contents_.end()) {
-        newLocation->contents_.push_back(obj->ref());
+      moveObject(obj, location);
+      return true;
+    }
+
+    void Database::moveObject(DatabaseObject* obj, DatabaseObject *location) {
+      // Remove from the old location.
+      DatabaseObject *oldLocation = findObjectByDbref(obj->location());
+      oldLocation->removeFromContents(obj->ref());
+      obj->location_ = location->ref();
+
+      if (obj->type_ != DbObjectTypeRoom) {
+        location->addToContents(obj->ref());
       }
     }
 

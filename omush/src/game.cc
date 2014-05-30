@@ -199,8 +199,8 @@ namespace omush {
     p->setProperty("name", "Othic");
     p1->setProperty("name", "Michael");
     r->setProperty("name", "Room Zero");
-    db_->moveObject(p, r->ref());
-    db_->moveObject(p1, r->ref());
+    db_->moveObject(p, r);
+    db_->moveObject(p1, r);
 
     GameTimer timer(.05f, 0);
     timer.registerInterupt(boost::bind(&Game::inShutdown, this));

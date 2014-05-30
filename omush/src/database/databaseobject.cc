@@ -36,5 +36,23 @@ namespace omush {
 
     Dbref DatabaseObject::location() { return location_; }
     std::vector<Dbref> DatabaseObject::contents() { return contents_; }
+
+    void DatabaseObject::removeFromContents(Dbref dbref) {
+      std::vector<Dbref>::iterator position = std::find(contents_.begin(),
+                                                        contents_.end(),
+                                                        dbref);
+      if (position == contents_.end())
+        return;
+
+      contents_.erase(position);
+    }
+
+    void DatabaseObject::addToContents(Dbref dbref) {
+      if (std::find(contents_.begin(),
+                    contents_.end(),
+                    dbref) == contents_.end()) {
+        contents_.push_back(dbref);
+      }
+    }
   }
 }
