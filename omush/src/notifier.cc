@@ -7,7 +7,7 @@
 #import "omush/notifier.h"
 #import "omush/game.h"
 #import <iostream>
-#import "omush/database.h"
+#import "omush/database/database.h"
 //#import "utility.h"
 
 namespace omush {

@@ -1,4 +1,10 @@
-#include "omush/database.h"
+/**
+ * \file database.cc
+ *
+ * Copyright 2014 Michael Smith
+ */
+
+#include "omush/database/database.h"
 #include <map>
 
 namespace omush {
@@ -59,20 +65,17 @@ namespace omush {
 
     void Database::moveObject(DatabaseObject* obj, dbref ref) {
       DatabaseObject *newLocation = findObjectByDbref(ref);
-std::cout << "Move to " << ref << std::endl;
       if (newLocation == NULL) {
-std::cout << "Fail" << std::endl;
         obj->location_ = -1;
         return;
       }
 
       obj->location_ = ref;
       if (obj->type_ != DbObjectTypeRoom &&
-            std::find(newLocation->contents_.begin(),
-                        newLocation->contents_.end(),
-                        ref) == newLocation->contents_.end()) {
-std::cout << "Add it" << std::endl;
-newLocation->contents_.push_back(obj->ref());
+          std::find(newLocation->contents_.begin(),
+                    newLocation->contents_.end(),
+                    ref) == newLocation->contents_.end()) {
+        newLocation->contents_.push_back(obj->ref());
       }
     }
 
@@ -81,5 +84,5 @@ newLocation->contents_.push_back(obj->ref());
     }
 
 
-  }
-}
+  }  // namespace database
+}  // namespace omush

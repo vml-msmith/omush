@@ -6,7 +6,7 @@
 
 #include "omush/command/commandlook.h"
 //#include <boost/algorithm/string.hpp>
-#include "omush/database.h"
+#include "omush/database/database.h"
 #include "omush/action.h"
 
 namespace omush {

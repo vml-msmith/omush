@@ -24,7 +24,7 @@
 #include "omush/network/networkservice.h"
 #include "omush/command.h"
 #include "omush/utility.h"
-#include "omush/database.h"
+#include "omush/database/database.h"
 #include "omush/action.h"
 #include "omush/notifier.h"
 
