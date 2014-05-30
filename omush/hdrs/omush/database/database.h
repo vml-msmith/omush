@@ -32,7 +32,6 @@ namespace omush {
     class Database {
       friend class PlayerUtilities;
      public:
-
       /**
        * Default constructor. Sets the next Dbref to 0.
        */

@@ -14,9 +14,10 @@
 
 namespace omush {
   namespace database {
+    typedef std::map<std::string, DatabaseAttribute> AttributeMap;
 
     struct DatabaseAttribute {
-      std::map<std::string,DatabaseAttribute> tree;
+      AttributeMap tree;
       std::string value;
     };
 
@@ -46,7 +47,7 @@ namespace omush {
       Dbref location_;
       std::vector<Dbref> contents_;
     };
-  }
-}
+  }  // namespace database
+}  // namespace omush
 
 #endif // OMUSH_HDRS_OMUSH_DATABASE_DATABASEOBJECT_H_
