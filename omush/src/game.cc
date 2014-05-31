@@ -54,7 +54,7 @@ namespace omush {
       registerCommand(new CommandLook());
       registerCommand(new CommandSay());
       registerCommand(new CommandPose());
-      //registerCommand(new CommandQuit());
+      registerCommand(new CommandGo());
     }
   };
 
@@ -196,24 +196,25 @@ namespace omush {
     server_ = new network::NetworkService(options);
     db_ = new database::Database();
 
-    database::DatabaseObject *r=database::DatabaseObjectFactory::createRoom(db_);
-    database::DatabaseObject *p=database::DatabaseObjectFactory::createPlayer(db_);
+    database::DatabaseObject *r1=database::DatabaseObjectFactory::createRoom(db_);
     database::DatabaseObject *p1=database::DatabaseObjectFactory::createPlayer(db_);
-    p->setProperty("name", "Micky");
-    p1->setProperty("name", "Michael");
-    r->setProperty("name", "Room Zero");
-    db_->moveObject(p, r);
-    db_->moveObject(p1, r);
+    database::DatabaseObject *r2=database::DatabaseObjectFactory::createRoom(db_);
+    database::DatabaseObject *p2=database::DatabaseObjectFactory::createPlayer(db_);
+    database::DatabaseObject *e1=database::DatabaseObjectFactory::createExit(db_);
+    database::DatabaseObject *e2=database::DatabaseObjectFactory::createExit(db_);
+    r1->setProperty("name", "Room Zero");
+    p1->setProperty("name", "One");
+    r2->setProperty("name", "Room Two");
+    p2->setProperty("name", "Michael");
+    e1->setProperty("name", "Out");
+    e2->setProperty("name", "Out");
+    db_->moveObject(p1, r1);
+    db_->moveObject(p2, r1);
+    e1->home(r2->dbref());
+    e2->home(r1->dbref());
+    db_->moveObject(e1, r1);
+    db_->moveObject(e2, r2);
 
-    database::TargetMatcher::match(db_,p,"test");
-    database::TargetMatcher::match(db_,p,"#1");
-
-    database::TargetMatcher::match(db_,p,"#36");
-    database::TargetMatcher::match(db_,p,"no");
-    database::TargetMatcher::match(db_,p,"#2g2");
-    std::cout << database::TargetMatcher::match(db_,p,"Michael").size() << std::endl;
-    std::cout << database::TargetMatcher::match(db_,p,"ic").size() << std::endl;
-    std::cout << database::TargetMatcher::match(db_,p,"Mack").size() << std::endl;
 
     GameTimer timer(.05f, 0);
     timer.registerInterupt(boost::bind(&Game::inShutdown, this));
