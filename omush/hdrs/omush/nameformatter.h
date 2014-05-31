@@ -32,6 +32,9 @@ namespace omush {
       case database::DbObjectTypePlayer:
         color = "red";
         break;
+      case database::DbObjectTypeExit:
+        color = "cyan";
+        break;
       case database::DbObjectTypeRoom:
       default:
         color = "green";
