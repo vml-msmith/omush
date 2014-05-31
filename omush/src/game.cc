@@ -28,6 +28,7 @@
 #include "omush/database/databaseobjectfactory.h"
 #include "omush/action/action.h"
 #include "omush/notifier.h"
+#include "omush/database/targetmatcher.h"
 
 namespace omush {
 
@@ -198,11 +199,21 @@ namespace omush {
     database::DatabaseObject *r=database::DatabaseObjectFactory::createRoom(db_);
     database::DatabaseObject *p=database::DatabaseObjectFactory::createPlayer(db_);
     database::DatabaseObject *p1=database::DatabaseObjectFactory::createPlayer(db_);
-    p->setProperty("name", "Othic");
+    p->setProperty("name", "Micky");
     p1->setProperty("name", "Michael");
     r->setProperty("name", "Room Zero");
     db_->moveObject(p, r);
     db_->moveObject(p1, r);
+
+    database::TargetMatcher::match(db_,p,"test");
+    database::TargetMatcher::match(db_,p,"#1");
+
+    database::TargetMatcher::match(db_,p,"#36");
+    database::TargetMatcher::match(db_,p,"no");
+    database::TargetMatcher::match(db_,p,"#2g2");
+    std::cout << database::TargetMatcher::match(db_,p,"Michael").size() << std::endl;
+    std::cout << database::TargetMatcher::match(db_,p,"ic").size() << std::endl;
+    std::cout << database::TargetMatcher::match(db_,p,"Mack").size() << std::endl;
 
     GameTimer timer(.05f, 0);
     timer.registerInterupt(boost::bind(&Game::inShutdown, this));

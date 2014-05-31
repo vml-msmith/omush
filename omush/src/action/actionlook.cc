@@ -18,7 +18,12 @@ namespace omush {
   }
 
   void ActionLook::enact() {
-    std::cout << "Ty look" <<std::endl;
+    enact(db_->findObjectByDbref(object_->location()));
+  }
+
+  void ActionLook::enact(database::DatabaseObject* what) {
+    what_ = what;
+
     if (what_ == NULL) {
       what_ = db_->findObjectByDbref(object_->location());
     }

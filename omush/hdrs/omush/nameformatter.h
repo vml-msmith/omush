@@ -16,7 +16,6 @@
 #include <boost/lexical_cast.hpp>
 
 namespace omush {
-
   class NameFormatter {
   public:
     NameFormatter(database::DatabaseObject *looker) : looker_(looker) {

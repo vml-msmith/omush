@@ -19,6 +19,7 @@ namespace omush {
                Game *game,
                database::DatabaseObject *object);
     void enact();
+    void enact(database::DatabaseObject* what);
 
    protected:
     database::DatabaseObject *what_;
