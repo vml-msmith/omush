@@ -32,6 +32,10 @@ namespace omush {
       attributes_[name].value = value;
     }
 
+    void DatabaseObject::home(Dbref dbref) {
+      home_ = dbref;
+    }
+
     DbObjectType DatabaseObject::type() { return type_; }
 
     Dbref DatabaseObject::location() { return location_; }

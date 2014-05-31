@@ -15,6 +15,7 @@ namespace omush {
       DbObjectTypePlayer,
       DbObjectTypeThing,
       DbObjectTypeRoom,
+      DbObjectTypeExit,
     };
     struct DatabaseAttribute;
     class DatabaseObject;

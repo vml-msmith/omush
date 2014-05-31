@@ -36,6 +36,7 @@ namespace omush {
 
       void removeFromContents(Dbref dbref);
       void addToContents(Dbref dbref);
+      void home(Dbref dbref);
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;
@@ -45,6 +46,7 @@ namespace omush {
       AttributeMap attributes_;
       DbObjectType type_;
       Dbref location_;
+      Dbref home_;
       std::vector<Dbref> contents_;
     };
   }  // namespace database

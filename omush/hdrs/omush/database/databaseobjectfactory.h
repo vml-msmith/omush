@@ -17,6 +17,7 @@ namespace omush {
      public:
       static DatabaseObject* createPlayer(Database* db);
       static DatabaseObject* createRoom(Database* db);
+      static DatabaseObject* createExit(Database* db);
     };
 
   }  // namespace database

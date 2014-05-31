@@ -10,18 +10,32 @@ namespace omush {
         obj->setProperty("name", "Guest");
         obj->dbref_ = db->getNextDbref();
         obj->location_ = obj->dbref_;
+        obj->home_ = obj->dbref_;
         db->addObject(obj);
 
         return obj;
     }
+
     DatabaseObject* DatabaseObjectFactory::createRoom(Database* db) {
       DatabaseObject* obj = new DatabaseObject();
       obj->type_ = DbObjectTypeRoom;
       obj->setProperty("name", "room");
       obj->dbref_ = db->getNextDbref();
       obj->location_ = obj->dbref_;
+      obj->home_ = obj->dbref_;
       db->addObject(obj);
 
+      return obj;
+    }
+
+    DatabaseObject* DatabaseObjectFactory::createExit(Database* db) {
+      DatabaseObject* obj = new DatabaseObject();
+      obj->type_ = DbObjectTypeExit;
+      obj->setProperty("name", "room");
+      obj->dbref_ = db->getNextDbref();
+      obj->location_ = obj->dbref_;
+      obj->home_ = obj->dbref_;
+      db->addObject(obj);
       return obj;
     }
   }
