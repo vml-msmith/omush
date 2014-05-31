@@ -36,6 +36,7 @@ namespace omush {
     Command() {}
     ~Command() {}
     inline std::string name() { return name_; }
+    inline std::vector<std::string> shortCodes() { return shortCode_; }
     virtual bool run(std::string calledAs,
                      std::string input,
                      CommandContext context) = 0;
@@ -44,6 +45,7 @@ namespace omush {
               std::string input,
               CommandContext context);
     std::string name_;
+    std::vector<std::string> shortCode_;
     bool absolute_;
   };
 

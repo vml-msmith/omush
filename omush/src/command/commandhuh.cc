@@ -5,9 +5,8 @@
  */
 
 #include "omush/command/commandhuh.h"
-//#include <boost/algorithm/string.hpp>
 #include "omush/database/database.h"
-#include "omush/action/action.h"
+#include "omush/action/actionhuh.h"
 
 namespace omush {
   CommandHuh::CommandHuh() {

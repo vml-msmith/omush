@@ -15,7 +15,7 @@
 
 namespace omush {
 std::queue<std::string> encodeString(std::string message);
-
+ std::vector<std::string> splitStringIntoSegments(std::string str, std::string sep, int segments);
   class ColorSequence {
   public:
     ColorSequence(std::string s, std::size_t iter) {

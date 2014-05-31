@@ -3,6 +3,19 @@
 #include <vector>
 
 namespace omush {
+ std::vector<std::string> splitStringIntoSegments(std::string str, std::string sep, int segments) {
+    std::vector<std::string> result;
+    int i = 0;
+    std::size_t pos = str.find(sep);
+    while (i < (segments - 1) && pos != std::string::npos) {
+      result.push_back(str.substr(0,pos));
+      str = str.substr(pos + 1, str.length() - pos + 1);
+     ++i;
+    }
+    result.push_back(str);
+    return result;
+  }
+
   std::queue<std::string> encodeString(std::string message) {
     std::queue<std::string> responseQueue;
 

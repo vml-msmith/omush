@@ -8,6 +8,7 @@
 #include "omush/command/command.h"
 #include <vector>
 #include <boost/algorithm/string.hpp>
+#include <boost/foreach.hpp>
 
 namespace omush {
   CommandParser::~CommandParser() {
@@ -20,19 +21,32 @@ namespace omush {
 
   void CommandParser::registerCommand(Command *cmd) {
     commandDictionary_.insert(std::make_pair(cmd->name(), cmd));
+
+    BOOST_FOREACH(std::string s, cmd->shortCodes()) {
+      commandShortCodeDictionary_.insert(std::make_pair(s, cmd));
+    }
   }
 
   bool CommandParser::run(std::string input, CommandContext context) {
     Command *cmd = lookupByName(input);
 
+    // Lookup absolute.
     if (cmd != NULL) {
       cmd->run(input, input, context);
-      std::cout << "Run" << std::endl;
       return true;
     }
 
     // Lookup by short code.
+    std::string shortCode = input.substr(0,1);
+    cmd = lookupByShortCode(shortCode);
+    if (cmd != NULL) {
+      cmd->run(cmd->name(),
+               cmd->name() + " " + input.substr(1,input.length()),
+               context);
+      return true;
+    }
 
+    // Finally lookup by command.
     std::vector<std::string> inputParts;
     boost::split(inputParts, input, boost::is_any_of(" "));
     std::string command = inputParts[0];
@@ -44,14 +58,19 @@ namespace omush {
 
     if (cmd != NULL) {
       cmd->run(command, input, context);
-      std::cout << "Run2" << std::endl;
       return true;
     }
 
-    // Lookup by alias.
-
 
     return false;
+  }
+
+
+  Command* CommandParser::lookupByShortCode(std::string shortCode) {
+    if (commandShortCodeDictionary_.find(shortCode) == commandShortCodeDictionary_.end()) {
+      return NULL;
+    }
+    return (commandShortCodeDictionary_.find(shortCode)->second);
   }
 
   Command* CommandParser::lookupByName(std::string name) {

@@ -26,7 +26,7 @@
 #include "omush/utility.h"
 #include "omush/database/database.h"
 #include "omush/database/databaseobjectfactory.h"
-#include "omush/action.h"
+#include "omush/action/action.h"
 #include "omush/notifier.h"
 
 namespace omush {
@@ -52,6 +52,7 @@ namespace omush {
       registerCommand(new CommandHuh());
       registerCommand(new CommandLook());
       registerCommand(new CommandSay());
+      registerCommand(new CommandPose());
       //registerCommand(new CommandQuit());
     }
   };
