@@ -6,6 +6,9 @@
 
 #import "omush/action/actiongo.h"
 #import "omush/nameformatter.h"
+#import "omush/action/actionlook.h"
+#import "omush/action/actionarrive.h"
+#import "omush/action/actionleave.h"
 
 namespace omush {
   ActionGo::ActionGo(database::Database *db,
@@ -25,36 +28,17 @@ namespace omush {
     what_ = what;
 
     if (what_ == NULL) {
-      what_ = db_->findObjectByDbref(object_->location());
-    }
-    if (what_ == NULL) {
-      std::cout << "Nill" << std::endl;
-      // Notify can't see the object.
+      // TODO(msmith): This needs some sort of message.
       return;
     }
-    std::string response = "";
-    response += NameFormatter(object_).format(what_);
 
-    std::string desc = what_->getProperty("description");
-    if (desc.length() > 0) {
-      response += "\n";
-      response += desc;
+    ActionLeave(db_, game_, object_).enact();
+    if (what_->type() == database::DbObjectTypeExit) {
+      what_ = db_->findObjectByDbref(what_->home());
     }
+    db_->moveObject(object_, what_);
 
-    std::vector<database::Dbref> contents = what_->contents();
-    std::string contentString = "";
-    for (std::vector<database::Dbref>::iterator iter = contents.begin();
-         iter != contents.end();
-         ++iter) {
-      if (*iter != object_->dbref()) {
-        contentString += "\n";
-        contentString += NameFormatter(object_).format(db_->findObjectByDbref(*iter));
-      }
-    }
-    if (contentString.length() > 0) {
-      response += "\nContents:" + contentString;
-    }
-
-    Notifier(*game_, *db_).notify(object_, response);
+    ActionArrive(db_, game_, object_).enact();
+    ActionLook(db_, game_, object_).enact();
   }
 }  // namespace omush

@@ -37,6 +37,7 @@ namespace omush {
       void removeFromContents(Dbref dbref);
       void addToContents(Dbref dbref);
       void home(Dbref dbref);
+      Dbref home();
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;

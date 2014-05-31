@@ -6,6 +6,7 @@
 
 #include "omush/command/commandgo.h"
 #include "omush/database/database.h"
+#include "omush/database/definitions.h"
 #include "omush/action/actiongo.h"
 #include "omush/database/targetmatcher.h"
 
@@ -26,9 +27,9 @@ namespace omush {
     if (inputParts.size() > 1) {
       std::string words = inputParts[1];
       std::vector<database::DatabaseObject*> matches;
-      matches = database::TargetMatcher::match(context.db,
-                                               enactor,
-                                               words);
+      database::TargetMatcher matcher(context.db, enactor);
+      matcher.type(database::DbObjectTypeExit);
+      matches = matcher.match(words);
       if (matches.size() > 1) {
         Notifier(*(context.game), *(context.db)).notify(enactor,
                                                         "I don't know which one you mean.");

@@ -39,6 +39,8 @@ namespace omush {
     DbObjectType DatabaseObject::type() { return type_; }
 
     Dbref DatabaseObject::location() { return location_; }
+    Dbref DatabaseObject::home() { return home_; }
+
     std::vector<Dbref> DatabaseObject::contents() { return contents_; }
 
     void DatabaseObject::removeFromContents(Dbref dbref) {

@@ -19,20 +19,40 @@ namespace omush {
   namespace database {
 
     class TargetMatcher {
+     private:
+      Database* db_;
+      DatabaseObject* enactor_;
+      std::map<DbObjectType,bool> types_;
      public:
-      static std::vector<DatabaseObject*> match(Database* db,
-                                                DatabaseObject* enactor,
-                                                std::string target) {
+      TargetMatcher(Database* db, DatabaseObject* enactor) {
+        db_ = db;
+        enactor_ = enactor;
+      }
+
+      void type(DbObjectType type) {
+        types_[type] = true;
+      }
+
+      bool matchType(DatabaseObject *obj) {
+        if (types_.size() == 0)
+          return true;
+        if (types_.find(obj->type()) != types_.end())
+          return true;
+
+        return false;
+      }
+
+      std::vector<DatabaseObject*> match(std::string target) {
         std::vector<DatabaseObject*> response;
 
-        if (boost::iequals(target, "ME")) {
-          response.push_back(enactor);
+        if (boost::iequals(target, "ME") && matchType(enactor_)) {
+          response.push_back(enactor_);
           return response;
         }
 
         if (boost::iequals(target, "HERE")) {
-          DatabaseObject *obj = db->findObjectByDbref(enactor->location());
-          if (obj != NULL) {
+          DatabaseObject *obj = db_->findObjectByDbref(enactor_->location());
+          if (obj != NULL && matchType(obj)) {
             response.push_back(obj);
             return response;
           }
@@ -41,18 +61,20 @@ namespace omush {
         if (database::Utility::isDbref(target)) {
           Dbref dbref = database::Utility::parseDbrefFromString(target);
 
-          DatabaseObject *obj = db->findObjectByDbref(dbref);
-          if (obj != NULL) {
+          DatabaseObject *obj = db_->findObjectByDbref(dbref);
+          if (obj != NULL && matchType(obj)) {
             response.push_back(obj);
             return response;
           }
         }
 
-        DbMap objs = Utility::getSurroundings(db, enactor);
+        DbMap objs = Utility::getSurroundings(db_, enactor_);
         const boost::regex exp(target, boost::regex::icase);
         bool searchPartial = true;
         BOOST_FOREACH (const DbMap::value_type& iter, objs) {
-
+          if (!matchType(iter.second)) {
+            continue;
+          }
           std::string name = iter.second->getProperty("name");
           if (boost::iequals(name, target)) {
             searchPartial = false;

@@ -14,6 +14,7 @@ namespace omush {
   CommandLook::CommandLook() {
     name_ = "LOOK";
     absolute_ = false;
+
   }
 
   bool CommandLook::run(std::string calledAs, std::string input, CommandContext context) {
@@ -26,9 +27,7 @@ namespace omush {
     if (inputParts.size() > 1) {
       std::string words = inputParts[1];
       std::vector<database::DatabaseObject*> matches;
-      matches = database::TargetMatcher::match(context.db,
-                                               enactor,
-                                               words);
+      matches = database::TargetMatcher(context.db, enactor).match(words);
       if (matches.size() > 1) {
         Notifier(*(context.game), *(context.db)).notify(enactor,
                                                         "I don't know which one you mean.");
