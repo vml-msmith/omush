@@ -43,7 +43,7 @@ namespace omush {
 
           DatabaseObject *obj = db->findObjectByDbref(dbref);
           if (obj != NULL) {
-            response.push_back(enactor);
+            response.push_back(obj);
             return response;
           }
         }
