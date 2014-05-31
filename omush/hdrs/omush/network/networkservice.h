@@ -82,7 +82,7 @@ namespace omush {
 
       /**
        * Run exactly one loop of the underlying network service. This should be
-       * called at least once per game loop, prefarably at the begining of the
+       * called at least once per game loop, .dbrefarably at the begining of the
        * loop. It will trigger acceptance of pending connetions, handling of
        * incomming data (add that data to the message queue) and send any data
        * waiting to be sent.

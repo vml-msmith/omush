@@ -33,12 +33,12 @@ namespace omush {
       friend class PlayerUtilities;
      public:
       /**
-       * Default constructor. Sets the next Dbref to 0.
+       * Default constructor. Sets the next dbref to 0.
        */
       Database() : top_(0) {}
 
       /**
-       * Add a DatabaseObject to the collection of objects by it's ref().
+       * Add a DatabaseObject to the collection of objects by it's dbref().
        *
        * Side effect: Increment the next dbref counter if needed, or remove
        * the dbref of the object from this collections list of open dbrefs.
@@ -57,7 +57,7 @@ namespace omush {
        * @return true - The Dbref is being used by the Database.
        * @return false - The Dbref is NOT being used by the Database.
        */
-      bool hasObjectByRef(Dbref dbref);
+      bool hasObjectByDbref(Dbref dbref);
 
       /**
        * Return the next free dbref.
@@ -68,7 +68,7 @@ namespace omush {
        *
        * @return dbref - The next free dbref.
        */
-      Dbref getNextRef();
+      Dbref getNextDbref();
 
       /**
        * Move one obbject's location to another object.

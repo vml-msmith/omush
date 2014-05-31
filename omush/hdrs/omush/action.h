@@ -41,8 +41,8 @@ namespace omush {
             return enactor
         elif ustring == 'HERE':
             return enactor.location
-        elif DbrefFormatter().is_Dbref(target_string) == True:
-            item = global_database.get_object_by_Dbref(target_string)
+        elif D.dbrefFormatter().is_D.dbref(target_string) == True:
+            item = global_database.get_object_by_D.dbref(target_string)
 
             if self.type == None or item == None or item.type in self.type:
                 return item
@@ -87,13 +87,13 @@ namespace omush {
       std::string output = object->getProperty("name");
 
       output += std::string("(")
-        + formatDbref(object->ref())
+        + formatDbref(object->dbref())
         + std::string(")");
 
       return ColorString::color(output, color);
     }
-    std::string formatDbref(database::Dbref ref) {
-      return "#" + boost::lexical_cast<std::string>(ref);
+    std::string formatDbref(database::Dbref dbref) {
+      return "#" + boost::lexical_cast<std::string>(dbref);
     }
   private:
     database::DatabaseObject *looker_;
@@ -145,7 +145,7 @@ namespace omush {
       for (std::vector<database::Dbref>::iterator iter = contents.begin();
            iter != contents.end();
            ++iter) {
-        if (*iter != object_->ref()) {
+        if (*iter != object_->dbref()) {
           contentString += "\n";
           contentString += NameFormatter(object_).format(db_->findObjectByDbref(*iter));
         }
@@ -208,7 +208,7 @@ namespace omush {
     }
 
     void enact() {
-      //      Notifier(*game_).exclude().notify(object_->ref(), "You say, \"" + what_ + "\"");
+      //      Notifier(*game_).exclude().notify(object_->dbref(), "You say, \"" + what_ + "\"");
     }
   protected:
     std::string  what_;

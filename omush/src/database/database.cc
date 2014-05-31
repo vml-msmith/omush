@@ -18,18 +18,18 @@ namespace omush {
       return allObjects_[dbref];
     }
 
-    bool Database::hasObjectByRef(Dbref dbref) {
+    bool Database::hasObjectByDbref(Dbref dbref) {
       return (allObjects_.find(dbref) != allObjects_.end());
     }
 
 
     bool Database::addObject(DatabaseObject* obj) {
-      if (obj->ref() >= top_) {
+      if (obj->dbref() >= top_) {
         ++top_;
       }
 
-      allObjects_.insert(std::make_pair(obj->ref(), obj));
-      typedObjects_[obj->type_].insert(std::make_pair(obj->ref(), obj));
+      allObjects_.insert(std::make_pair(obj->dbref(), obj));
+      typedObjects_[obj->type_].insert(std::make_pair(obj->dbref(), obj));
       // Move it to it's new home.
 
       DatabaseObject *location = findObjectByDbref(obj->location());
@@ -44,15 +44,15 @@ namespace omush {
     void Database::moveObject(DatabaseObject* obj, DatabaseObject *location) {
       // Remove from the old location.
       DatabaseObject *oldLocation = findObjectByDbref(obj->location());
-      oldLocation->removeFromContents(obj->ref());
-      obj->location_ = location->ref();
+      oldLocation->removeFromContents(obj->dbref());
+      obj->location_ = location->dbref();
 
       if (obj->type_ != DbObjectTypeRoom) {
-        location->addToContents(obj->ref());
+        location->addToContents(obj->dbref());
       }
     }
 
-    Dbref Database::getNextRef() {
+    Dbref Database::getNextDbref() {
       return top_;
     }
 

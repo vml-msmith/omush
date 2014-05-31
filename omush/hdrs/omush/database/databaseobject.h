@@ -25,7 +25,7 @@ namespace omush {
       friend class DatabaseObjectFactory;
       friend class Database;
      public:
-      Dbref ref();
+      Dbref dbref();
       std::string getProperty(std::string propertyName);
       DatabaseAttribute getAttribute(std::string name);
       void setProperty(std::string name, std::string value);
@@ -40,7 +40,7 @@ namespace omush {
      protected:
       typedef std::map<std::string,std::string> PropertyMap;
       typedef std::map<std::string,DatabaseAttribute> AttributeMap;
-      Dbref ref_;
+      Dbref dbref_;
       PropertyMap properties_;
       AttributeMap attributes_;
       DbObjectType type_;

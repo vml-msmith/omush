@@ -2,8 +2,8 @@
 
 namespace omush {
   namespace database {
-    Dbref DatabaseObject::ref() {
-      return ref_;
+    Dbref DatabaseObject::dbref() {
+      return dbref_;
     }
 
     std::string DatabaseObject::getProperty(std::string propertyName) {

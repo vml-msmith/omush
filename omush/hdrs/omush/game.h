@@ -30,14 +30,14 @@ namespace omush {
 
   struct InternalCommand {
     std::string cmd;
-    database::Dbref ref;
-    InternalCommand(database::Dbref r, std::string c) : cmd(c), ref(r) {}
+    database::Dbref dbref;
+    InternalCommand(database::Dbref r, std::string c) : cmd(c), dbref(r) {}
   };
 
   struct Client {
     std::string name;
     bool isConnected;
-    database::Dbref ref;
+    database::Dbref dbref;
 
     Client() : isConnected(false) {}
   };

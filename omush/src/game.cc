@@ -113,7 +113,7 @@ namespace omush {
     CommandContext context;
     context.game = this;
     context.db = db_;
-    context.ref = command.ref;
+    context.dbref = command.dbref;
 
     HCCommandParser cmds = HCCommandParser();
     if (!cmds.run(command.cmd, context)) {
@@ -142,7 +142,7 @@ namespace omush {
       if (c->isConnected == true) {
         DescriptorCommandParser descCmds = DescriptorCommandParser();
         if (!descCmds.run(msg.rawString, context)) {
-          commandList_.push(InternalCommand(c->ref,msg.rawString));
+          commandList_.push(InternalCommand(c->dbref,msg.rawString));
         }
       } else {
         WelcomeScreenCommandParser cmds = WelcomeScreenCommandParser();

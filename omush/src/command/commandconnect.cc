@@ -25,10 +25,10 @@ namespace omush {
     if (inputParts.size() == 3) {
       database::DatabaseObject *obj = database::PlayerUtilities::findPlayerByName(context.db, inputParts[1]);
       if (obj != NULL) {
-        std::cout << obj->ref() << std::endl;
+        std::cout << obj->dbref() << std::endl;
         context.client->isConnected = true;
         context.game->sendNetworkMessage(context.descriptor, "** Connected **");
-        context.client->ref = obj->ref();
+        context.client->dbref = obj->dbref();
         ActionConnect(context.db, context.game, obj).enact();
         return true;
       }

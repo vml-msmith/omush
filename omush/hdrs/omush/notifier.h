@@ -22,9 +22,9 @@ namespace omush {
     Notifier(Game& game);
 
     void notify(database::DatabaseObject *object, std::string str);
-    Notifier& exclude(database::Dbref ref);
+    Notifier& exclude(database::Dbref dbref);
   protected:
-    void lowNotify(database::Dbref ref, std::string str);
+    void lowNotify(database::Dbref dbref, std::string str);
     std::vector<database::Dbref> exclude_;
     Game& game_;
   };

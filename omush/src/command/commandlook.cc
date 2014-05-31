@@ -16,7 +16,7 @@ namespace omush {
   }
 
   bool CommandLook::run(std::string calledAs, std::string input, CommandContext context) {
-    ActionLook(context.db, context.game, context.db->findObjectByDbref(context.ref)).enact();
+    ActionLook(context.db, context.game, context.db->findObjectByDbref(context.dbref)).enact();
     return true;
   }
 

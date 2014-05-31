@@ -8,8 +8,8 @@ namespace omush {
         DatabaseObject* obj = new DatabaseObject();
         obj->type_ = DbObjectTypePlayer;
         obj->setProperty("name", "Guest");
-        obj->ref_ = db->getNextRef();
-        obj->location_ = obj->ref_;
+        obj->dbref_ = db->getNextDbref();
+        obj->location_ = obj->dbref_;
         db->addObject(obj);
 
         return obj;
@@ -18,8 +18,8 @@ namespace omush {
       DatabaseObject* obj = new DatabaseObject();
       obj->type_ = DbObjectTypeRoom;
       obj->setProperty("name", "room");
-      obj->ref_ = db->getNextRef();
-      obj->location_ = obj->ref_;
+      obj->dbref_ = db->getNextDbref();
+      obj->location_ = obj->dbref_;
       db->addObject(obj);
 
       return obj;

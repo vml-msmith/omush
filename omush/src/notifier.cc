@@ -16,18 +16,18 @@ namespace omush {
   }
 
   void Notifier::notify(database::DatabaseObject *object, std::string str) {
-    lowNotify(object->ref(), str);
+    lowNotify(object->dbref(), str);
   }
-  void Notifier::lowNotify(database::Dbref ref, std::string str) {
+  void Notifier::lowNotify(database::Dbref dbref, std::string str) {
     std::cout << str << std::endl;
     ClientMap& clients = game_.clientList();
     for (ClientMap::iterator iter = clients.begin();
          iter != clients.end();
          ++iter) {
 
-      std::cout << iter->second.ref << std::endl;
+      std::cout << iter->second.dbref << std::endl;
 
-      if (iter->second.ref == ref) {
+      if (iter->second.dbref == dbref) {
         game_.sendNetworkMessage(iter->first, str);
       }
     }
@@ -40,8 +40,8 @@ namespace omush {
   }
   */
 
-  Notifier& Notifier::exclude(database::Dbref ref) {
-    exclude_.push_back(ref);
+  Notifier& Notifier::exclude(database::Dbref dbref) {
+    exclude_.push_back(dbref);
     return *this;
   }
 }  // namespace omush

@@ -40,7 +40,7 @@ if (inputParts.size() > 1) {
 words = inputParts[1];
 }
 
-ActionSay(context.db, context.game, context.db->findObjectByDbref(context.ref)).what(words).enact();
+ActionSay(context.db, context.game, context.db->findObjectByDbref(context.dbref)).what(words).enact();
     return true;
   }
 
