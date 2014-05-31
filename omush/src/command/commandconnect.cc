@@ -8,7 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include "omush/database/database.h"
 #include "omush/database/playerutilities.h"
-#include "omush/action.h"
+#include "omush/action/action.h"
 
 namespace omush {
   CommandConnect::CommandConnect() {

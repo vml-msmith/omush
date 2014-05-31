@@ -7,7 +7,7 @@
 #include "omush/command/commandlook.h"
 //#include <boost/algorithm/string.hpp>
 #include "omush/database/database.h"
-#include "omush/action.h"
+#include "omush/action/action.h"
 
 namespace omush {
   CommandLook::CommandLook() {
