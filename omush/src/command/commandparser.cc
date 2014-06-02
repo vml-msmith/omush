@@ -64,7 +64,7 @@ namespace omush {
       return true;
     }
 
-    // Finally lookup by command.
+    // Lookup by command specifc.
     std::vector<std::string> inputParts;
     boost::split(inputParts, input, boost::is_any_of(" "));
     std::string command = inputParts[0];
@@ -74,7 +74,16 @@ namespace omush {
     boost::to_upper(command);
     cmd = lookupByName(command);
 
+    // Lookup by alias.
 
+
+    // Lookup exits.
+
+
+    // Lookup soft code.
+
+
+    // Match by prefix.
     if (cmd == NULL) {
       std::vector<Command*> matches =  matchCommandByPrefix(command);
       if (matches.size() == 1) {
@@ -121,8 +130,6 @@ namespace omush {
       for (std::map<char,CommandNode*>::iterator it = n->nodes.begin();
            it != n->nodes.end();
            ++it) {
-        std::cout << it->second->str << std::endl;
-        std::cout << i << " " << "C " << it->first << std::endl;;
         nodes.push(it->second);
         ++i;
       }
