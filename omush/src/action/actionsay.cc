@@ -34,15 +34,11 @@ namespace omush {
 
   void ActionSay::enact() {
     Notifier notify(*game_, *db_);
-//    StringDictionary dict;
 
     notify.notifySurroundings(object_,
                               boost::bind(&omush::ActionSay::constructString,
                                           this,
                                           ::_1,
                                           ::_2));
-    //    notify.exclude(object_);
-    //notify.notifySurroundings(object_, Nameformatter() " say, \"" + what_ + "\"")
-      //    Notifier(*game_).exclude(object_).notify(object_->dbref(), "You say, \"" + what_ + "\"");
   }
 }  // namespace omush

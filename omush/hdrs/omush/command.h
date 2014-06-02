@@ -18,5 +18,6 @@
 #include "omush/command/commandsay.h"
 #include "omush/command/commandpose.h"
 #include "omush/command/commandgo.h"
+#include "omush/command/commandthink.h"
 
 #endif  // OMUSH_HDRS_OMUSH_COMMAND_H_

@@ -18,7 +18,7 @@
 namespace omush {
   class NameFormatter {
   public:
-    NameFormatter(database::DatabaseObject *looker) : looker_(looker) {
+    NameFormatter(database::DatabaseObject *looker) : looker_(looker), returnDbref_(true) {
     }
 
     std::string formatInline(database::DatabaseObject *object) {
@@ -42,16 +42,23 @@ namespace omush {
       }
       std::string output = formatInline(object);
 
-      output += std::string("(")
-        + formatDbref(object->dbref())
-        + std::string(")");
+      if (returnDbref_) {
+        output += std::string("(")
+          + formatDbref(object->dbref())
+          + std::string(")");
+      }
 
       return ColorString::color(output, color);
+    }
+    NameFormatter &noDbref() {
+      returnDbref_ = false;
+      return *this;
     }
     std::string formatDbref(database::Dbref dbref) {
       return "#" + boost::lexical_cast<std::string>(dbref);
     }
   private:
+    bool returnDbref_;
     database::DatabaseObject *looker_;
 
   };

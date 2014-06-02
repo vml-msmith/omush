@@ -5,7 +5,7 @@ SET( PROJ_PATH       ${CMAKE_SOURCE_DIR} )
 SET( PROJ_OUT_PATH   ${CMAKE_BINARY_DIR} )
 SET( PROJ_SOURCES    "" )
 SET( PROJ_HEADERS    "" )
-SET( PROJ_INCLUDES   "hdrs" "vendor" )
+SET( PROJ_INCLUDES   "hdrs" "vendor" "lib" )
 SET( CMAKE_CXX_FLAGS "-std=c++0x -stdlib=libc++ -D_WEBSOCKETPP_CPP11_STL_" )
 
 

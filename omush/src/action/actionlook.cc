@@ -43,13 +43,22 @@ namespace omush {
 
     std::vector<database::Dbref> contents = what_->contents();
     std::string contentString = "";
+    std::string exitString = "";
     for (std::vector<database::Dbref>::iterator iter = contents.begin();
          iter != contents.end();
          ++iter) {
-      if (*iter != object_->dbref()) {
-        contentString += "\n";
-        contentString += NameFormatter(object_).format(db_->findObjectByDbref(*iter));
+      database::DatabaseObject *c = db_->findObjectByDbref(*iter);
+
+      if (c->type() == database::DbObjectTypeExit) {
+        exitString += "\n" + NameFormatter(object_).noDbref().format(c);
       }
+      else if (*iter != object_->dbref()) {
+        contentString += "\n";
+        contentString += NameFormatter(object_).format(c);
+      }
+    }
+    if (exitString.length() > 0) {
+      response += "\nExits:" + exitString;
     }
     if (contentString.length() > 0) {
       response += "\nContents:" + contentString;

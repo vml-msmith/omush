@@ -35,6 +35,7 @@ namespace omush {
   class WelcomeScreenCommandParser : public CommandParser {
    public:
     WelcomeScreenCommandParser() {
+    nodes_ = new CommandNode();
       registerCommand(new CommandQuit());
       registerCommand(new CommandConnect());
     }
@@ -43,6 +44,7 @@ namespace omush {
   class DescriptorCommandParser : public CommandParser {
   public:
     DescriptorCommandParser() {
+    nodes_ = new CommandNode();
       registerCommand(new CommandQuit());
     }
   };
@@ -50,11 +52,13 @@ namespace omush {
   class HCCommandParser : public CommandParser {
   public:
     HCCommandParser() {
+    nodes_ = new CommandNode();
       registerCommand(new CommandHuh());
       registerCommand(new CommandLook());
       registerCommand(new CommandSay());
       registerCommand(new CommandPose());
       registerCommand(new CommandGo());
+      registerCommand(new CommandThink());
     }
   };
 
