@@ -31,6 +31,7 @@ namespace omush {
         inputParts.push_back(input);
       }
     }
+
     if (inputParts.size() > 1) {
       std::string words = inputParts[1];
       std::vector<database::DatabaseObject*> matches;

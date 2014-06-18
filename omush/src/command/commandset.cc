@@ -28,7 +28,6 @@ namespace omush {
   bool CommandSet::run(std::string calledAs, std::string input, CommandContext context) {
     database::DatabaseObject* enactor = context.db->findObjectByDbref(context.dbref);
 
-    std::string words = "";
     std::vector<std::string> inputParts = splitStringIntoSegments(context.modifiedInput, " ", 2);
     if (inputParts.size() < 2) {
       this->notify(context,enactor,"I can't see that here.");
@@ -59,6 +58,7 @@ namespace omush {
 
     // This is wher we need to decide if the first word is @set.
     std::vector<std::string> colonParts = splitStringIntoSegments(eqParts[1], ":", 2);
+
     if (colonParts.size() > 1) {
       // Attribute set
       ActionSetAttribute(context.db, context.game, context.db->findObjectByDbref(context.dbref))
@@ -71,7 +71,6 @@ namespace omush {
     else {
       this->notify(context,enactor,"Flag set: Not implemented");
     }
-
 
 //    ActionThink(context.db, context.game, context.db->findObjectByDbref(context.dbref)).what(words).enact();
     return true;

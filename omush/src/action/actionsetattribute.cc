@@ -19,12 +19,15 @@ namespace omush {
 
   ActionSetAttribute& ActionSetAttribute::object(database::DatabaseObject* object) {
     what_ = object;
+    return *this;
   }
   ActionSetAttribute& ActionSetAttribute::attribute(std::string attribute) {
     attribute_ = attribute;
+    return *this;
   }
   ActionSetAttribute& ActionSetAttribute::value(std::string value) {
     value_ = value;
+    return *this;
   }
 
 
@@ -33,6 +36,5 @@ namespace omush {
     std::string message = attribute_ + " set.";
     what_->printAttrs();
     Notifier(*game_, *db_).notify(object_, message);
-    //    Notifier(*game_, *db_).notify(object_, what_);
   }
 }  // namespace omush

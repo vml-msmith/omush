@@ -71,6 +71,7 @@ namespace omush {
      registerCommand(new CommandGo());
      registerCommand(new CommandThink());
      registerCommand(new CommandSet());
+     registerCommand(new CommandDig());
    }
   };
 
@@ -241,7 +242,7 @@ namespace omush {
     p1->setProperty("name", "One");
     r2->setProperty("name", "Room Two");
     p2->setProperty("name", "Michael");
-    e1->setProperty("name", "Out");
+    e1->setProperty("name", "Out One");
     e2->setProperty("name", "Out");
     db_->moveObject(p1, r1);
     db_->moveObject(p2, r1);
