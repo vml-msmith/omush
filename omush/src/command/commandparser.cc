@@ -52,6 +52,9 @@ namespace omush {
     return NULL;
   }
 
+  bool CommandMatcherAbsolute::isCached() {
+    return !cachedMap_.empty();
+  }
 
   CommandMatcherPattern::CommandMatcherPattern()
     : ICommandMatcher(false) {
@@ -90,7 +93,6 @@ namespace omush {
   }
 
   std::string CommandMatcherPattern::firstWord(std::string input) {
-    // Lookup by command specifc.
     std::vector<std::string> inputParts;
     boost::split(inputParts, input, boost::is_any_of(" "));
     if (inputParts.size() == 0) {
@@ -98,14 +100,11 @@ namespace omush {
     }
 
     std::string command = inputParts[0];
-    /*
-    std::vector<std::string> commandParts;
-    boost::split(commandParts, command, boost::is_any_of("/"));
-    command = commandParts[0];
-    boost::to_upper(command);
-    cmd = lookupByName(command);
-    */
     return command;
+  }
+
+  bool CommandMatcherPattern::isCached() {
+    return !cachedMap_.empty();
   }
 
   CommandMatcherExit::CommandMatcherExit()
@@ -150,11 +149,19 @@ namespace omush {
     matches = matcher.match(str);
 
     if (matches.size() > 0) {
-      return this->matchByString(list, "GO");
+      if (cachedMap_.empty()) {
+        return this->matchByString(list, "GO");
+      }
+      return this->matchByString("GO");
     }
 
     return NULL;
   }
+
+  bool CommandMatcherExit::isCached() {
+    return false;
+  }
+
 
   CommandMatcherAttributeSetter::CommandMatcherAttributeSetter(std::map<std::string, std::string> list)
     : ICommandMatcher(true) {
@@ -220,9 +227,12 @@ namespace omush {
       return NULL;
 
     std::string newCommand = cachedAttributeMap_[first];
-    BOOST_FOREACH(ICommand* cmd, list) {
-      std::string name = cmd->name();
-      cachedMap_.insert(std::pair<std::string, ICommand*>(name, cmd));
+    // TODO: Move this out.
+    if (cachedMap_.empty()) {
+      BOOST_FOREACH(ICommand* cmd, list) {
+        std::string name = cmd->name();
+        cachedMap_.insert(std::pair<std::string, ICommand*>(name, cmd));
+      }
     }
 
     if (cachedMap_.find("@SET") == cachedMap_.end())
@@ -243,6 +253,9 @@ namespace omush {
     return cachedMap_["@SET"];
   }
 
+  bool CommandMatcherAttributeSetter::isCached() {
+    return false;
+  }
 
 
   void CommandParser::registerMatcher(ICommandMatcher* matcher) {
@@ -263,7 +276,10 @@ namespace omush {
       }
       else {
         // Need to cache commandList_ somehow.
-        c = matcher->matchByString(commandList_, cmd);
+        if (matcher->isCached())
+          c = matcher->matchByString(cmd);
+        else
+          c = matcher->matchByString(commandList_, cmd);
       }
 
       if (c != NULL) {

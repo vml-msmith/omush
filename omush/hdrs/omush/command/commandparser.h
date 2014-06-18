@@ -22,6 +22,7 @@ namespace omush {
     virtual ICommand* contextMatchByString(CommandList list,
                                            CommandContext& context,
                                            std::string str) = 0;
+    virtual bool isCached() = 0;
     bool hasContextMatch() { return hasContextMatch_; }
   private:
     bool hasContextMatch_;
@@ -36,6 +37,7 @@ namespace omush {
     ICommand* contextMatchByString(CommandList list,
                                    CommandContext& context,
                                    std::string str);
+    bool isCached();
   private:
     CommandMap cachedMap_;
   };
@@ -49,7 +51,7 @@ namespace omush {
     ICommand* contextMatchByString(CommandList list,
                                    CommandContext& context,
                                    std::string str);
-
+    bool isCached();
   private:
     std::string firstWord(std::string input);
     CommandMap cachedMap_;
@@ -64,6 +66,7 @@ namespace omush {
     ICommand* contextMatchByString(CommandList list,
                                    CommandContext& context,
                                    std::string str);
+    bool isCached();
   private:
     CommandMap cachedMap_;
   };
@@ -77,7 +80,7 @@ namespace omush {
     ICommand* contextMatchByString(CommandList list,
                                    CommandContext& context,
                                    std::string str);
-
+    bool isCached();
   private:
     CommandMap cachedMap_;
     std::map<std::string, std::string> cachedAttributeMap_;
