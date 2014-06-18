@@ -62,7 +62,7 @@ namespace omush {
      registerMatcher(new CommandMatcherPattern());
      registerMatcher(new CommandMatcherExit());
      registerMatcher(new CommandMatcherAttributeSetter(attributes));
-
+     registerMatcher(new CommandMatcherPartial());
 
      registerCommand(new CommandHuh());
      registerCommand(new CommandLook());

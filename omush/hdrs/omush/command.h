@@ -8,7 +8,12 @@
 #define OMUSH_HDRS_OMUSH_COMMAND_H_
 
 #include "omush/command/command.h"
-#include "omush/command/commandparser.h"
+#include "omush/command/parser/commandparser.h"
+#include "omush/command/matcher/commandmatcherabsolute.h"
+#include "omush/command/matcher/commandmatcherpattern.h"
+#include "omush/command/matcher/commandmatcherexit.h"
+#include "omush/command/matcher/commandmatcherattributesetter.h"
+#include "omush/command/matcher/commandmatcherpartial.h"
 
 #include "omush/command/commandquit.h"
 #include "omush/command/commandconnect.h"

@@ -8,85 +8,13 @@
 #define OMUSH_HDRS_OMUSH_COMMAND_COMMANDPARSER_H_
 
 #include "omush/command/command.h"
+#include "omush/command/matcher/icommandmatcher.h"
 #include <map>
 #include <string>
 #include <vector>
 #include <boost/algorithm/string.hpp>
 
 namespace omush {
-  class ICommandMatcher {
-  public:
-    ICommandMatcher(bool contextAware) : hasContextMatch_(contextAware) {}
-    virtual ICommand* matchByString(CommandList list, std::string str) = 0;
-    virtual ICommand* matchByString(std::string str) = 0;
-    virtual ICommand* contextMatchByString(CommandList list,
-                                           CommandContext& context,
-                                           std::string str) = 0;
-    virtual bool isCached() = 0;
-    bool hasContextMatch() { return hasContextMatch_; }
-  private:
-    bool hasContextMatch_;
-  };
-
-
-  class CommandMatcherAbsolute : public ICommandMatcher {
-  public:
-    CommandMatcherAbsolute();
-    ICommand* matchByString(CommandList, std::string str);
-    ICommand* matchByString(std::string str);
-    ICommand* contextMatchByString(CommandList list,
-                                   CommandContext& context,
-                                   std::string str);
-    bool isCached();
-  private:
-    CommandMap cachedMap_;
-  };
-
-
-  class CommandMatcherPattern : public ICommandMatcher {
-  public:
-    CommandMatcherPattern();
-    ICommand* matchByString(CommandList, std::string str);
-    ICommand* matchByString(std::string str);
-    ICommand* contextMatchByString(CommandList list,
-                                   CommandContext& context,
-                                   std::string str);
-    bool isCached();
-  private:
-    std::string firstWord(std::string input);
-    CommandMap cachedMap_;
-  };
-
-
-  class CommandMatcherExit : public ICommandMatcher {
-  public:
-    CommandMatcherExit();
-    ICommand* matchByString(CommandList, std::string str);
-    ICommand* matchByString(std::string str);
-    ICommand* contextMatchByString(CommandList list,
-                                   CommandContext& context,
-                                   std::string str);
-    bool isCached();
-  private:
-    CommandMap cachedMap_;
-  };
-
-
-  class CommandMatcherAttributeSetter : public ICommandMatcher {
-  public:
-    CommandMatcherAttributeSetter(std::map<std::string,std::string> list);
-    ICommand* matchByString(CommandList, std::string str);
-    ICommand* matchByString(std::string str);
-    ICommand* contextMatchByString(CommandList list,
-                                   CommandContext& context,
-                                   std::string str);
-    bool isCached();
-  private:
-    CommandMap cachedMap_;
-    std::map<std::string, std::string> cachedAttributeMap_;
-    std::string firstWord(std::string input);
-  };
-
   class CommandParser {
   public:
     void registerMatcher(ICommandMatcher* matcher);

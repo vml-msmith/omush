@@ -5,7 +5,7 @@
  */
 
 #ifndef OMUSH_HDRS_OMUSH_ACTION_ACTIONSETATTRIBUTE_H_
-#define OMUSH_HDRS_OMUSH_ACTION_ACTIONSETATTRIBUTEK_H_
+#define OMUSH_HDRS_OMUSH_ACTION_ACTIONSETATTRIBUTE_H_
 
 #include <string>
 #include "omush/database/definitions.h"
