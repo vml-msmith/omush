@@ -11,10 +11,11 @@
 #include <string>
 
 namespace omush {
-  class CommandQuit : public Command {
+  class CommandQuit : public ICommand {
   public:
     CommandQuit();
     bool run(std::string calledAs, std::string input, CommandContext context);
+    CommandQuit* factory();
   };
 
 }  // namespace omush

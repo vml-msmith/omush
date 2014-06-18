@@ -9,12 +9,15 @@
 
 #include "omush/command/command.h"
 #include <string>
+#include <iostream>
 
 namespace omush {
-  class CommandGo : public Command {
+  class CommandGo : public ICommand {
   public:
     CommandGo();
     bool run(std::string calledAs, std::string input, CommandContext context);
+    CommandGo* factory();
+    ~CommandGo() { std::cout << "Here" << std::endl; }
   };
 
 }  // namespace omush

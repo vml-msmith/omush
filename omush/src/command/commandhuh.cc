@@ -9,9 +9,7 @@
 #include "omush/action/actionhuh.h"
 
 namespace omush {
-  CommandHuh::CommandHuh() {
-    name_ = "HUH";
-    absolute_ = false;
+  CommandHuh::CommandHuh() : ICommand("HUH") {
   }
 
   bool CommandHuh::run(std::string calledAs, std::string input, CommandContext context) {

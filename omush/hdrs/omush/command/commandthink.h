@@ -11,7 +11,7 @@
 #include <string>
 
 namespace omush {
-  class CommandThink : public Command {
+  class CommandThink : public ICommand {
   public:
     CommandThink();
     bool run(std::string calledAs, std::string input, CommandContext context);

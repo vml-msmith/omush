@@ -12,13 +12,10 @@
 #include "omush/action/actionthink.h"
 
 namespace omush {
-  CommandThink::CommandThink() {
-    name_ = "THINK";
-    absolute_ = false;
+  CommandThink::CommandThink() : ICommand("THINK") {
   }
 
   bool CommandThink::run(std::string calledAs, std::string input, CommandContext context) {
-    Command::run_(calledAs, input, context);
     std::string words = "";
     std::vector<std::string> inputParts = splitStringIntoSegments(input, " ", 2);
     if (inputParts.size() > 1) {

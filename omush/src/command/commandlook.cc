@@ -11,14 +11,11 @@
 #include "omush/database/targetmatcher.h"
 
 namespace omush {
-  CommandLook::CommandLook() {
-    name_ = "LOOK";
-    absolute_ = false;
-
+  CommandLook::CommandLook() : ICommand("LOOK") {
   }
 
   bool CommandLook::run(std::string calledAs, std::string input, CommandContext context) {
-    Command::run_(calledAs, input, context);
+    //    Command::run_(calledAs, input, context);
 
     database::DatabaseObject* enactor = context.db->findObjectByDbref(context.dbref);
     database::DatabaseObject* what = context.db->findObjectByDbref(enactor->location());

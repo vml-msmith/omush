@@ -11,7 +11,7 @@
 #include <string>
 
 namespace omush {
-  class CommandConnect : public Command {
+  class CommandConnect : public ICommand {
   public:
     CommandConnect();
     bool run(std::string calledAs, std::string input, CommandContext context);

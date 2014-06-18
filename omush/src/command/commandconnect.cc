@@ -11,13 +11,11 @@
 #include "omush/action/actionconnect.h"
 
 namespace omush {
-  CommandConnect::CommandConnect() {
-    name_ = "CONNECT";
-    absolute_ = false;
+  CommandConnect::CommandConnect() : ICommand("CONNECT") {
   }
 
   bool CommandConnect::run(std::string calledAs, std::string input, CommandContext context) {
-    Command::run_(calledAs, input, context);
+    //    Command::run_(calledAs, input, context);
 
     std::vector<std::string> inputParts;
     boost::split(inputParts, input, boost::is_any_of(" "));

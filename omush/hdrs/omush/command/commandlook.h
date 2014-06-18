@@ -11,7 +11,7 @@
 #include <string>
 
 namespace omush {
-  class CommandLook : public Command {
+  class CommandLook : public ICommand {
   public:
     CommandLook();
     bool run(std::string calledAs, std::string input, CommandContext context);

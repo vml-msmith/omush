@@ -35,7 +35,9 @@ namespace omush {
     std::string response = "";
     response += NameFormatter(object_).format(what_);
 
-    std::string desc = what_->getProperty("description");
+    database::DatabaseAttribute descAttr = what_->getAttribute("description");
+
+    std::string desc = descAttr.value;
     if (desc.length() > 0) {
       response += "\n";
       response += desc;

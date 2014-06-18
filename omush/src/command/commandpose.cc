@@ -10,14 +10,11 @@
 #include "omush/action/actionpose.h"
 
 namespace omush {
-  CommandPose::CommandPose() {
-    name_ = "POSE";
-    absolute_ = false;
-    shortCode_.push_back(":");
+  CommandPose::CommandPose() : ICommand("POSE") {
+    /*    shortCode_.push_back(":");*/
   }
 
   bool CommandPose::run(std::string calledAs, std::string input, CommandContext context) {
-    Command::run_(calledAs, input, context);
     std::string words = "";
     std::vector<std::string> inputParts = splitStringIntoSegments(input, " ", 2);
     if (inputParts.size() > 1) {

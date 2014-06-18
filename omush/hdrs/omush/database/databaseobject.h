@@ -19,6 +19,7 @@ namespace omush {
     struct DatabaseAttribute {
       AttributeMap tree;
       std::string value;
+      DatabaseAttribute() : value("") {}
     };
 
     class DatabaseObject {
@@ -38,6 +39,8 @@ namespace omush {
       void addToContents(Dbref dbref);
       void home(Dbref dbref);
       Dbref home();
+
+      void printAttrs();
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;

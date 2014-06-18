@@ -33,34 +33,47 @@
 namespace omush {
 
   class WelcomeScreenCommandParser : public CommandParser {
-   public:
+  public:
     WelcomeScreenCommandParser() {
-    nodes_ = new CommandNode();
+      registerMatcher(new CommandMatcherAbsolute());
+      registerMatcher(new CommandMatcherPattern());
       registerCommand(new CommandQuit());
       registerCommand(new CommandConnect());
     }
   };
 
+
   class DescriptorCommandParser : public CommandParser {
   public:
     DescriptorCommandParser() {
-    nodes_ = new CommandNode();
+      registerMatcher(new CommandMatcherAbsolute());
       registerCommand(new CommandQuit());
     }
   };
 
-  class HCCommandParser : public CommandParser {
+ class HCCommandParser : public CommandParser {
   public:
-    HCCommandParser() {
-    nodes_ = new CommandNode();
-      registerCommand(new CommandHuh());
-      registerCommand(new CommandLook());
-      registerCommand(new CommandSay());
-      registerCommand(new CommandPose());
-      registerCommand(new CommandGo());
-      registerCommand(new CommandThink());
-    }
+   HCCommandParser() {
+     std::map<std::string,std::string> attributes;
+     attributes.insert(std::make_pair<std::string,std::string>("DESCRIPTION", "DESCRIPTION"));
+     attributes.insert(std::make_pair<std::string,std::string>("DESC", "DESCRIPTION"));
+     attributes.insert(std::make_pair<std::string,std::string>("DESCRIBE", "DESCRIPTION"));
+     registerMatcher(new CommandMatcherAbsolute());
+     registerMatcher(new CommandMatcherPattern());
+     registerMatcher(new CommandMatcherExit());
+     registerMatcher(new CommandMatcherAttributeSetter(attributes));
+
+
+     registerCommand(new CommandHuh());
+     registerCommand(new CommandLook());
+     registerCommand(new CommandSay());
+     registerCommand(new CommandPose());
+     registerCommand(new CommandGo());
+     registerCommand(new CommandThink());
+     registerCommand(new CommandSet());
+   }
   };
+
 
   class WelcomeScreen {
    public:
@@ -73,7 +86,7 @@ namespace omush {
     }
 
     static std::string getInstructions() {
-      return "x1b[color:red]Commands:x1b[end]\n  connect <name> <password>\n  create <name> <password>\n  HELP\n  QUIT";
+      return "Commands:\n  connect <name> <password>\n  create <name> <password>\n  HELP\n  QUIT";
     }
 
   };
@@ -121,9 +134,16 @@ namespace omush {
     context.db = db_;
     context.dbref = command.dbref;
 
+
     HCCommandParser cmds = HCCommandParser();
-    if (!cmds.run(command.cmd, context)) {
-      !cmds.run("HUH", context);
+    ICommand* cmd = cmds.findCommand(command.cmd, context);
+
+    if (cmd == NULL) {
+      command.cmd = "HUH";
+      commandList_.push(command);
+    }
+    else {
+      cmd->run(command.cmd, command.cmd, context);
     }
 
     return true;
@@ -145,18 +165,29 @@ namespace omush {
       context.client = c;
       context.db = db_;
 
+
       if (c->isConnected == true) {
-        DescriptorCommandParser descCmds = DescriptorCommandParser();
-        if (!descCmds.run(msg.rawString, context)) {
+        DescriptorCommandParser cmds = DescriptorCommandParser();
+        ICommand* cmd = cmds.findCommand(msg.rawString, context);
+
+        if (cmd == NULL) {
           commandList_.push(InternalCommand(c->dbref,msg.rawString));
+        }
+        else {
+          cmd->run(msg.rawString, msg.rawString, context);
         }
       } else {
         WelcomeScreenCommandParser cmds = WelcomeScreenCommandParser();
-        if (!cmds.run(msg.rawString, context)) {
-          // Multiple cases.
+        ICommand* cmd = cmds.findCommand(msg.rawString, context);
+
+        if (cmd == NULL) {
           sendNetworkMessage(msg.id, "I don't recognize that command.");
           sendNetworkMessage(msg.id, WelcomeScreen::getRandomText());
         }
+        else {
+          cmd->run(msg.rawString, msg.rawString, context);
+        }
+
       }
 
       return true;

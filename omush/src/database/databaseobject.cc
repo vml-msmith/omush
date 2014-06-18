@@ -1,4 +1,6 @@
 #include "omush/database/databaseobject.h"
+#include <boost/algorithm/string.hpp>
+#include <iostream>
 
 namespace omush {
   namespace database {
@@ -6,7 +8,14 @@ namespace omush {
       return dbref_;
     }
 
+    void DatabaseObject::printAttrs() {
+      for (AttributeMap::iterator i = attributes_.begin(); i != attributes_.end(); ++i) {
+        std::cout << i->first << std::endl;
+      }
+    }
+
     std::string DatabaseObject::getProperty(std::string propertyName) {
+      boost::to_upper(propertyName);
       if (properties_.find(propertyName) == properties_.end()) {
         return "";
       }
@@ -14,17 +23,22 @@ namespace omush {
     }
 
     DatabaseAttribute DatabaseObject::getAttribute(std::string name) {
+      boost::to_upper(name);
+
       if (attributes_.find(name) == attributes_.end()) {
         return DatabaseAttribute();
       }
+
       return attributes_[name];
     }
 
     void DatabaseObject::setProperty(std::string name, std::string value) {
+      boost::to_upper(name);
       properties_[name] = value;
     }
 
     void DatabaseObject::setAttribute(std::string name, std::string value) {
+      boost::to_upper(name);
       if (attributes_.find(name) == attributes_.end()) {
         attributes_[name] = DatabaseAttribute();
       }

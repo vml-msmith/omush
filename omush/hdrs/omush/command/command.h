@@ -9,9 +9,39 @@
 
 #include <boost/uuid/uuid.hpp>
 #include <string>
+#include <vector>
+#include <map>
 #include "omush/game.h"
 
 namespace omush {
+  struct CommandContext {
+    Game *game;
+    Client *client;
+    database::Database *db;
+    database::Dbref dbref;
+    network::ConnectionId descriptor;
+    std::string modifiedInput;
+  };
+
+  class ICommand;
+  typedef ICommand* (*CommandBuilder)();
+
+
+  class ICommand {
+  public:
+    ICommand(std::string name) : name_(name) {}
+    virtual bool run(std::string calledAs,
+                     std::string input,
+                     CommandContext context) = 0;
+    std::string name() { return name_; }
+  private:
+    std::string name_;
+  };
+
+
+  typedef std::vector<ICommand*> CommandList;
+  typedef std::map<std::string, ICommand*> CommandMap;
+
   class Game;
   class Client;
   class Notifier;
@@ -23,13 +53,6 @@ namespace omush {
     typedef boost::uuids::uuid ConnectionId;
   }
 
-  struct CommandContext {
-    Game *game;
-    Client *client;
-    database::Database *db;
-    database::Dbref dbref;
-    network::ConnectionId descriptor;
-  };
 
   class Command {
   public:

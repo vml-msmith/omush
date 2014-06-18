@@ -12,13 +12,10 @@
 namespace omush {
 
 
-  CommandSay::CommandSay() {
-    name_ = "SAY";
-    absolute_ = false;
+  CommandSay::CommandSay() : ICommand("SAY") {
   }
 
   bool CommandSay::run(std::string calledAs, std::string input, CommandContext context) {
-    Command::run_(calledAs, input, context);
     std::string words = "";
     std::vector<std::string> inputParts = splitStringIntoSegments(input, " ", 2);
     if (inputParts.size() > 1) {

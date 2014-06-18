@@ -9,11 +9,313 @@
 #include <vector>
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
+#include <boost/bind.hpp>
+#include "omush/database/database.h"
+#include "omush/database/databaseobject.h"
+#include "omush/database/targetmatcher.h"
+#include <boost/scoped_ptr.hpp>
+#include "omush/command/commandgo.h"
+#include "omush/utility.h"
 
 namespace omush {
+  CommandMatcherAbsolute::CommandMatcherAbsolute()
+    : ICommandMatcher(false) {
+  }
+
+  ICommand* CommandMatcherAbsolute::matchByString(CommandList list,
+                                                  std::string str) {
+    // Clear out any static map.
+    cachedMap_.clear();
+
+    BOOST_FOREACH(ICommand* cmd, list) {
+      std::string name = cmd->name();
+      cachedMap_.insert(std::pair<std::string, ICommand*>(name, cmd));
+    }
+
+    return matchByString(str);
+  }
+
+  ICommand* CommandMatcherAbsolute::matchByString(std::string str) {
+    if (cachedMap_.empty())
+      return NULL;
+
+    boost::to_upper(str);
+    if (cachedMap_.find(str) == cachedMap_.end())
+      return NULL;
+
+    return cachedMap_[str];
+  }
+
+  ICommand* CommandMatcherAbsolute::contextMatchByString(CommandList list,
+                                                         CommandContext& context,
+                                                         std::string str) {
+    return NULL;
+  }
+
+
+  CommandMatcherPattern::CommandMatcherPattern()
+    : ICommandMatcher(false) {
+  }
+
+  ICommand* CommandMatcherPattern::matchByString(CommandList list,
+                                                 std::string str) {
+    // Clear out any static map.
+    cachedMap_.clear();
+
+    BOOST_FOREACH(ICommand* cmd, list) {
+      std::string name = cmd->name();
+      cachedMap_.insert(std::pair<std::string, ICommand*>(name, cmd));
+    }
+
+    return matchByString(str);
+  }
+
+  ICommand* CommandMatcherPattern::matchByString(std::string str) {
+    if (cachedMap_.empty())
+      return NULL;
+
+    str = firstWord(str);
+    boost::to_upper(str);
+
+    if (cachedMap_.find(str) == cachedMap_.end())
+      return NULL;
+
+    return cachedMap_[str];
+  }
+
+  ICommand* CommandMatcherPattern::contextMatchByString(CommandList list,
+                                                        CommandContext& context,
+                                                        std::string str) {
+    return NULL;
+  }
+
+  std::string CommandMatcherPattern::firstWord(std::string input) {
+    // Lookup by command specifc.
+    std::vector<std::string> inputParts;
+    boost::split(inputParts, input, boost::is_any_of(" "));
+    if (inputParts.size() == 0) {
+      return "";
+    }
+
+    std::string command = inputParts[0];
+    /*
+    std::vector<std::string> commandParts;
+    boost::split(commandParts, command, boost::is_any_of("/"));
+    command = commandParts[0];
+    boost::to_upper(command);
+    cmd = lookupByName(command);
+    */
+    return command;
+  }
+
+  CommandMatcherExit::CommandMatcherExit()
+    : ICommandMatcher(true) {
+  }
+
+
+  ICommand* CommandMatcherExit::matchByString(CommandList list,
+                                                 std::string str) {
+    // Clear out any static map.
+    cachedMap_.clear();
+
+    BOOST_FOREACH(ICommand* cmd, list) {
+      std::string name = cmd->name();
+      cachedMap_.insert(std::pair<std::string, ICommand*>(name, cmd));
+    }
+
+    return matchByString(str);
+  }
+
+  ICommand* CommandMatcherExit::matchByString(std::string str) {
+    if (cachedMap_.empty())
+      return NULL;
+
+    boost::to_upper(str);
+
+    if (cachedMap_.find(str) == cachedMap_.end())
+      return NULL;
+
+    return cachedMap_[str];
+  }
+
+
+  ICommand* CommandMatcherExit::contextMatchByString(CommandList list,
+                                                     CommandContext& context,
+                                                     std::string str) {
+    database::DatabaseObject* enactor = context.db->findObjectByDbref(context.dbref);
+    database::DatabaseObject* what = context.db->findObjectByDbref(enactor->location());
+    std::vector<database::DatabaseObject*> matches;
+    database::TargetMatcher matcher(context.db, enactor);
+    matcher.type(database::DbObjectTypeExit);
+    matches = matcher.match(str);
+
+    if (matches.size() > 0) {
+      return this->matchByString(list, "GO");
+    }
+
+    return NULL;
+  }
+
+  CommandMatcherAttributeSetter::CommandMatcherAttributeSetter(std::map<std::string, std::string> list)
+    : ICommandMatcher(true) {
+    cachedAttributeMap_ = list;
+  }
+
+
+  ICommand* CommandMatcherAttributeSetter::matchByString(CommandList list,
+                                                         std::string str) {
+    char firstChar = str.c_str()[0];
+    if (firstChar != '@') {
+      return NULL;
+    }
+
+    str = firstWord(str).substr(1, str.length());
+    boost::to_upper(str);
+
+    if (cachedAttributeMap_.find(str) == cachedAttributeMap_.end())
+      return NULL;
+
+    std::string newCommand = cachedAttributeMap_[str];
+    BOOST_FOREACH(ICommand* cmd, list) {
+      std::string name = cmd->name();
+      cachedMap_.insert(std::pair<std::string, ICommand*>(name, cmd));
+    }
+
+    if (cachedMap_.find("@SET") == cachedMap_.end())
+      return NULL;
+
+    return cachedMap_["@SET"];
+  }
+
+  std::string CommandMatcherAttributeSetter::firstWord(std::string input) {
+    // Lookup by command specifc.
+    std::vector<std::string> inputParts;
+    boost::split(inputParts, input, boost::is_any_of(" "));
+    if (inputParts.size() == 0) {
+      return "";
+    }
+
+    std::string command = inputParts[0];
+    return command;
+  }
+
+
+  ICommand* CommandMatcherAttributeSetter::matchByString(std::string str) {
+    return NULL;
+  }
+
+
+  ICommand* CommandMatcherAttributeSetter::contextMatchByString(CommandList list,
+                                                                CommandContext& context,
+                                                                std::string str) {
+    char firstChar = str.c_str()[0];
+    if (firstChar != '@') {
+      return NULL;
+    }
+
+    std::string first = firstWord(str).substr(1, str.length());
+    boost::to_upper(first);
+
+    if (cachedAttributeMap_.find(first) == cachedAttributeMap_.end())
+      return NULL;
+
+    std::string newCommand = cachedAttributeMap_[first];
+    BOOST_FOREACH(ICommand* cmd, list) {
+      std::string name = cmd->name();
+      cachedMap_.insert(std::pair<std::string, ICommand*>(name, cmd));
+    }
+
+    if (cachedMap_.find("@SET") == cachedMap_.end())
+      return NULL;
+
+
+    std::vector<std::string> inputParts = splitStringIntoSegments(str, " ", 2);
+    if (inputParts.size() < 2) {
+      context.modifiedInput = "@SET";
+    }
+    else {
+      std::vector<std::string> eqParts = splitStringIntoSegments(inputParts[1], "=", 2);
+      if (eqParts.size() == 2) {
+        context.modifiedInput = "@SET " + eqParts[0] + "=" + newCommand + ":" + eqParts[1];
+      }
+    }
+
+    return cachedMap_["@SET"];
+  }
+
+
+
+  void CommandParser::registerMatcher(ICommandMatcher* matcher) {
+    commandMatchers_.push_back(matcher);
+  }
+
+  void CommandParser::registerCommand(ICommand* command) {
+    commandList_.push_back(command);
+  }
+
+  ICommand* CommandParser::findCommand(std::string cmd,
+                                       CommandContext& context) {
+    context.modifiedInput = cmd;
+    BOOST_FOREACH(ICommandMatcher* matcher, commandMatchers_) {
+      ICommand* c = NULL;
+      if (matcher->hasContextMatch()) {
+        c = matcher->contextMatchByString(commandList_, context, cmd);
+      }
+      else {
+        // Need to cache commandList_ somehow.
+        c = matcher->matchByString(commandList_, cmd);
+      }
+
+      if (c != NULL) {
+        return c;
+      }
+    }
+
+    return NULL;
+  }
+
+
+  /*
+  void CommandRegistrar::registerCommandMatchCallback(CommandMatchCallback callback) {
+    matchCallbacks_.push_back(callback);
+  }
+
+  void CommandRegistrar::registerCommand(Command *cmd) {
+    commandDictionary_.insert(std::make_pair(cmd->name(), cmd));
+
+    BOOST_FOREACH(std::string s, cmd->shortCodes()) {
+      commandShortCodeDictionary_.insert(std::make_pair(s, cmd));
+    }
+
+    std::string cmdName = cmd->name();
+    CommandNode* currentNode = nodes_;
+    for (int i = 0; i < cmdName.size(); ++i) {
+      currentNode->str = cmdName.substr(0,i);
+      char c = cmdName.substr(i,1).c_str()[0];
+      if (currentNode->nodes.find(c) == currentNode->nodes.end()) {
+        currentNode->nodes.insert(std::make_pair(c, new CommandNode()));
+      }
+
+      currentNode = currentNode->nodes[c];
+    }
+    currentNode->cmd = cmd;
+  }
+
+
+  void CommandParser::registerCommandMatchCallback(class callback, class object) {
+
+  //  void CommandParser::registerCommandMatchCallback(CommandMatchCallback callBack) {
+    matchCallbacks_boost::bind(callback,
+                               object,
+                               ::_1,
+                               ::_2)
+
+  //    matchCallbacks_.push_back(callBack);
+  }
 
   CommandParser::CommandParser() {
     nodes_ = new CommandNode();
+    setupCommands();
   }
 
   CommandParser::~CommandParser() {
@@ -45,7 +347,18 @@ namespace omush {
     currentNode->cmd = cmd;
   }
 
+
   bool CommandParser::run(std::string input, CommandContext context) {
+    for (std::vector<CommandMatchCallback>::iterator iter = matchCallbacks_.begin();
+         iter != matchCallbacks_.end();
+         ++iter) {
+      if ((*iter)(input, context)) {
+        return true;
+        break;
+      }
+    }
+    /*
+
     Command *cmd = lookupByName(input);
 
     // Lookup absolute.
@@ -95,7 +408,9 @@ namespace omush {
       cmd->run(command, input, context);
       return true;
     }
+    */
 
+  /*
     return false;
   }
 
@@ -154,5 +469,5 @@ namespace omush {
     }
     return (commandDictionary_.find(name)->second);
   }
-
+  */
 }  // namespace omush

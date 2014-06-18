@@ -11,7 +11,7 @@
 #include <string>
 
 namespace omush {
-  class CommandPose : public Command {
+  class CommandPose : public ICommand {
   public:
     CommandPose();
     bool run(std::string calledAs, std::string input, CommandContext context);
