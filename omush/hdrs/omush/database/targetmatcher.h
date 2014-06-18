@@ -67,10 +67,15 @@ namespace omush {
             return response;
           }
         }
-
         DbMap objs = Utility::getSurroundings(db_, enactor_);
+
+        const boost::regex esc("[\\^\\.\\$\\|\\(\\)\\[\\]\\*\\+\\?\\/\\\\]");
+        const std::string rep("\\\\\\1&");
+        target = regex_replace(target, esc, rep, boost::match_default | boost::format_sed);
+
         const boost::regex exp(target, boost::regex::icase);
         bool searchPartial = true;
+
         BOOST_FOREACH (const DbMap::value_type& iter, objs) {
           if (!matchType(iter.second)) {
             continue;
@@ -90,6 +95,7 @@ namespace omush {
             if (regex_search(start, end, what, exp, flags)) {
               response.push_back(iter.second);
             }
+
           }
         }
 
