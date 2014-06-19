@@ -7,68 +7,27 @@
 #ifndef OMUSH_HDRS_OMUSH_NAMEFORMATTER_H_
 #define OMUSH_HDRS_OMUSH_NAMEFORMATTER_H_
 
-#include "omush/database/database.h"
+#include <string>
 #include "omush/database/databaseobject.h"
-#include "omush/utility.h"
-#include <boost/algorithm/string.hpp>
-#include "omush/notifier.h"
-#include <vector>
-#include <boost/lexical_cast.hpp>
 
 namespace omush {
   class NameFormatter {
-  public:
-    NameFormatter(database::DatabaseObject *looker) : looker_(looker), returnDbref_(true) {
-    }
+   public:
+    explicit NameFormatter(database::DatabaseObject *looker);
 
-    std::string formatInline(database::DatabaseObject *object) {
-      std::string output = object->getProperty("name");
-      return output;
-    }
+    std::string formatInline(database::DatabaseObject *object);
 
-    std::string format(database::DatabaseObject *object) {
-      std::string color = "";
-      switch (object->type()) {
-      case database::DbObjectTypePlayer:
-        color = "red";
-        break;
-      case database::DbObjectTypeExit:
-        color = "cyan";
-        break;
-      case database::DbObjectTypeRoom:
-      default:
-        color = "green";
-        break;
-      }
-      std::string output = formatInline(object);
+    std::string format(database::DatabaseObject *object);
 
-      if (returnDbref_) {
-        output += std::string("(")
-          + formatDbref(object->dbref())
-          + std::string(")");
-      }
+    NameFormatter& noDbref();
 
-      return ColorString::color(output, color);
-    }
-    NameFormatter &noDbref() {
-      returnDbref_ = false;
-      return *this;
-    }
-    std::string formatDbref(database::Dbref dbref) {
-      return "#" + boost::lexical_cast<std::string>(dbref);
-    }
-  private:
+    std::string formatDbref(database::Dbref dbref);
+
+   private:
     bool returnDbref_;
     database::DatabaseObject *looker_;
-
   };
 
-  class TargetMatcher {
-    database::DatabaseObject* match(database::DatabaseObject* enactor,
-                                   std::string match) {
-      return NULL;
-    }
-  };
-}
+}  // namespace omush
 
-#endif
+#endif  // OMUSH_HDRS_OMUSH_NAMEFORMATTER_H_
