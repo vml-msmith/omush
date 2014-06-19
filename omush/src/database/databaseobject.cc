@@ -14,6 +14,10 @@ namespace omush {
       }
     }
 
+    AttributeMap DatabaseObject::attributes() {
+      return attributes_;
+    }
+
     std::string DatabaseObject::getProperty(std::string propertyName) {
       boost::to_upper(propertyName);
       if (properties_.find(propertyName) == properties_.end()) {
@@ -50,10 +54,13 @@ namespace omush {
       home_ = dbref;
     }
 
+
+
     DbObjectType DatabaseObject::type() { return type_; }
 
     Dbref DatabaseObject::location() { return location_; }
     Dbref DatabaseObject::home() { return home_; }
+    Dbref DatabaseObject::owner() { return owner_; }
 
     std::vector<Dbref> DatabaseObject::contents() { return contents_; }
 

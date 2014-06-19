@@ -20,6 +20,7 @@
 
 #include "omush/command/commandhuh.h"
 #include "omush/command/commandlook.h"
+#include "omush/command/commandexamine.h"
 #include "omush/command/commandsay.h"
 #include "omush/command/commandpose.h"
 #include "omush/command/commandgo.h"

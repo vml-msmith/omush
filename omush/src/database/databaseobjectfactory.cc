@@ -9,6 +9,7 @@ namespace omush {
         obj->type_ = DbObjectTypePlayer;
         obj->setProperty("name", "Guest");
         obj->dbref_ = db->getNextDbref();
+        obj->owner_ = obj->dbref_;
         obj->location_ = obj->dbref_;
         obj->home_ = obj->dbref_;
         db->addObject(obj);
@@ -21,6 +22,7 @@ namespace omush {
       obj->type_ = DbObjectTypeRoom;
       obj->setProperty("name", "room");
       obj->dbref_ = db->getNextDbref();
+      obj->owner_ = obj->dbref_;
       obj->location_ = obj->dbref_;
       obj->home_ = obj->dbref_;
       db->addObject(obj);
@@ -33,6 +35,7 @@ namespace omush {
       obj->type_ = DbObjectTypeExit;
       obj->setProperty("name", "room");
       obj->dbref_ = db->getNextDbref();
+      obj->owner_ = obj->dbref_;
       obj->location_ = obj->dbref_;
       obj->home_ = obj->dbref_;
       db->addObject(obj);

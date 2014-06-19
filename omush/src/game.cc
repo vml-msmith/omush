@@ -67,6 +67,7 @@ namespace omush {
 
      registerCommand(new CommandHuh());
      registerCommand(new CommandLook());
+     registerCommand(new CommandExamine());
      registerCommand(new CommandSay());
      registerCommand(new CommandPose());
      registerCommand(new CommandGo());

@@ -40,6 +40,8 @@ namespace omush {
       void addToContents(Dbref dbref);
       void home(Dbref dbref);
       Dbref home();
+      Dbref owner();
+      AttributeMap attributes();
 
       void printAttrs();
 
@@ -52,6 +54,7 @@ namespace omush {
       DbObjectType type_;
       Dbref location_;
       Dbref home_;
+      Dbref owner_;
 
       std::vector<Dbref> contents_;
     };
