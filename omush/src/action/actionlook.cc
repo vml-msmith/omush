@@ -4,8 +4,10 @@
  * Copyright 2014 Michael Smith
  */
 
-#import "omush/action/actionlook.h"
-#import "omush/nameformatter.h"
+#include "omush/action/actionlook.h"
+#include "omush/nameformatter.h"
+
+#include "omush/function/function.h"
 
 namespace omush {
   ActionLook::ActionLook(database::Database *db,
@@ -22,6 +24,7 @@ namespace omush {
   }
 
   void ActionLook::enact(database::DatabaseObject* what) {
+    FunctionExecutor fe;
     what_ = what;
 
     if (what_ == NULL) {
@@ -40,7 +43,7 @@ namespace omush {
     std::string desc = descAttr.value;
     if (desc.length() > 0) {
       response += "\n";
-      response += desc;
+      response += fe.strParse(desc);
     }
 
     std::vector<database::Dbref> contents = what_->contents();
@@ -53,6 +56,7 @@ namespace omush {
 
       if (c->type() == database::DbObjectTypeExit) {
         exitString += "\n" + NameFormatter(object_).noDbref().format(c);
+        std::cout << exitString << std::endl;
       }
       else if (*iter != object_->dbref()) {
         contentString += "\n";

@@ -15,6 +15,7 @@
 namespace omush {
   namespace database {
     typedef std::map<std::string, DatabaseAttribute> AttributeMap;
+    typedef std::map<std::string,bool> AliasMap;
 
     struct DatabaseAttribute {
       AttributeMap tree;
@@ -51,6 +52,7 @@ namespace omush {
       DbObjectType type_;
       Dbref location_;
       Dbref home_;
+
       std::vector<Dbref> contents_;
     };
   }  // namespace database

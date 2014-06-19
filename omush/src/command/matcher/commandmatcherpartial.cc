@@ -135,6 +135,6 @@ namespace omush {
   }
 
   bool CommandMatcherPartial::isCached() {
-    return false;
+    return !(nodes_ == NULL);
   }
 }  // namespace omush

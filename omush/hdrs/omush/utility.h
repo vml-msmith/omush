@@ -135,7 +135,10 @@ std::queue<std::string> encodeString(std::string message);
       std::string out = "";
 
       return boost::algorithm::join(str, "");
+    }
 
+    size_t length() {
+      return parsed_.size();
     }
 
   private:

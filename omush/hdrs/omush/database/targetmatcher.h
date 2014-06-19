@@ -14,6 +14,7 @@
 #include "omush/database/utility.h"
 #include <boost/regex.hpp>
 #include <boost/foreach.hpp>
+#include "omush/utility.h"
 
 namespace omush {
   namespace database {
@@ -44,6 +45,8 @@ namespace omush {
 
       std::vector<DatabaseObject*> match(std::string target) {
         std::vector<DatabaseObject*> response;
+        std::vector<DatabaseObject*> aliasResponse;
+        std::vector<DatabaseObject*> partialResponse;
 
         if (boost::iequals(target, "ME") && matchType(enactor_)) {
           response.push_back(enactor_);
@@ -86,6 +89,30 @@ namespace omush {
             response.push_back(iter.second);
           }
           else if (searchPartial) {
+            bool partial = true;
+            database::DatabaseAttribute aliasAttr = iter.second->getAttribute("alias");
+            std::string alias = aliasAttr.value;
+            std::cout << "AliasL: " << alias << std::endl;
+
+            std::vector<std::string> aliasParts;
+            if (alias.length() > 0) {
+              aliasParts = splitStringIntoSegments(alias, ";", 50);
+              BOOST_FOREACH(std::string a, aliasParts) {
+                if (partial == false)
+                  continue;
+                boost::trim(a);
+                if (boost::iequals(a,target)) {
+                  std::cout << "Add alias: " << a << std::endl;
+                  aliasResponse.push_back(iter.second);
+                  partial = false;
+                }
+              }
+              //              response += fe.strParse(desc);
+            }
+
+            if (partial == false)
+              continue;
+
             std::string::const_iterator start, end;
             start = name.begin();
             end = name.end();
@@ -93,13 +120,21 @@ namespace omush {
             boost::match_flag_type flags = boost::match_default;
 
             if (regex_search(start, end, what, exp, flags)) {
-              response.push_back(iter.second);
+              std::cout << "Add partial: " << name << std::endl;
+              partialResponse.push_back(iter.second);
             }
 
           }
         }
 
-        return response;;
+        if (!response.empty()) {
+          return response;
+        }
+        else if(!aliasResponse.empty()) {
+          return aliasResponse;
+        }
+
+        return partialResponse;
       }
     };
 

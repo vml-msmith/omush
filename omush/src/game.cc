@@ -58,6 +58,7 @@ namespace omush {
      attributes.insert(std::make_pair<std::string,std::string>("DESCRIPTION", "DESCRIPTION"));
      attributes.insert(std::make_pair<std::string,std::string>("DESC", "DESCRIPTION"));
      attributes.insert(std::make_pair<std::string,std::string>("DESCRIBE", "DESCRIPTION"));
+     attributes.insert(std::make_pair<std::string,std::string>("ALIAS", "ALIAS"));
      registerMatcher(new CommandMatcherAbsolute());
      registerMatcher(new CommandMatcherPattern());
      registerMatcher(new CommandMatcherExit());
