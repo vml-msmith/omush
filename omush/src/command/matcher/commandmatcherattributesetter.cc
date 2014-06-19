@@ -19,26 +19,30 @@ namespace omush {
   ICommand* CommandMatcherAttributeSetter::matchByString(CommandList list,
                                                          std::string str) {
     char firstChar = str.c_str()[0];
-    if (firstChar != '@') {
-      return NULL;
+    if (firstChar == '@' || firstChar == '&') {
+
+      str = firstWord(str).substr(1, str.length());
+      boost::to_upper(str);
+
+      if (firstChar == '@') {
+        if (cachedAttributeMap_.find(str) == cachedAttributeMap_.end())
+          return NULL;
+      }
+
+      std::string newCommand = cachedAttributeMap_[str];
+      BOOST_FOREACH(ICommand* cmd, list) {
+        std::string name = cmd->name();
+        cachedMap_.insert(std::pair<std::string, ICommand*>(name, cmd));
+      }
+
+      if (cachedMap_.find("@SET") == cachedMap_.end())
+        return NULL;
+
+      return cachedMap_["@SET"];
     }
 
-    str = firstWord(str).substr(1, str.length());
-    boost::to_upper(str);
 
-    if (cachedAttributeMap_.find(str) == cachedAttributeMap_.end())
-      return NULL;
-
-    std::string newCommand = cachedAttributeMap_[str];
-    BOOST_FOREACH(ICommand* cmd, list) {
-      std::string name = cmd->name();
-      cachedMap_.insert(std::pair<std::string, ICommand*>(name, cmd));
-    }
-
-    if (cachedMap_.find("@SET") == cachedMap_.end())
-      return NULL;
-
-    return cachedMap_["@SET"];
+    return NULL;
   }
 
   std::string CommandMatcherAttributeSetter::firstWord(std::string input) {
@@ -63,17 +67,26 @@ namespace omush {
                                                                 CommandContext& context,
                                                                 std::string str) {
     char firstChar = str.c_str()[0];
-    if (firstChar != '@') {
+    std::cout << str << std::endl;
+    std::cout << firstChar << std::endl;
+    if (firstChar != '@' && firstChar != '&') {
+      std::cout << "Die here" << std::endl;
       return NULL;
     }
 
     std::string first = firstWord(str).substr(1, str.length());
     boost::to_upper(first);
 
-    if (cachedAttributeMap_.find(first) == cachedAttributeMap_.end())
-      return NULL;
+    std::string newCommand = first;
+    if (firstChar == '@') {
+      std::cout << "It's a @" << std::endl;
+      if (cachedAttributeMap_.find(first) == cachedAttributeMap_.end())
+        return NULL;
+      newCommand = cachedAttributeMap_[first];
+    }
 
-    std::string newCommand = cachedAttributeMap_[first];
+    std::cout << "Comamnd: " << newCommand << std::endl;
+
     // TODO: Move this out.
     if (cachedMap_.empty()) {
       BOOST_FOREACH(ICommand* cmd, list) {
@@ -82,8 +95,10 @@ namespace omush {
       }
     }
 
-    if (cachedMap_.find("@SET") == cachedMap_.end())
+    if (cachedMap_.find("@SET") == cachedMap_.end()) {
+      std::cout << "No set?" << std::endl;
       return NULL;
+    }
 
 
     std::vector<std::string> inputParts = splitStringIntoSegments(str, " ", 2);
