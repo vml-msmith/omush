@@ -14,6 +14,7 @@
 #include "omush/command/matcher/commandmatcherexit.h"
 #include "omush/command/matcher/commandmatcherattributesetter.h"
 #include "omush/command/matcher/commandmatcherpartial.h"
+#include "omush/command/matcher/commandmatcheruserdefined.h"
 
 #include "omush/command/commandquit.h"
 #include "omush/command/commandconnect.h"

@@ -64,6 +64,7 @@ namespace omush {
      registerMatcher(new CommandMatcherExit());
      registerMatcher(new CommandMatcherAttributeSetter(attributes));
      registerMatcher(new CommandMatcherPartial());
+     registerMatcher(new CommandMatcherUserDefined());
 
      registerCommand(new CommandHuh());
      registerCommand(new CommandLook());

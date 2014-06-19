@@ -120,7 +120,6 @@ namespace omush {
             boost::match_flag_type flags = boost::match_default;
 
             if (regex_search(start, end, what, exp, flags)) {
-              std::cout << "Add partial: " << name << std::endl;
               partialResponse.push_back(iter.second);
             }
 
