@@ -17,11 +17,18 @@ namespace omush {
   }
 
   std::string NameFormatter::formatInline(database::DatabaseObject *object) {
+    if (object == NULL) {
+      return "unknown";
+    }
     std::string output = object->getProperty("name");
     return output;
   }
 
   std::string NameFormatter::format(database::DatabaseObject *object) {
+    if (object == NULL) {
+      return "unknown";
+    }
+
     std::string color = "";
     switch (object->type()) {
     case database::DbObjectTypePlayer:
@@ -52,6 +59,6 @@ namespace omush {
   }
 
   std::string NameFormatter::formatDbref(database::Dbref dbref) {
-      return "#" + boost::lexical_cast<std::string>(dbref);
+    return "#" + boost::lexical_cast<std::string>(dbref);
   }
 }  // namespace omush
