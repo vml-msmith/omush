@@ -82,9 +82,8 @@ namespace omush {
     // Attributes...
     database::AttributeMap attributes = what_->attributes();
     for (database::AttributeMap::iterator i = attributes.begin(); i != attributes.end(); ++i) {
-      response += "\n" + i->first + ": ";
+      response += "\n" + i->first + ":" + i->second.value;
     }
-
 
 
     std::vector<database::Dbref> contents = what_->contents();
