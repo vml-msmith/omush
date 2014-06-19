@@ -6,6 +6,7 @@
 
 
 #import "omush/action/actionthink.h"
+#import "omush/function/function.h"
 
 namespace omush {
   ActionThink::ActionThink(database::Database *db,
@@ -24,6 +25,8 @@ namespace omush {
 
 
   void ActionThink::enact() {
-    Notifier(*game_, *db_).notify(object_, what_);
+    FunctionExecutor fe;
+
+    Notifier(*game_, *db_).notify(object_, fe.strParse(what_));
   }
 }  // namespace omush
