@@ -23,6 +23,20 @@ namespace omush {
 
    protected:
     database::DatabaseObject *what_;
+
+    void notifyFatalError();
+    void notifyEnactor(std::string msg);
+    std::string nameLine();
+    std::string descriptionLine();
+    std::string typeLine();
+    std::string ownerLine();
+    std::string parentLine();
+    std::string attributesLine();
+    std::string exitsLine();
+    std::string contentsLine();
+
+    database::DatabaseObject* enactor;
+    database::DatabaseObject* target ;
   };
 }  // namespace omush
 

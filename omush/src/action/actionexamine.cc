@@ -8,6 +8,7 @@
 #include "omush/nameformatter.h"
 
 #include "omush/function/function.h"
+#include "omush/database/helpers.h"
 
 namespace omush {
   ActionExamine::ActionExamine(database::Database *db,
@@ -17,103 +18,174 @@ namespace omush {
     db_ = db;
     object_ = object;
     what_ = NULL;
+
+    enactor = object_;
+    target = what_;
   }
 
-  void ActionExamine::enact() {
-    enact(db_->findObjectByDbref(object_->location()));
+  void ActionExamine::notifyEnactor(std::string msg) {
+    Notifier(*game_, *db_).notify(enactor, msg);
   }
 
-  void ActionExamine::enact(database::DatabaseObject* what) {
-    FunctionExecutor fe;
-    what_ = what;
+  std::string ActionExamine::nameLine() {
+    if (target == NULL || enactor == NULL)
+      return "";
 
-    if (what_ == NULL) {
-      what_ = db_->findObjectByDbref(object_->location());
-    }
-    if (what_ == NULL) {
-      std::cout << "Nill" << std::endl;
-      // Notify can't see the object.
-      return;
-    }
-    std::string response = "";
+    return NameFormatter(enactor).format(target);
+  }
 
-    // Name
-    response += NameFormatter(what_).format(what_);
+  std::string ActionExamine::descriptionLine() {
+    if (target == NULL || enactor == NULL || db_ == NULL)
+      return "";
 
-    // Description
-    database::DatabaseAttribute descAttr = what_->getAttribute("description");
+    database::DatabaseAttribute descAttr = target->getAttribute("description");
     std::string desc = descAttr.value;
     if (desc.length() > 0) {
-      response += "\n";
-      response += desc;
+      return "\n" + desc;
     }
 
-    // Type
-    std::string type = "UNKNOWN";
+    return "";
+  }
 
-    switch(what_->type()) {
-    case database::DbObjectTypePlayer:
-      type = "Player";
-      break;
-    case database::DbObjectTypeExit:
-      type = "Exit";
-      break;
-    case database::DbObjectTypeRoom:
-      type = "Room";
-      break;
-    }
+  std::string ActionExamine::typeLine() {
+    if (target == NULL)
+      return "";
+
+    std::string type = objectTypeString(target);
     boost::to_upper(type);
-    response += "\nType: " + type;
-    response += " Flags: ";
+    return "\nType: " + type;
+  }
 
-    // Owner
-    database::DatabaseObject* owner = db_->findObjectByDbref(what_->owner());
-    std::string ownerStr = "UNKNOWN";
-    if (owner != NULL) {
-      ownerStr = NameFormatter(object_).format(owner);
-    }
+  std::string ActionExamine::ownerLine() {
+    if (target == NULL || enactor == NULL || db_ == NULL)
+      return "";
 
-    response += "\nOwner: " + ownerStr;
+    return "\nOwner: " + NameFormatter(enactor).format(objectOwner(*(db_), target));
+  }
 
+  std::string ActionExamine::attributesLine() {
+    if (target == NULL || enactor == NULL || db_ == NULL)
+      return "";
 
-    // Parents:
-    response += "\nParents: ";
-
-    // Attributes...
-    database::AttributeMap attributes = what_->attributes();
-    for (database::AttributeMap::iterator i = attributes.begin(); i != attributes.end(); ++i) {
+    // TODO(msmith): Build the list of items into a vector and pass
+    //               to another method to format. That way we can
+    //               change the formatting eaiser.
+    std::string response = "";
+    database::AttributeMap attributes = target->attributes();
+    for (database::AttributeMap::iterator i = attributes.begin();
+         i != attributes.end();
+         ++i) {
       response += "\n" + i->first + ":" + i->second.value;
     }
 
+    return response;
+  }
 
-    std::vector<database::Dbref> contents = what_->contents();
+  std::string ActionExamine::contentsLine() {
+    if (target == NULL || enactor == NULL || db_ == NULL)
+      return "";
+
+    // TODO(msmith): Build the list of items into a vector and pass
+    //               to another method to format. That way we can
+    //               optionally pass to @conformat.
+    std::vector<database::Dbref> contents = target->contents();
     std::string contentString = "";
-    std::string exitString = "";
+
     for (std::vector<database::Dbref>::iterator iter = contents.begin();
          iter != contents.end();
          ++iter) {
       database::DatabaseObject *c = db_->findObjectByDbref(*iter);
 
-      if (c->type() == database::DbObjectTypeExit) {
-        exitString += "\n" + NameFormatter(object_).noDbref().format(c);
-        std::cout << exitString << std::endl;
-      }
-      else if (*iter != object_->dbref()) {
+      if (c->type() == database::DbObjectTypeExit)
+        continue;
+
+      if (*iter != object_->dbref()) {
         contentString += "\n";
-        contentString += NameFormatter(object_).format(c);
+        contentString += NameFormatter(enactor).format(c);
       }
-    }
-    if (exitString.length() > 0) {
-      response += "\nExits:" + exitString;
-    }
-    if (contentString.length() > 0) {
-      response += "\nContents:" + contentString;
     }
 
+    if (contentString.length() == 0)
+      return "";
+
+    return "\nContents:\n" + contentString;
+  }
+
+  std::string ActionExamine::exitsLine() {
+    if (target == NULL || enactor == NULL || db_ == NULL)
+      return "";
+
+    // TODO(msmith): Build the list of items into a vector and pass
+    //               to another method to format. That way we can
+    //               optionally pass to @exitformat.
+    std::vector<database::Dbref> contents = target->contents();
+    std::string contentString = "";
+
+    for (std::vector<database::Dbref>::iterator iter = contents.begin();
+         iter != contents.end();
+         ++iter) {
+      database::DatabaseObject *c = dbrefToObject(*(db_), *iter);
+
+      if (c->type() == database::DbObjectTypeExit && *iter != object_->dbref()) {
+        contentString += "\n" + NameFormatter(enactor).noDbref().format(c);
+      }
+    }
+
+    if (contentString.length() == 0)
+      return "";
+
+    return "\nExits:\n" + contentString;
+  }
+
+  void ActionExamine::notifyFatalError() {
+    if (enactor != NULL) {
+      notifyEnactor("FATAL ERROR: Something went terribly wrong. This should probably be reported.");
+    }
+
+    // TODO(msmith): Log fatal error.
+  }
+
+  void ActionExamine::enact() {
+    enact(db_->findObjectByDbref(enactor->location()));
+  }
+
+  void ActionExamine::enact(database::DatabaseObject* what) {
+    if (db_ == NULL || enactor == NULL)
+      return notifyFatalError();
+
+    // TODO (msmith): Move this.
+    target = what;
+
+    using namespace database;
+    FunctionExecutor fe;
+    Database& db = *(db_);
+
+    if (target == NULL) {
+      target = objectLocation(db, enactor);
+    }
+
+    if (target == NULL) {
+      notifyEnactor("I don't see that here.");
+      return;
+    }
+
+    std::string response = "";
+
+    // TODO(msmith): Put these in a vector and join at the end.
+    //               That way maybe we can shuffle things around.
+    response += nameLine();
+    response += descriptionLine();
+    response += typeLine();
+    response += " Flags: ";
+    response += ownerLine();
+    response += "\nParents: ";
+    response += attributesLine();
+    response += exitsLine();
+    response += contentsLine();
     response += "\nHome: ";
     response += "\nLocation: ";
 
 
-    Notifier(*game_, *db_).notify(object_, response);
+    notifyEnactor(response);
   }
 }  // namespace omush
