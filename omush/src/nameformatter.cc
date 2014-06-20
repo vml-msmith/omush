@@ -10,6 +10,7 @@
 #include <string>
 #include "omush/database/databaseobject.h"
 #include "omush/utility.h"
+#include "omush/colorstring.h"
 
 namespace omush {
   NameFormatter::NameFormatter(database::DatabaseObject *looker)

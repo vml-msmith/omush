@@ -15,6 +15,7 @@
 #include <boost/format.hpp>
 #include <cmath>
 #include "omush/utility.h"
+#include "omush/colorstring.h"
 
 namespace omush {
   std::string floatToString(float x);
@@ -245,6 +246,23 @@ namespace omush {
         output = ColorString(ColorString::color(output.internalString(), colors.front()));
         colors.pop();
       }
+      return output;
+    }
+
+  };
+
+  class FunctionUcstr  : public IFunction {
+  public:
+  FunctionUcstr()  : IFunction() { maxArgs = 1; minArgs = 1; name="ucstr"; }
+    ColorString run(ColorString str, ArgList args, FunctionContext& context) {
+      FunctionState state = preProcess(str, args, context);
+      if (state.error)
+        return ColorString(state.errorString);
+
+      ColorString output = findSelfContained(args[0], context);
+
+      output.to_upper();
+
       return output;
     }
 

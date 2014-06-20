@@ -62,12 +62,15 @@ bool FunctionIf::shouldEvaluateParameter(int param) {
     // Util
     context.functions.insert(std::pair<std::string,IFunction*>("ansi", new FunctionAnsi()));
 
+    // Str
+    context.functions.insert(std::pair<std::string,IFunction*>("ucstr", new FunctionUcstr()));
+
     return findSelfContained(str, context);
   }
 
   ColorString findSelfContained(ColorString str, FunctionContext& context) {
     const char *c = str.internalString().c_str();
-
+    std::cout << "Process " << str.internalString() << std::endl;
     int start = -1;
     int end = -1;
 
@@ -143,7 +146,6 @@ bool FunctionIf::shouldEvaluateParameter(int param) {
 
     if (current != '\0' && end != '-1') {
       ColorString nextProcess = process;
-      // std::cout <<  nextProcess << std::endl;
       context.debugDepth++;
 
       if (current == '[') {
@@ -153,9 +155,10 @@ bool FunctionIf::shouldEvaluateParameter(int param) {
           debug += "  ";
         }
         debug += process.basicString();
-        std::cout << debug << " : " << std::endl;
 
-        nextProcess = process.internalString().substr(1, process.internalString().length() - 2);
+        std::string str_one = process.internalString();
+
+        nextProcess = ColorString(str_one.substr(1, str_one.length() - 2));
         nextProcess = findSelfContained(nextProcess, context);
         std::cout << debug << " => " << nextProcess.basicString() << std::endl;
 

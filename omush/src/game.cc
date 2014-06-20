@@ -24,6 +24,7 @@
 #include "omush/network/networkservice.h"
 #include "omush/command.h"
 #include "omush/utility.h"
+#include "omush/colorstring.h"
 #include "omush/database/database.h"
 #include "omush/database/databaseobjectfactory.h"
 #include "omush/action/action.h"
