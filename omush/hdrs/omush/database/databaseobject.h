@@ -15,6 +15,7 @@
 namespace omush {
   namespace database {
     typedef std::map<std::string, DatabaseAttribute> AttributeMap;
+    typedef std::map<std::string,std::string> PropertyMap;
     typedef std::map<std::string,bool> AliasMap;
 
     struct DatabaseAttribute {
@@ -42,6 +43,7 @@ namespace omush {
       Dbref home();
       Dbref owner();
       AttributeMap attributes();
+      PropertyMap properties();
 
       void printAttrs();
 

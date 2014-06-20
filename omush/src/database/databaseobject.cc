@@ -18,6 +18,11 @@ namespace omush {
       return attributes_;
     }
 
+    PropertyMap DatabaseObject::properties() {
+      return properties_;;
+    }
+
+
     std::string DatabaseObject::getProperty(std::string propertyName) {
       boost::to_upper(propertyName);
       if (properties_.find(propertyName) == properties_.end()) {
