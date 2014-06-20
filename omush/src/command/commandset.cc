@@ -26,33 +26,33 @@ namespace omush {
   }
 
   bool CommandSet::run(std::string calledAs, std::string input, CommandContext context) {
-    database::DatabaseObject* enactor = context.db->findObjectByDbref(context.dbref);
+    database::DatabaseObject* executor = context.db->findObjectByDbref(context.executor);
 
     std::vector<std::string> inputParts = splitStringIntoSegments(context.modifiedInput, " ", 2);
     if (inputParts.size() < 2) {
-      this->notify(context,enactor,"I can't see that here.");
+      this->notify(context,executor,"I can't see that here.");
       return true;
     }
 
     std::vector<std::string> eqParts = splitStringIntoSegments(inputParts[1], "=", 2);
     std::vector<database::DatabaseObject*> matches;
-    database::TargetMatcher matcher(context.db, enactor);
+    database::TargetMatcher matcher(context.db, executor);
 
     matches = matcher.match(eqParts[0]);
     if (matches.size() == 0) {
-      Notifier(*(context.game), *(context.db)).notify(enactor,
+      Notifier(*(context.game), *(context.db)).notify(executor,
                                                       "I can't see that here.");
       return true;
     }
 
     if (matches.size() > 1) {
-      Notifier(*(context.game), *(context.db)).notify(enactor,
+      Notifier(*(context.game), *(context.db)).notify(executor,
                                                       "I don't know which one you mean.");
       return true;
     }
 
     if (eqParts.size() < 2) {
-      Notifier(*(context.game), *(context.db)).notify(enactor,
+      Notifier(*(context.game), *(context.db)).notify(executor,
                                                       "What do you want to set?");
     }
 
@@ -61,7 +61,7 @@ namespace omush {
 
     if (colonParts.size() > 1) {
       // Attribute set
-      ActionSetAttribute(context.db, context.game, context.db->findObjectByDbref(context.dbref))
+      ActionSetAttribute(context.db, context.game, executor)
         .object(matches[0])
         .attribute(colonParts[0])
         .value(colonParts[1])
@@ -69,7 +69,7 @@ namespace omush {
       return true;
     }
     else {
-      this->notify(context,enactor,"Flag set: Not implemented");
+      this->notify(context,executor,"Flag set: Not implemented");
     }
 
 //    ActionThink(context.db, context.game, context.db->findObjectByDbref(context.dbref)).what(words).enact();

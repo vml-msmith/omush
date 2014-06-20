@@ -19,8 +19,8 @@ namespace omush {
   }
 
   bool CommandGo::run(std::string calledAs, std::string input, CommandContext context) {
-    database::DatabaseObject* enactor = context.db->findObjectByDbref(context.dbref);
-    database::DatabaseObject* what = context.db->findObjectByDbref(enactor->location());
+    database::DatabaseObject* executor = context.db->findObjectByDbref(context.executor);
+    database::DatabaseObject* what = context.db->findObjectByDbref(executor->location());
 
     std::vector<std::string> inputParts = splitStringIntoSegments(input, " ", 2);
     if (inputParts.size() > 0) {
@@ -35,23 +35,23 @@ namespace omush {
     if (inputParts.size() > 1) {
       std::string words = inputParts[1];
       std::vector<database::DatabaseObject*> matches;
-      database::TargetMatcher matcher(context.db, enactor);
+      database::TargetMatcher matcher(context.db, executor);
       matcher.type(database::DbObjectTypeExit);
       matches = matcher.match(words);
       if (matches.size() > 1) {
-        Notifier(*(context.game), *(context.db)).notify(enactor,
+        Notifier(*(context.game), *(context.db)).notify(executor,
                                                         "I don't know which one you mean.");
         return true;
       }
       if (matches.size() == 0) {
-        Notifier(*(context.game), *(context.db)).notify(enactor,
+        Notifier(*(context.game), *(context.db)).notify(executor,
                                                         "I don't see that here.");
         return true;
       }
-      ActionGo(context.db, context.game, context.db->findObjectByDbref(context.dbref)).enact(matches[0]);
+      ActionGo(context.db, context.game, executor).enact(matches[0]);
       return true;
     }
-    ActionGo(context.db, context.game, context.db->findObjectByDbref(context.dbref)).enact();
+    ActionGo(context.db, context.game, executor).enact();
     return true;
 
   }

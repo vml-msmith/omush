@@ -33,8 +33,8 @@ namespace omush {
                                                                 CommandContext& context,
                                                                 std::string str) {
     using namespace database;
-    DatabaseObject* enactor = dbrefToObject(*(context.db), context.dbref);
-    DatabaseObject* location = dbrefToObject(*(context.db), enactor->location());
+    DatabaseObject* executor = dbrefToObject(*(context.db), context.executor);
+    DatabaseObject* location = dbrefToObject(*(context.db), executor->location());
     AttributeMap attributes = location->attributes();
 
     for (database::AttributeMap::iterator i = attributes.begin(); i != attributes.end(); ++i) {

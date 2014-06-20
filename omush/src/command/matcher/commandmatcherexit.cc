@@ -46,10 +46,10 @@ namespace omush {
   ICommand* CommandMatcherExit::contextMatchByString(CommandList list,
                                                      CommandContext& context,
                                                      std::string str) {
-    database::DatabaseObject* enactor = context.db->findObjectByDbref(context.dbref);
-    database::DatabaseObject* what = context.db->findObjectByDbref(enactor->location());
+    database::DatabaseObject* executor = context.db->findObjectByDbref(context.executor);
+    database::DatabaseObject* what = context.db->findObjectByDbref(executor->location());
     std::vector<database::DatabaseObject*> matches;
-    database::TargetMatcher matcher(context.db, enactor);
+    database::TargetMatcher matcher(context.db, executor);
     matcher.type(database::DbObjectTypeExit);
     matches = matcher.match(str);
 

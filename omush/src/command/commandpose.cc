@@ -21,7 +21,7 @@ namespace omush {
       words = inputParts[1];
     }
 
-    ActionPose(context.db, context.game, context.db->findObjectByDbref(context.dbref)).what(words).enact();
+    ActionPose(context.db, context.game, context.db->findObjectByDbref(context.executor)).what(words).enact();
     return true;
   }
 

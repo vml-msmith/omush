@@ -13,9 +13,7 @@ namespace omush {
   }
 
   bool CommandHuh::run(std::string calledAs, std::string input, CommandContext context) {
-    std::cout << "Huh: " << context.dbref << std::endl;
-
-    ActionHuh(context.db, context.game, context.db->findObjectByDbref(context.dbref)).enact();
+    ActionHuh(context.db, context.game, context.db->findObjectByDbref(context.executor)).enact();
     return true;
   }
 

@@ -12,6 +12,7 @@
 #include <queue>
 #include <map>
 #include <string>
+#include "omush/command/commandcontext.h"
 
 namespace omush {
 
@@ -31,7 +32,8 @@ namespace omush {
   struct InternalCommand {
     std::string cmd;
     database::Dbref dbref;
-    InternalCommand(database::Dbref r, std::string c) : cmd(c), dbref(r) {}
+    CommandContext context;
+    InternalCommand(CommandContext ctx, std::string c) : cmd(c), context(ctx) {}
   };
 
   struct Client {

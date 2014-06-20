@@ -22,7 +22,13 @@ namespace omush {
       words = inputParts[1];
     }
 
-    ActionSay(context.db, context.game, context.db->findObjectByDbref(context.dbref)).what(words).enact();
+    if (context.db->findObjectByDbref(context.executor) == NULL) {
+      std::cout << "it's null " << context.enactor << std::endl;
+    }
+
+    ActionSay(context.db,
+              context.game,
+              context.db->findObjectByDbref(context.executor)).what(words).enact();
     return true;
   }
 

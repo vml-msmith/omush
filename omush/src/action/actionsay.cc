@@ -34,7 +34,6 @@ namespace omush {
 
   void ActionSay::enact() {
     Notifier notify(*game_, *db_);
-
     notify.notifySurroundings(object_,
                               boost::bind(&omush::ActionSay::constructString,
                                           this,

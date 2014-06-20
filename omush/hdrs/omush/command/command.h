@@ -12,8 +12,10 @@
 #include <vector>
 #include <map>
 #include "omush/game.h"
+#include "omush/command/commandcontext.h"
 
 namespace omush {
+  /*
   struct CommandContext {
     Game *game;
     Client *client;
@@ -26,7 +28,7 @@ namespace omush {
     database::Dbref enactor;
     database::Dbref caller;
   };
-
+  */
   class ICommand;
   typedef ICommand* (*CommandBuilder)();
 

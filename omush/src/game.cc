@@ -133,22 +133,25 @@ namespace omush {
 
     InternalCommand command = commandList_.front();
     commandList_.pop();
-
+    std::cout << "pop " << command.context.enactor << std::endl;
+    /*
     CommandContext context;
     context.game = this;
     context.db = db_;
     context.dbref = command.dbref;
-
+    */
 
     HCCommandParser cmds = HCCommandParser();
-    ICommand* cmd = cmds.findCommand(command.cmd, context);
+        std::cout << "find" << std::endl;
+    ICommand* cmd = cmds.findCommand(command.cmd, command.context);
 
     if (cmd == NULL) {
       command.cmd = "HUH";
       commandList_.push(command);
     }
     else {
-      cmd->run(command.cmd, command.cmd, context);
+        std::cout << "found" << std::endl;
+      cmd->run(command.cmd, command.cmd, command.context);
     }
 
     return true;
@@ -172,11 +175,15 @@ namespace omush {
 
 
       if (c->isConnected == true) {
+        context.caller = c->dbref;
+        context.executor = c->dbref;
+        context.enactor = c->dbref;
+
         DescriptorCommandParser cmds = DescriptorCommandParser();
         ICommand* cmd = cmds.findCommand(msg.rawString, context);
 
         if (cmd == NULL) {
-          commandList_.push(InternalCommand(c->dbref,msg.rawString));
+          commandList_.push(InternalCommand(context, msg.rawString));
         }
         else {
           cmd->run(msg.rawString, msg.rawString, context);

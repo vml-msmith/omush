@@ -9,7 +9,6 @@
 #import <iostream>
 #import "omush/database/database.h"
 #import "omush/database/databaseobject.h"
-//#import "utility.h"
 
 namespace omush {
   Notifier::Notifier(Game &game, database::Database& database) :
@@ -40,10 +39,10 @@ namespace omush {
                                     notifyCallback callback) {
 
     std::map<database::Dbref, database::DatabaseObject*> listeners;
-
+    std::cout << "MEH" << std::endl;
     // Add the object.
     listeners[object->dbref()] = object;
-
+    std::cout << "AHH" << std::endl;
 
     database::DatabaseObject *location = database_.findObjectByDbref(object->location());
     if (location != NULL)  {
