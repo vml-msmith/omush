@@ -21,6 +21,10 @@ namespace omush {
     database::Dbref dbref;
     network::ConnectionId descriptor;
     std::string modifiedInput;
+
+    database::Dbref executor;
+    database::Dbref enactor;
+    database::Dbref caller;
   };
 
   class ICommand;
@@ -53,7 +57,7 @@ namespace omush {
     typedef boost::uuids::uuid ConnectionId;
   }
 
-
+  /*
   class Command {
   public:
     Command() {}
@@ -71,7 +75,7 @@ namespace omush {
     std::vector<std::string> shortCode_;
     bool absolute_;
   };
-
+  */
 }  // namespace omush
 
 #endif  // OMUSH_HDRS_OMUSH_COMMAND_COMMAND_H_

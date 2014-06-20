@@ -25,8 +25,10 @@ namespace omush {
 
 
   void ActionThink::enact() {
-    FunctionExecutor fe;
-
-    Notifier(*game_, *db_).notify(object_, fe.strParse(what_));
+    std::string o = processExpression(what_).internalString();
+    std::cout << "out " << o << std::endl;
+    std::cout << ColorString::color("Test?", "red");
+    Notifier(*game_, *db_).notify(object_,
+                                  o);
   }
 }  // namespace omush

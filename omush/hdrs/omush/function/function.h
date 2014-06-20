@@ -12,169 +12,250 @@
 #include "omush/function/engine/lexxer.h"
 #include "omush/function/engine/parser.h"
 #include "omush/function/engine/executor.h"
+#include <boost/format.hpp>
+#include <cmath>
+#include "omush/utility.h"
 
 namespace omush {
-class Function {
-public:
-  const std::string NOT_A_NUMBER = "#-1 ARGUMENTS MUST BE NUMBERS";
-  virtual std::string run(std::vector<std::string> args) = 0;
-  virtual bool shouldEvaluateParameter(int param) = 0;
+  std::string floatToString(float x);
+  typedef std::vector<ColorString> ArgList;
 
- Function(Executor* e)  : executor_(e) {}
-
- protected:
-  Executor* executor_;
-};
+  struct FunctionContext;
+  struct FunctionState {
+    bool error;
+    std::string errorString;
+  };
 
 
-class FunctionAdd : public Function {
-public:
- FunctionAdd(Executor* p) : Function(p) {}
+  class IFunction {
+  public:
+  IFunction() : maxArgs(-1), minArgs(-1) { }
+    virtual ColorString run(ColorString str, ArgList args, FunctionContext& context) = 0;
 
-  std::string run(std::vector<std::string> args) {
-   int result = 0;
-    for (std::vector<std::string>::iterator it = args.begin();
-         it != args.end();
-         ++it) {
+  protected:
+    FunctionState preProcess(ColorString str,
+                             ArgList args,
+                             FunctionContext& context) {
+      FunctionState state;
+      state.error = false;
 
-      std::string val = *it;
-      boost::trim(val);
+      if (minArgs >= 0) {
+        if (args.size() < minArgs) {
+          state.error = true;
+          state.errorString = "#-1 FUNCTION (" + name + ")" +
+            " EXPECTS AT LEAST " + boost::lexical_cast<std::string>(minArgs) +
+            " ARGUMENTS BUT GOT " + boost::lexical_cast<std::string>(args.size());
+        }
+      }
+
+      if (!state.error && maxArgs > -1) {
+        if (args.size() > maxArgs) {
+          state.error = true;
+          state.errorString = "#-1 FUNCTION (" + name + ")" +
+            " EXPECTS BETWEEN " + boost::lexical_cast<std::string>(minArgs) +
+            " AND " + boost::lexical_cast<std::string>(minArgs) +  " ARGUMENTS" +
+            " BUT GOT " + boost::lexical_cast<std::string>(args.size());
+        }
+      }
+
+      boost::to_upper(state.errorString);
+      return state;
+    }
+
+    std::string name;
+    int maxArgs = -1;
+    int minArgs = -1;
+  };
+
+
+  typedef std::map<std::string, IFunction*> FunctionMap;
+
+  struct FunctionContext {
+    FunctionMap functions;
+    int debugDepth;
+  FunctionContext() : debugDepth(0) { }
+  };
+
+  ColorString findSelfContained(ColorString str, FunctionContext& context);
+
+  class MyFunctionAdd : public IFunction {
+  public:
+  MyFunctionAdd() : IFunction() { maxArgs = -1; minArgs = 2; name="add"; }
+
+    ColorString run(ColorString str, ArgList args, FunctionContext& context) {
+      FunctionState state = preProcess(str, args, context);
+      if (state.error)
+        return ColorString(state.errorString);
+
+      float result = 0;
+
+      for (std::vector<ColorString>::iterator it = args.begin();
+           it != args.end();
+           ++it) {
+
+        ColorString val = *it;
+
+        val = findSelfContained(val, context);
+        std::string number = val.basicString();
+        boost::trim(number);
+        try {
+          result += boost::lexical_cast<float>(number);
+        } catch (boost::bad_lexical_cast&) {
+          //        return NOT_A_NUMBER;
+        }
+      }
+
+
+      return ColorString(floatToString(result));
+    }
+  protected:
+  };
+
+  class MyFunctionSub : public IFunction {
+  public:
+  MyFunctionSub()  : IFunction() { name="sub"; }
+    ColorString run(ColorString str, ArgList args, FunctionContext& context) {
+      FunctionState state = preProcess(str, args, context);
+      if (state.error)
+        return ColorString(state.errorString);
+
+      float result = 0;
+      bool started = false;
+      for (std::vector<ColorString>::iterator it = args.begin();
+           it != args.end();
+           ++it) {
+
+        ColorString val = *it;
+
+        val = findSelfContained(val, context);
+        std::string number = val.basicString();
+        boost::trim(number);
+
+        try {
+          if (!started) {
+            try {
+              result += boost::lexical_cast<float>(number);
+            } catch (boost::bad_lexical_cast&) {
+              return ColorString("#-1 NOT A NUMBER");
+            }
+
+            started = true;
+            continue;
+          }
+
+          try {
+            result -= boost::lexical_cast<float>(number);
+          } catch (boost::bad_lexical_cast&) {
+            return ColorString("#-1 NOT A NUMBER");
+          }
+
+        } catch (boost::bad_lexical_cast&) {
+          return ColorString("#-1 NOT A NUMBER");
+        }
+      }
+
+
+      return ColorString(floatToString(result));
+    }
+
+  };
+
+  class MyFunctionIf : public IFunction {
+   public:
+    MyFunctionIf()  : IFunction() { maxArgs = 3; minArgs = 2; name="if"; }
+    ColorString run(ColorString str, ArgList args, FunctionContext& context) {
+      FunctionState state = preProcess(str, args, context);
+      if (state.error)
+        return ColorString(state.errorString);
+
+      std::string op = findSelfContained(args[0], context).basicString();
+      boost::trim(op);
+      if (op.compare("1") == 0) {
+        return findSelfContained(args[1], context);
+      }
+      if (args.size() == 3) {
+        return findSelfContained(args[2], context);
+      }
+    }
+  };
+
+  class FunctionAbs : public IFunction {
+  public:
+  FunctionAbs()  : IFunction() { maxArgs = 1; minArgs = 1; name="abs"; }
+    ColorString run(ColorString str, ArgList args, FunctionContext& context) {
+      FunctionState state = preProcess(str, args, context);
+      if (state.error)
+        return ColorString(state.errorString);
+
+      float result;
+      ColorString val = findSelfContained(val, context);
+      std::string number = val.basicString();
+      boost::trim(number);
 
       try {
-        result += boost::lexical_cast<int>(val);
+        result = std::abs(boost::lexical_cast<float>(number));
       } catch (boost::bad_lexical_cast&) {
-        //        return NOT_A_NUMBER;
+        return ColorString("#-1 ARGUMENT MUST BE A NUMBER");
       }
+
+      return  ColorString(floatToString(result));
     }
 
-    return boost::lexical_cast<std::string>(result);
-  }
-  bool shouldEvaluateParameter(int param);
-};
+  };
 
-class FunctionRepeat : public Function {
- public:
-  FunctionRepeat(Executor* p) : Function(p) {}
+  class FunctionAnsi : public IFunction {
+  public:
+  FunctionAnsi()  : IFunction() { maxArgs = 2; minArgs = 2; name="ansi"; }
+    ColorString run(ColorString str, ArgList args, FunctionContext& context) {
+      FunctionState state = preProcess(str, args, context);
+      if (state.error)
+        return ColorString(state.errorString);
 
-  std::string run(std::vector<std::string> args) {
-    if (args.size() != 2) {
-      return "#-1 FUNCTION (REPEAT) EXPECTS 2 ARGUMENTS BUT GOT "
-        + boost::lexical_cast<std::string>(args.size());
-    }
+      std::string op = findSelfContained(args[0], context).basicString();
+      boost::trim(op);
 
-    int count = 0;
-    try {
-      count = boost::lexical_cast<int>(args[1]);
-    } catch (boost::bad_lexical_cast&) {
-      return "#-1 ARGUMENT MUST BE INTEGER";
-    }
+      std::queue<std::string> colors;
 
-    if (count < 0) {
-      return "#-1 ARGUMENT MUST BE NON-NEGATIVE INTEGER";
-    }
-
-
-    std::string str = "";
-    for (int i = 0; i < count; ++i)
-      str += args[0];
-
-    return str;
-  }
-  bool shouldEvaluateParameter(int param) {
-    return true;
-  }
-};
-
-class FunctionSub : public Function {
-public:
- FunctionSub(Executor* p)  : Function(p) {}
-  std::string run(std::vector<std::string> args) {
-   int result = 0;
-   bool started = false;
-   for (std::vector<std::string>::iterator it = args.begin();
-        it != args.end();
-        ++it) {
-
-     try {
-       if (!started) {
-         result = boost::lexical_cast<int>(*it);
-         started = true;
-         continue;
-       }
-
-       result -= boost::lexical_cast<int>(*it);
-      } catch (boost::bad_lexical_cast&) {
-        return NOT_A_NUMBER;
+      for (int i = 0; i < op.length(); ++i) {
+        switch (op.c_str()[i]) {
+        case 'r':
+          colors.push("red");
+          break;
+        case 'g':
+          colors.push("green");
+          break;
+        case 'w':
+          colors.push("white");
+          break;
+        case 'm':
+          colors.push("magenta");
+          break;
+        case 'c':
+          colors.push("cyan");
+          break;
+        case 'x':
+          colors.push("black");
+          break;
+        }
       }
-   }
 
-    return boost::lexical_cast<std::string>(result);
-  }
-  bool shouldEvaluateParameter(int param);
-};
 
-class FunctionMul : public Function {
-public:
- FunctionMul(Executor* p)  : Function(p) {}
-  std::string run(std::vector<std::string> args) {
-    int result = 1;
-
-    for (std::vector<std::string>::iterator it = args.begin();
-         it != args.end();
-         ++it) {
-      try {
-        result *= boost::lexical_cast<int>(*it);
-      } catch (boost::bad_lexical_cast&) {
-        return NOT_A_NUMBER;
+      ColorString output = findSelfContained(args[1], context);
+      while (!colors.empty()) {
+        output = ColorString(ColorString::color(output.internalString(), colors.front()));
+        colors.pop();
       }
+      return output;
     }
 
-    return boost::lexical_cast<std::string>(result);
-  }
-  bool shouldEvaluateParameter(int param);
-};
-
-class FunctionIf : public Function {
- public:
- FunctionIf(Executor* e)  : Function(e) {}
-  bool shouldEvaluateParameter(int param);
-  std::string run(std::vector<std::string> args);
-};
+  };
 
 
-class FunctionExecutor : public Executor {
-public:
-  FunctionExecutor() {
 
-    funcs["add"] = new FunctionAdd(this);
-    funcs["sub"] = new FunctionSub(this);
-    funcs["mul"] = new FunctionMul(this);
-    funcs["if"] = new FunctionIf(this);
-    funcs["repeat"] = new FunctionRepeat(this);
-  }
+  std::vector<ColorString> getFunctionArgs(ColorString str);
 
-  ~FunctionExecutor() {
-    for (std::map<std::string,Function*>::iterator iter = funcs.begin(); iter != funcs.end(); ++iter) {
-      delete iter->second;
-    }
-  }
+  ColorString findSelfContained(ColorString str, FunctionContext& context);
 
-  std::string strParse(std::string input) {
-    Lexxer l = Lexxer();
-    l.lex(input);
-
-    std::deque<std::pair<TokenType,std::string> > tree = l.tree();
-
-    Parser p = Parser();
-    p.parse(l);
-    if (l.tree().size() > 1) {
-      FunctionExecutor e = FunctionExecutor();
-      return e.execute(p);
-    }
-    return input;
-  }
-};
-
-}
-
-#endif
+  ColorString processExpression(ColorString str);
+}  // namespace omush
+#endif  //

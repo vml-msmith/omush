@@ -24,7 +24,6 @@ namespace omush {
   }
 
   void ActionLook::enact(database::DatabaseObject* what) {
-    FunctionExecutor fe;
     what_ = what;
 
     if (what_ == NULL) {
@@ -43,7 +42,7 @@ namespace omush {
     std::string desc = descAttr.value;
     if (desc.length() > 0) {
       response += "\n";
-      response += fe.strParse(desc);
+      response += processExpression(desc).outString();
     }
 
     std::vector<database::Dbref> contents = what_->contents();

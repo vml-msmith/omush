@@ -61,6 +61,23 @@ std::queue<std::string> encodeString(std::string message);
       return "</span>";
     }
 
+    std::string buildInternalTag() {
+      std::vector<std::string> sequence_parts;
+
+      std::vector<std::string> tag;
+
+      tag.push_back("x1b[");
+      tag.push_back(sequence);
+      tag.push_back("]");
+
+      return boost::algorithm::join(tag, "");
+    }
+
+
+    std::string buildInternalEndTag() {
+      return "x1b[end]";
+    }
+
     std::string sequence;
     std::size_t start;
     std::size_t end;
@@ -116,8 +133,12 @@ std::queue<std::string> encodeString(std::string message);
       }
       sequences_ = sequences;
       parsed_ = myString;
+      std::cout << "Parsed " <<  parsed_ << std::endl;
     }
 
+    std::string basicString() {
+      return parsed_;
+    }
 
     std::string outString() {
       std::size_t offset = 0;
@@ -136,6 +157,27 @@ std::queue<std::string> encodeString(std::string message);
 
       return boost::algorithm::join(str, "");
     }
+
+
+    std::string internalString() {
+      std::size_t offset = 0;
+      std::vector<std::string> str;
+      for (size_t iter = 0; iter != parsed_.size(); ++iter) {
+        str.push_back(parsed_.substr(iter,1));
+      }
+
+      while (!sequences_.empty()) {
+        ColorSequence s = sequences_.back();
+        sequences_.pop_back();
+
+        str[s.start] = s.buildInternalTag() + str[s.start];
+        str[s.end - 1] = str[s.end - 1] + s.buildInternalEndTag();
+      }
+      std::string out = "";
+
+      return boost::algorithm::join(str, "");
+    }
+
 
     size_t length() {
       return parsed_.size();

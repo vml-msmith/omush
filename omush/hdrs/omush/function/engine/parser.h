@@ -29,7 +29,7 @@ namespace omush {
     ParserNode* root;
     ParserNode* current;
     int level = 0;
-
+    bool isEmpty(ParserNode* node);
     ~Parser();
 
     void removeAllNodes();

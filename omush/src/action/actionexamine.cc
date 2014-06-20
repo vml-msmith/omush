@@ -157,7 +157,6 @@ namespace omush {
     target = what;
 
     using namespace database;
-    FunctionExecutor fe;
     Database& db = *(db_);
 
     if (target == NULL) {
