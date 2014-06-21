@@ -10,8 +10,10 @@ namespace omush {
     while (i < (segments - 1) && pos != std::string::npos) {
       result.push_back(str.substr(0,pos));
       str = str.substr(pos + 1, str.length() - pos + 1);
-     ++i;
+      std::size_t pos = str.find(sep);
+      ++i;
     }
+
     result.push_back(str);
     return result;
   }
