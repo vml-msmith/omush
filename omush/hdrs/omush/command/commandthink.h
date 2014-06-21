@@ -14,7 +14,7 @@ namespace omush {
   class CommandThink : public ICommand {
   public:
     CommandThink();
-    bool run(std::string calledAs, std::string input, CommandContext context);
+    bool run(CommandContext& context);
   };
 
 }  // namespace omush

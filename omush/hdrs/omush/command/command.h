@@ -36,10 +36,10 @@ namespace omush {
   class ICommand {
   public:
     ICommand(std::string name) : name_(name) {}
-    virtual bool run(std::string calledAs,
-                     std::string input,
-                     CommandContext context) = 0;
+    virtual bool run(CommandContext& context) = 0;
     std::string name() { return name_; }
+    void notifyExecutor(CommandContext& context, std::string msg);
+
   private:
     std::string name_;
   };

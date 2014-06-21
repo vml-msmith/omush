@@ -1,45 +1,9 @@
 #include "omush/function/function.h"
+#include "omush/database/databaseobject.h"
+#include "omush/nameformatter.h"
 
 namespace omush {
-  /*
-std::string FunctionIf::run(std::vector<std::string> args) {
-  if (args.size() < 2) {
-    return "#-1 IF REQUIRES AT LEAST TWO PARAMETERS";
-  }
 
-  if (args.size() > 3) {
-    return "#-1 IF MAY ONLY HAVE THREE PARAMETERS";
-  }
-
-  if (args[0].compare("1") == 0) {
-    return executor_->strParse(args[1]);
-  }
-  if (args.size() == 3) {
-    return executor_->strParse(args[2]);
-  }
-
-  return "";
-}
-
-
-bool FunctionAdd::shouldEvaluateParameter(int param) {
-  return 1;
-}
-
-bool FunctionMul::shouldEvaluateParameter(int param) {
-  return 1;
-}
-
-bool FunctionSub::shouldEvaluateParameter(int param) {
-  return 1;
-}
-bool FunctionIf::shouldEvaluateParameter(int param) {
-  if (param == 0)
-    return 1;
-
-  return 0;
-}
-  */
   std::string floatToString(float x) {
     std::string str = boost::str(boost::format("%f") % x);
 
@@ -49,9 +13,14 @@ bool FunctionIf::shouldEvaluateParameter(int param) {
     return str;
   }
 
-  ColorString processExpression(ColorString str) {
-    FunctionContext context;
+  ColorString processExpression(ColorString str, FunctionScope* scope) {
+    return processExpression(str, scope, -1);
+  }
 
+  ColorString processExpression(ColorString str, FunctionScope* scope, int limit) {
+    FunctionContext context;
+    context.limit = limit;
+    context.scope = scope;
     context.functions.insert(std::pair<std::string,IFunction*>("if", new MyFunctionIf()));
 
     // Math
@@ -64,8 +33,64 @@ bool FunctionIf::shouldEvaluateParameter(int param) {
 
     // Str
     context.functions.insert(std::pair<std::string,IFunction*>("ucstr", new FunctionUcstr()));
+    std::cout << "Before proc" << std::endl;
+    ColorString retStr = findSelfContained(str, context);
+    std::cout << "after proc" << std::endl;
+    return retStr;
+  }
 
-    return findSelfContained(str, context);
+  std::string capstr(std::string str) {
+    char first = str[0];
+    toupper(first);
+
+    str = first + str.substr(1,str.length() - 1);
+    return str;
+  }
+
+  ColorString runReplacements(ColorString str, FunctionContext& context) {
+    database::DatabaseAttribute sexAttr = context.scope->enactor->getAttribute("sex");
+
+    std::string enactorName = NameFormatter(context.scope->enactor).formatInline(context.scope->enactor);
+    std::string enactorSubPronoun = "it";
+    std::string enactorObjPronoun = "it";
+    std::string enactorPosPronoun = "its";
+    std::string enactorAbsPronoun = "it";
+    if (boost::iequals(sexAttr.value, "male")) {
+      enactorSubPronoun = "he";
+      enactorObjPronoun = "him";
+      enactorPosPronoun = "his";
+      enactorAbsPronoun = "his";
+    }
+    else if (boost::iequals(sexAttr.value, "female")) {
+      enactorSubPronoun = "she";
+      enactorObjPronoun = "her";
+      enactorPosPronoun = "her";
+      enactorAbsPronoun = "hers";
+    }
+
+
+    std::string internal = str.internalString();
+
+
+    boost::replace_first(internal, "%r", "\n");
+    boost::replace_first(internal, "%R", "\n");
+    boost::replace_first(internal, "%b", " ");
+    boost::replace_first(internal, "%t", "    ");
+    boost::replace_first(internal, "%#", NameFormatter(context.scope->enactor).formatDbref(context.scope->enactor->dbref()));
+    boost::replace_first(internal, "%n", enactorName);
+    boost::replace_first(internal, "%N", capstr(enactorName));
+    boost::replace_first(internal, "%s", enactorSubPronoun);
+    boost::replace_first(internal, "%S", capstr(enactorSubPronoun));
+    boost::replace_first(internal, "%o", enactorObjPronoun);
+    boost::replace_first(internal, "%O", capstr(enactorObjPronoun));
+    boost::replace_first(internal, "%p", enactorPosPronoun);
+    boost::replace_first(internal, "%P", capstr(enactorPosPronoun));
+    boost::replace_first(internal, "%a", enactorAbsPronoun);
+    boost::replace_first(internal, "%A", capstr(enactorAbsPronoun));
+    boost::replace_first(internal, "%@", NameFormatter(context.scope->caller).formatDbref(context.scope->caller->dbref()));
+    boost::replace_first(internal, "%!", NameFormatter(context.scope->executor).formatDbref(context.scope->executor->dbref()));
+
+    return ColorString(internal);
   }
 
   ColorString findSelfContained(ColorString str, FunctionContext& context) {
@@ -120,10 +145,22 @@ bool FunctionIf::shouldEvaluateParameter(int param) {
     }
 
     if (end == -1) {
+      str = runReplacements(str, context);
       return str;
     }
 
-    int final = (end + 1)- start;
+    if (start > 0 && context.limit > 0) {
+      const char *s = str.internalString().c_str();
+      for (int i = 0; i < start; ++i) {
+        if (*s == ' ') {
+          str = runReplacements(str, context);
+          return str;
+        }
+        *s++;
+      }
+    }
+
+    int final = (end + 1) - start;
     int begin = start;
 
     ColorString response = ColorString(str.internalString().substr(start, final));
@@ -192,13 +229,17 @@ bool FunctionIf::shouldEvaluateParameter(int param) {
         str = ColorString(replacer);
       }
 
-      if (str.basicString().compare(nextProcess.basicString()) != 0) {
+      if (str.basicString().compare(nextProcess.basicString()) != 0 && context.limit < 0) {
         str = ColorString(str.internalString().substr(0,
                                                  nextProcess.internalString().length() + begin) + findSelfContained(
                                                                                                                str.internalString().substr(nextProcess.internalString().length() + begin, str.internalString().length()), context).internalString());
       }
 
     }
+    // Run replacements on str.
+    std::cout << "HEREEEEE" << std::endl;
+    str = runReplacements(str, context);
+    std::cout << "222222E" << std::endl;
     --(context.debugDepth);
     return ColorString(str);
   }

@@ -15,7 +15,7 @@ namespace omush {
   class CommandGo : public ICommand {
   public:
     CommandGo();
-    bool run(std::string calledAs, std::string input, CommandContext context);
+    bool run(CommandContext& context);
     CommandGo* factory();
     ~CommandGo() { std::cout << "Here" << std::endl; }
   };

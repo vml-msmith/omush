@@ -20,6 +20,7 @@ namespace omush {
    public:
     virtual void enact() = 0;
    protected:
+
     database::Database *db_;
     database::DatabaseObject* object_;
     Game* game_;

@@ -11,21 +11,21 @@
 #include "omush/database/definitions.h"
 #include "omush/action/action.h"
 #include "omush/notifier.h"
+#include "omush/command/commandcontext.h"
 
 namespace omush {
   class Game;
 
   class ActionSay : public Action {
    public:
-    ActionSay(database::Database *db,
-              Game *game,
-              database::DatabaseObject *object);
+    ActionSay(CommandContext& context);
     ActionSay& what(std::string str);
     std::string constructString(database::DatabaseObject *listener,
                                 StringDictionary dictionary);
     void enact();
 
    protected:
+    CommandContext& context_;
     std::string what_;
   };
 }  // namespace omush

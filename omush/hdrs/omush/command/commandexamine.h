@@ -14,7 +14,7 @@ namespace omush {
   class CommandExamine : public ICommand {
   public:
     CommandExamine();
-    bool run(std::string calledAs, std::string input, CommandContext context);
+    bool run(CommandContext& context);
   };
 
 }  // namespace omush

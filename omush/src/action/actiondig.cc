@@ -10,25 +10,25 @@
 #include "omush/nameformatter.h"
 
 namespace omush {
-  ActionDig::ActionDig(database::Database *db,
-                       Game *game,
-                       database::DatabaseObject *object) {
-    game_ = game;
-    db_ = db;
-    object_ = object;
-    what_ = NULL;
-    newRoom = NULL;
+  ActionDig::ActionDig(CommandContext& context) : context_(context), name_(""), newRoom(NULL) {
   }
+
+  ActionDig& ActionDig::name(std::string value) {
+    name_ = value;
+  }
+
   void ActionDig::enact() {
-  }
+    if (name_.length() == 0) {
+      Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
+                                                        "That's a silly name for a room.");
+      // Not gonna work.
+    }
+    database::DatabaseObject *r1 = database::DatabaseObjectFactory::createRoom(context_.db);
+    r1->setProperty("name", name_);
 
-  void ActionDig::enact(std::string str) {
-    Notifier(*game_, *db_).notify(object_, "Digging");
+    Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
+                                  NameFormatter(object_).format(r1) + " has been dug.");
 
-
-    database::DatabaseObject *r1=database::DatabaseObjectFactory::createRoom(db_);
-    r1->setProperty("name", str);
-    Notifier(*game_, *db_).notify(object_, NameFormatter(object_).format(r1) + " has been dug.");
     newRoom = r1;
   }
 }  // namespace omush

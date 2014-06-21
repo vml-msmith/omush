@@ -18,17 +18,17 @@ namespace omush {
     return new CommandGo();
   }
 
-  bool CommandGo::run(std::string calledAs, std::string input, CommandContext context) {
+  bool CommandGo::run(CommandContext& context) {
     database::DatabaseObject* executor = context.db->findObjectByDbref(context.executor);
     database::DatabaseObject* what = context.db->findObjectByDbref(executor->location());
 
-    std::vector<std::string> inputParts = splitStringIntoSegments(input, " ", 2);
+    std::vector<std::string> inputParts = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
     if (inputParts.size() > 0) {
       if (!boost::iequals(inputParts[0], this->name())) {
         if (inputParts.size() > 1) {
-          inputParts[1] = input;
+          inputParts[1] = context.cmdScope.currentString;
         }
-        inputParts.push_back(input);
+        inputParts.push_back(context.cmdScope.currentString);
       }
     }
 

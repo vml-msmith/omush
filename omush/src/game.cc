@@ -26,10 +26,12 @@
 #include "omush/utility.h"
 #include "omush/colorstring.h"
 #include "omush/database/database.h"
+#include "omush/database/helpers.h"
 #include "omush/database/databaseobjectfactory.h"
 #include "omush/action/action.h"
 #include "omush/notifier.h"
 #include "omush/database/targetmatcher.h"
+#include "omush/function/function.h"
 
 namespace omush {
 
@@ -60,6 +62,7 @@ namespace omush {
      attributes.insert(std::make_pair<std::string,std::string>("DESC", "DESCRIPTION"));
      attributes.insert(std::make_pair<std::string,std::string>("DESCRIBE", "DESCRIPTION"));
      attributes.insert(std::make_pair<std::string,std::string>("ALIAS", "ALIAS"));
+
      registerMatcher(new CommandMatcherAbsolute());
      registerMatcher(new CommandMatcherPattern());
      registerMatcher(new CommandMatcherExit());
@@ -133,16 +136,19 @@ namespace omush {
 
     InternalCommand command = commandList_.front();
     commandList_.pop();
-    std::cout << "pop " << command.context.enactor << std::endl;
-    /*
-    CommandContext context;
-    context.game = this;
-    context.db = db_;
-    context.dbref = command.dbref;
-    */
+
 
     HCCommandParser cmds = HCCommandParser();
-        std::cout << "find" << std::endl;
+
+    FunctionScope* s = new FunctionScope();
+    s->enactor = command.context.cmdScope.enactor;
+    s->caller = command.context.cmdScope.caller;
+    s->executor = command.context.cmdScope.executor;
+    command.context.funcScope = s;
+
+    ColorString colorStringCmd = processExpression(ColorString(command.cmd), s, 1);
+    command.cmd = colorStringCmd.basicString();
+
     ICommand* cmd = cmds.findCommand(command.cmd, command.context);
 
     if (cmd == NULL) {
@@ -150,9 +156,10 @@ namespace omush {
       commandList_.push(command);
     }
     else {
-        std::cout << "found" << std::endl;
-      cmd->run(command.cmd, command.cmd, command.context);
+      cmd->run(command.context);
     }
+
+    delete s;
 
     return true;
   }
@@ -172,9 +179,14 @@ namespace omush {
       context.descriptor = msg.id;
       context.client = c;
       context.db = db_;
-
+      context.cmdScope.originalString = msg.rawString;
+      context.cmdScope.currentString = msg.rawString;
 
       if (c->isConnected == true) {
+        context.cmdScope.caller = dbrefToObject(*db_, c->dbref);
+        context.cmdScope.executor = dbrefToObject(*db_, c->dbref);
+        context.cmdScope.enactor = dbrefToObject(*db_, c->dbref);
+
         context.caller = c->dbref;
         context.executor = c->dbref;
         context.enactor = c->dbref;
@@ -186,7 +198,8 @@ namespace omush {
           commandList_.push(InternalCommand(context, msg.rawString));
         }
         else {
-          cmd->run(msg.rawString, msg.rawString, context);
+          cmd->run(context);
+          //          cmd->run(msg.rawString, msg.rawString, context);
         }
       } else {
         WelcomeScreenCommandParser cmds = WelcomeScreenCommandParser();
@@ -197,7 +210,8 @@ namespace omush {
           sendNetworkMessage(msg.id, WelcomeScreen::getRandomText());
         }
         else {
-          cmd->run(msg.rawString, msg.rawString, context);
+          cmd->run(context);
+          //          cmd->run(msg.rawString, msg.rawString, context);
         }
 
       }

@@ -8,27 +8,24 @@
 #include <boost/algorithm/string.hpp>
 #include "omush/database/database.h"
 #include "omush/action/actionsay.h"
-
+#import "omush/function/function.h"
 namespace omush {
 
 
   CommandSay::CommandSay() : ICommand("SAY") {
   }
 
-  bool CommandSay::run(std::string calledAs, std::string input, CommandContext context) {
+  bool CommandSay::run(CommandContext& context) {
     std::string words = "";
-    std::vector<std::string> inputParts = splitStringIntoSegments(input, " ", 2);
+    std::string cmd = context.cmdScope.currentString;
+    std::vector<std::string> inputParts = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
     if (inputParts.size() > 1) {
       words = inputParts[1];
     }
 
-    if (context.db->findObjectByDbref(context.executor) == NULL) {
-      std::cout << "it's null " << context.enactor << std::endl;
-    }
+    words = processExpression(words, context.funcScope).internalString();
 
-    ActionSay(context.db,
-              context.game,
-              context.db->findObjectByDbref(context.executor)).what(words).enact();
+    ActionSay(context).what(words).enact();
     return true;
   }
 

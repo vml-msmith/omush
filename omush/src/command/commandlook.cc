@@ -14,11 +14,11 @@ namespace omush {
   CommandLook::CommandLook() : ICommand("LOOK") {
   }
 
-  bool CommandLook::run(std::string calledAs, std::string input, CommandContext context) {
+  bool CommandLook::run(CommandContext& context) {
     database::DatabaseObject* executor = context.db->findObjectByDbref(context.executor);
     database::DatabaseObject* what = context.db->findObjectByDbref(executor->location());
 
-    std::vector<std::string> inputParts = splitStringIntoSegments(input, " ", 2);
+    std::vector<std::string> inputParts = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
     if (inputParts.size() > 1) {
       std::string words = inputParts[1];
       std::vector<database::DatabaseObject*> matches;

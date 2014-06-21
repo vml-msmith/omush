@@ -14,7 +14,7 @@ namespace omush {
   class CommandConnect : public ICommand {
   public:
     CommandConnect();
-    bool run(std::string calledAs, std::string input, CommandContext context);
+    bool run(CommandContext& context);
   };
 }  // namespace omush
 

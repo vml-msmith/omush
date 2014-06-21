@@ -293,13 +293,15 @@ namespace omush {
     std::string str = "";
 
     for (int i = 0; i < nodes.size(); ++i) {
-      if (!nodes.back()->isSequence && !nodes.back()->isEnd) {
+
+      if (!nodes.front()->isSequence && !nodes.front()->isEnd) {
         str += nodes.front()->c;
       }
 
       nodes.push_back(nodes.front());
       nodes.pop_front();
     }
+    std::cout << std::endl;
 
     return str;
   }

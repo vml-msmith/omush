@@ -9,12 +9,7 @@
 #import "omush/nameformatter.h"
 
 namespace omush {
-  ActionSay::ActionSay(database::Database *db,
-                       Game *game,
-                       database::DatabaseObject *object) {
-    db_ = db;
-    object_ = object;
-    game_ = game;
+  ActionSay::ActionSay(CommandContext& context) : context_(context) {
     what_ = "";
   }
 
@@ -25,16 +20,16 @@ namespace omush {
 
   std::string ActionSay::constructString(database::DatabaseObject *listener,
                                          StringDictionary dictionary) {
-    if (listener == object_) {
+    if (listener == context_.cmdScope.executor) {
       return "You say, \"" + what_ + "\"";
     }
 
-    return NameFormatter(listener).formatInline(object_) + " says \"" + what_ + "\"";
+    return NameFormatter(listener).formatInline(context_.cmdScope.executor) + " says \"" + what_ + "\"";
   }
 
   void ActionSay::enact() {
-    Notifier notify(*game_, *db_);
-    notify.notifySurroundings(object_,
+    Notifier notify(*(context_.game), *(context_.db));
+    notify.notifySurroundings(context_.cmdScope.executor,
                               boost::bind(&omush::ActionSay::constructString,
                                           this,
                                           ::_1,

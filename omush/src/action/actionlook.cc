@@ -42,7 +42,13 @@ namespace omush {
     std::string desc = descAttr.value;
     if (desc.length() > 0) {
       response += "\n";
-      response += processExpression(desc).outString();
+      FunctionScope* s = new FunctionScope();
+      s->enactor = what_;;
+      s->caller = what_;;
+      s->executor = object_;
+
+      response += processExpression(desc, s).outString();
+      delete s;
     }
 
     std::vector<database::Dbref> contents = what_->contents();

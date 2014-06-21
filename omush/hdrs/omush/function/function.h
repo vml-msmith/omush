@@ -16,6 +16,8 @@
 #include <cmath>
 #include "omush/utility.h"
 #include "omush/colorstring.h"
+#include "omush/database/definitions.h"
+
 
 namespace omush {
   std::string floatToString(float x);
@@ -71,10 +73,22 @@ namespace omush {
 
   typedef std::map<std::string, IFunction*> FunctionMap;
 
+
+  struct FunctionScope {
+    database::DatabaseObject* enactor;
+    database::DatabaseObject* executor;
+    database::DatabaseObject* caller;
+    //    FunctionScope(database::Dbref dbref) :  enactor(dbref), executor(dbref), caller(dbref) {}
+    FunctionScope() {}
+  };
+
   struct FunctionContext {
     FunctionMap functions;
     int debugDepth;
-  FunctionContext() : debugDepth(0) { }
+    int limit;
+    FunctionScope* scope;
+
+    FunctionContext() : debugDepth(0) { }
   };
 
   ColorString findSelfContained(ColorString str, FunctionContext& context);
@@ -189,7 +203,7 @@ namespace omush {
         return ColorString(state.errorString);
 
       float result;
-      ColorString val = findSelfContained(val, context);
+      ColorString val = findSelfContained(ColorString(args[0]), context);
       std::string number = val.basicString();
       boost::trim(number);
 
@@ -274,6 +288,7 @@ namespace omush {
 
   ColorString findSelfContained(ColorString str, FunctionContext& context);
 
-  ColorString processExpression(ColorString str);
+  ColorString processExpression(ColorString str, FunctionScope* context);
+  ColorString processExpression(ColorString str, FunctionScope* context, int limit);
 }  // namespace omush
 #endif  //

@@ -14,7 +14,7 @@ namespace omush {
     return new CommandQuit();
   }
 
-  bool CommandQuit::run(std::string calledAs, std::string input, CommandContext context) {
+  bool CommandQuit::run(CommandContext& context) {
     //    Command::run_(calledAs, input, context);
     context.game->sendNetworkMessage(context.descriptor, "Goodbye.");
     context.game->closeNetworkConnection(context.descriptor);

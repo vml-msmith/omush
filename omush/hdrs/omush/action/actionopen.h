@@ -9,6 +9,7 @@
 
 #include "omush/database/definitions.h"
 #include "omush/action/action.h"
+#include "omush/command/commandcontext.h"
 
 namespace omush {
   namespace database {
@@ -18,13 +19,11 @@ namespace omush {
 
   class ActionOpen : public Action {
    public:
-    ActionOpen(database::Database *db,
-               Game *game,
-               database::DatabaseObject *object);
+    ActionOpen(CommandContext& context);
 
     ActionOpen& from(database::DatabaseObject* object);
     ActionOpen& to(database::DatabaseObject* object);
-    ActionOpen& named(std::string value);
+    ActionOpen& name(std::string value);
 
     void enact();
 
@@ -32,7 +31,7 @@ namespace omush {
    protected:
     database::DatabaseObject *from_;
     database::DatabaseObject *to_;
-
+    CommandContext& context_;
     std::string name_;
   };
 }  // namespace omush

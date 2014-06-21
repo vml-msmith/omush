@@ -15,11 +15,22 @@ namespace omush {
     class DatabaseObject;
   }
 
+  struct CommandInfo {
+    std::vector<std::vector<std::string> > eqArgs;
+    std::vector<std::string> switches;
+    std::string errorString;
+    std::string rawArgs;
+
+  CommandInfo() : errorString(""), rawArgs("") {}
+  };
+
   class CommandDig : public ICommand {
   public:
     CommandDig();
-    bool run(std::string calledAs, std::string input, CommandContext context);
+    bool run(CommandContext& context);
   private:
+    CommandInfo process(CommandContext& context);
+
     void notify(CommandContext context,
                 database::DatabaseObject *enactor,
                 std::string msg);

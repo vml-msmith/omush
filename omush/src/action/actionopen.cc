@@ -10,16 +10,7 @@
 #include "omush/nameformatter.h"
 
 namespace omush {
-  ActionOpen::ActionOpen(database::Database *db,
-                         Game *game,
-                         database::DatabaseObject *object) {
-    game_ = game;
-    db_ = db;
-    object_ = object;
-    name_ = "";
-    from_ = NULL;
-    to_ = NULL;
-
+  ActionOpen::ActionOpen(CommandContext& context) : context_(context) {
   }
 
   ActionOpen& ActionOpen::from(database::DatabaseObject* object) {
@@ -32,26 +23,46 @@ namespace omush {
     return *this;
   }
 
-  ActionOpen& ActionOpen::named(std::string value) {
+  ActionOpen& ActionOpen::name(std::string value) {
     name_ = value;
     return *this;
   }
 
   void ActionOpen::enact() {
-    if (from_ == NULL) {
-      Notifier(*game_, *db_).notify(object_, "I don't know where you want to open the exit from. This should really never happen, so maybe you should tell someone.");
+    std::cout << " 111" << std::endl;
+    if (name_.length() == 0) {
+      Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
+                                                        "That's a silly name for an exit.");
       return;
     }
 
-    std::string name = name_;
-    database::DatabaseObject *e1=database::DatabaseObjectFactory::createExit(db_);
-    e1->setProperty("name", name);
-    db_->moveObject(e1, from_);;
-    Notifier(*game_, *db_).notify(object_, "Opened exit " + NameFormatter(object_).format(e1) + ".");
+    if (from_ == NULL) {
+      Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
+                                                        "I don't know where you want to open the exit from. This should really never happen, so maybe you should tell someone.");
+      return;
+    }
+
+    std::vector<std::string> split = splitStringIntoSegments(name_, ";", 2);
+
+    database::DatabaseObject *e1=database::DatabaseObjectFactory::createExit(context_.db);
+    e1->setProperty("name", split[0]);
+
+    // Set alias'
+    if (split.size() > 1) {
+      e1->setAttribute("alias", split[1]);
+    }
+
+    context_.db->moveObject(e1, from_);;
+
+    Notifier(*(context_.game), *(context_.db)).
+      notify(context_.cmdScope.executor,
+             "Opened exit " + NameFormatter(context_.cmdScope.executor).format(e1) + ".");
 
     if (to_ != NULL) {
       e1->home(to_->dbref());
-      Notifier(*game_, *db_).notify(object_, "Linked exit " + NameFormatter(object_).format(e1) + " to " + NameFormatter(object_).format(to_) + "...");
+      Notifier(*(context_.game), *(context_.db)).
+        notify(context_.cmdScope.executor,
+               "Linked exit " + NameFormatter(context_.cmdScope.executor).format(e1) + " to " + NameFormatter(context_.cmdScope.executor).format(to_) + ".");
     }
     /*
     database::DatabaseObject *e1=database::DatabaseObjectFactory::createExit(db_);

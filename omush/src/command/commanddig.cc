@@ -9,6 +9,10 @@
 #include <boost/algorithm/string.hpp>
 #include "omush/action/actiondig.h"
 #include "omush/action/actionopen.h"
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string.hpp>
+#include "omush/function/function.h"
+#include "omush/database/helpers.h"
 
 /*
 #include "omush/utility.h"
@@ -17,100 +21,71 @@
 #include "omush/database/targetmatcher.h"
 */
 namespace omush {
+
   CommandDig::CommandDig() : ICommand("@DIG") {
   }
 
-  bool CommandDig::run(std::string calledAs,
-                       std::string input,
-                       CommandContext context) {
-    database::DatabaseObject* executor = context.db->findObjectByDbref(context.executor);
-    // @dig[/teleport] <roomname>[=<exitname>;<alias>*,<exitname>;<alias>*]
+  CommandInfo CommandDig::process(CommandContext& context) {
+    CommandInfo info;
+    std::vector<std::string> cmdSplit = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
+    std::cout << "111" << std::endl;
+    info.switches = splitStringIntoSegments(cmdSplit[0], "/", 10);
+    info.switches.erase(info.switches.begin());
 
-    // start with naive: @dig name
-    std::vector<std::string> inputParts = splitStringIntoSegments(context.modifiedInput, " ", 2);
+    if (cmdSplit.size() <= 1) {
+      info.errorString = "Dig what?";
+      return info;
+    }
+    info.rawArgs = cmdSplit[1];
 
-    if (inputParts.size() < 2) {
-      Notifier(*(context.game), *(context.db)).notify(executor,
-                                                      "What do you want to dig?");
+    std::vector<std::string> eqSplit = splitStringIntoSegments(info.rawArgs, "=", 2);
+    if (eqSplit.size() > 0) {
+      std::vector<std::string> arg0;
+      arg0.push_back(processExpression(eqSplit[0], context.funcScope).basicString());
+      info.eqArgs.push_back(arg0);
+    }
+
+    if (eqSplit.size() > 1) {
+
+      std::vector<std::string> arg0;
+      std::string arg1  = processExpression(eqSplit[1], context.funcScope).basicString();
+      std::vector<std::string> cSplit = splitStringIntoSegments(arg1, ",", 2);
+
+      BOOST_FOREACH(std::string value, cSplit) {
+        boost::trim(value);
+        arg0.push_back(value);
+      }
+
+      info.eqArgs.push_back(arg0);
+    }
+
+    return info;
+  }
+
+  bool CommandDig::run(CommandContext& context) {
+    CommandInfo info = process(context);
+    if (info.errorString.length() > 0) {
+      notifyExecutor(context, info.errorString);
       return true;
     }
 
-    std::vector<std::string> eqParts = splitStringIntoSegments(inputParts[1], "=", 2);
-    ActionDig dig(context.db, context.game, executor);
-    dig.enact(eqParts[0]);
-    if (eqParts.size() > 1) {
-      std::cout << "HerE" << std::endl;
-      // Try adding exits.
-      if (dig.newRoom != NULL) {
-        std::cout << "HerE again " << eqParts[1] << std::endl;
-        std::vector<std::string> commaParts = splitStringIntoSegments(eqParts[1], ",", 2);
-        if (commaParts.size() > 2) {
-          std::cout << "more" << std::endl;
-          Notifier(*(context.game), *(context.db)).notify(executor,
-                                                          "Too many exits specified.");
-        }
-        else {
-          ActionOpen(context.db, context.game, executor).from(context.db->findObjectByDbref(executor->location())).to(dig.newRoom).named(commaParts[0]).enact();
-          if (commaParts.size() == 2) {
-            ActionOpen(context.db, context.game, executor).from(dig.newRoom).to(context.db->findObjectByDbref(executor->location())).named(commaParts[1]).enact();
-          }
-        }
+    ActionDig dig(context);
+    dig.name(info.eqArgs[0][0]);
+    dig.enact();
+
+    if (dig.newRoom != NULL) {
+      database::DatabaseObject* location;
+      location = objectLocation(*(context.db), context.cmdScope.executor);
+      if (info.eqArgs.size() > 1 && info.eqArgs[1].size() > 0) {
+        ActionOpen(context).from(location).to(dig.newRoom).name(info.eqArgs[1][0]).enact();
+      }
+      if (info.eqArgs.size() > 1 && info.eqArgs[1].size() > 1) {
+        ActionOpen(context).from(dig.newRoom).to(location).name(info.eqArgs[1][1]).enact();
       }
     }
     return true;
 
-    /*
-    database::DatabaseObject* enactor = context.db->findObjectByDbref(context.dbref);
 
-    std::string words = "";
-    std::vector<std::string> inputParts = splitStringIntoSegments(context.modifiedInput, " ", 2);
-    if (inputParts.size() < 2) {
-      this->notify(context,enactor,"I can't see that here.");
-      return true;
-    }
-
-    std::vector<std::string> eqParts = splitStringIntoSegments(inputParts[1], "=", 2);
-    std::vector<database::DatabaseObject*> matches;
-    database::TargetMatcher matcher(context.db, enactor);
-
-    matches = matcher.match(eqParts[0]);
-    if (matches.size() == 0) {
-      Notifier(*(context.game), *(context.db)).notify(enactor,
-                                                      "I can't see that here.");
-      return true;
-    }
-
-    if (matches.size() > 1) {
-      Notifier(*(context.game), *(context.db)).notify(enactor,
-                                                      "I don't know which one you mean.");
-      return true;
-    }
-
-    if (eqParts.size() < 2) {
-      Notifier(*(context.game), *(context.db)).notify(enactor,
-                                                      "What do you want to set?");
-    }
-
-    // This is wher we need to decide if the first word is @set.
-    std::vector<std::string> colonParts = splitStringIntoSegments(eqParts[1], ":", 2);
-    if (colonParts.size() > 1) {
-      // Attribute set
-      ActionSetAttribute(context.db, context.game, context.db->findObjectByDbref(context.dbref))
-        .object(matches[0])
-        .attribute(colonParts[0])
-        .value(colonParts[1])
-        .enact();
-      return true;
-    }
-    else {
-      this->notify(context,enactor,"Flag set: Not implemented");
-    }
-
-
-//    ActionThink(context.db, context.game, context.db->findObjectByDbref(context.dbref)).what(words).enact();
-    return true;
-    */
-    return true;
   }
 
 }  // namespace omush

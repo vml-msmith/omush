@@ -9,13 +9,8 @@
 #import "omush/function/function.h"
 
 namespace omush {
-  ActionThink::ActionThink(database::Database *db,
-                           Game *game,
-                           database::DatabaseObject *object) {
-    db_ = db;
-    object_ = object;
-    game_ = game;
-    what_ = "";
+  ActionThink::ActionThink(CommandContext& context) : context_(context) {
+
   }
 
   ActionThink& ActionThink::what(std::string str) {
@@ -25,10 +20,9 @@ namespace omush {
 
 
   void ActionThink::enact() {
-    std::string o = processExpression(what_).internalString();
-    std::cout << "out " << o << std::endl;
-    std::cout << ColorString::color("Test?", "red");
-    Notifier(*game_, *db_).notify(object_,
+    std::string o = processExpression(what_, context_.funcScope).internalString();
+
+    Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
                                   o);
   }
 }  // namespace omush

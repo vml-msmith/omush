@@ -14,11 +14,9 @@ namespace omush {
   CommandConnect::CommandConnect() : ICommand("CONNECT") {
   }
 
-  bool CommandConnect::run(std::string calledAs, std::string input, CommandContext context) {
-    //    Command::run_(calledAs, input, context);
-
+  bool CommandConnect::run(CommandContext& context) {
     std::vector<std::string> inputParts;
-    boost::split(inputParts, input, boost::is_any_of(" "));
+    boost::split(inputParts, context.cmdScope.currentString, boost::is_any_of(" "));
 
     if (inputParts.size() == 3) {
       database::DatabaseObject *obj = database::PlayerUtilities::findPlayerByName(context.db, inputParts[1]);

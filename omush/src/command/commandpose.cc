@@ -14,9 +14,9 @@ namespace omush {
     /*    shortCode_.push_back(":");*/
   }
 
-  bool CommandPose::run(std::string calledAs, std::string input, CommandContext context) {
+  bool CommandPose::run(CommandContext& context) {
     std::string words = "";
-    std::vector<std::string> inputParts = splitStringIntoSegments(input, " ", 2);
+    std::vector<std::string> inputParts = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
     if (inputParts.size() > 1) {
       words = inputParts[1];
     }

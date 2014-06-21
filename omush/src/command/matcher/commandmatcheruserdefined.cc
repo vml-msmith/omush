@@ -30,9 +30,11 @@ namespace omush {
   }
 
   ICommand* CommandMatcherUserDefined::contextMatchByString(CommandList list,
-                                                                CommandContext& context,
-                                                                std::string str) {
+                                                            CommandContext& context,
+                                                            std::string str) {
     using namespace database;
+    // Process expression!
+
     DatabaseObject* executor = dbrefToObject(*(context.db), context.executor);
     DatabaseObject* location = dbrefToObject(*(context.db), executor->location());
     AttributeMap attributes = location->attributes();

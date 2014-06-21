@@ -18,7 +18,7 @@ namespace omush {
   class CommandSet : public ICommand {
   public:
     CommandSet();
-    bool run(std::string calledAs, std::string input, CommandContext context);
+    bool run(CommandContext& context);
   private:
     void notify(CommandContext context,
                 database::DatabaseObject *enactor,

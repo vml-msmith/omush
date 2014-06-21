@@ -25,10 +25,10 @@ namespace omush {
                                                     "I can't see that here.");
   }
 
-  bool CommandSet::run(std::string calledAs, std::string input, CommandContext context) {
+  bool CommandSet::run(CommandContext& context) {
     database::DatabaseObject* executor = context.db->findObjectByDbref(context.executor);
 
-    std::vector<std::string> inputParts = splitStringIntoSegments(context.modifiedInput, " ", 2);
+    std::vector<std::string> inputParts = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
     if (inputParts.size() < 2) {
       this->notify(context,executor,"I can't see that here.");
       return true;

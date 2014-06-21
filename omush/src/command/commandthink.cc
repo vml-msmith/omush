@@ -15,14 +15,14 @@ namespace omush {
   CommandThink::CommandThink() : ICommand("THINK") {
   }
 
-  bool CommandThink::run(std::string calledAs, std::string input, CommandContext context) {
+  bool CommandThink::run(CommandContext& context) {
     std::string words = "";
-    std::vector<std::string> inputParts = splitStringIntoSegments(input, " ", 2);
+    std::vector<std::string> inputParts = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
     if (inputParts.size() > 1) {
       words = inputParts[1];
     }
 
-    ActionThink(context.db, context.game, context.db->findObjectByDbref(context.executor)).what(words).enact();
+    ActionThink(context).what(words).enact();
     return true;
   }
 

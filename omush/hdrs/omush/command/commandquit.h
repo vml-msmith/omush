@@ -14,7 +14,7 @@ namespace omush {
   class CommandQuit : public ICommand {
   public:
     CommandQuit();
-    bool run(std::string calledAs, std::string input, CommandContext context);
+    bool run(CommandContext& context);
     CommandQuit* factory();
   };
 
