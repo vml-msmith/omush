@@ -15,14 +15,6 @@ namespace omush {
     class DatabaseObject;
   }
 
-  struct CommandInfo {
-    std::vector<std::vector<std::string> > eqArgs;
-    std::vector<std::string> switches;
-    std::string errorString;
-    std::string rawArgs;
-
-  CommandInfo() : errorString(""), rawArgs("") {}
-  };
 
   class CommandDig : public ICommand {
   public:

@@ -13,6 +13,15 @@
 #include "omush/command/commandcontext.h"
 
 namespace omush {
+  struct CommandInfo {
+    std::vector<std::vector<std::string> > eqArgs;
+    std::vector<std::string> switches;
+    std::string errorString;
+    std::string rawArgs;
+
+    CommandInfo() : errorString(""), rawArgs("") {}
+  };
+
   /**
    * Interface for all commands useable by objects in the game. Every
    * action in the game should be setup by an action of some sort.
