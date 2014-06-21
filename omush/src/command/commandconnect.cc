@@ -9,6 +9,7 @@
 #include "omush/database/database.h"
 #include "omush/database/playerutilities.h"
 #include "omush/action/actionconnect.h"
+#include "omush/game.h"
 
 namespace omush {
   CommandConnect::CommandConnect() : ICommand("CONNECT") {

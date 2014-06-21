@@ -5,6 +5,7 @@
  */
 
 #include "omush/command/commandquit.h"
+#include "omush/game.h"
 
 namespace omush {
   CommandQuit::CommandQuit() : ICommand("QUIT") {
