@@ -7,7 +7,7 @@
 #ifndef OMUSH_HDRS_OMUSH_COMMAND_COMMANDDIG_H_
 #define OMUSH_HDRS_OMUSH_COMMAND_COMMANDDIG_H_
 
-#include "omush/command/command.h"
+#include "omush/command/icommand.h"
 #include <string>
 
 namespace omush {

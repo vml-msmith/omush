@@ -1,11 +1,11 @@
 /**
- * \file command.h
+ * \file icommand.h
  *
  * Copyright 2014 Michael Smith
  */
 
-#ifndef OMUSH_HDRS_OMUSH_COMMAND_COMMAND_H_
-#define OMUSH_HDRS_OMUSH_COMMAND_COMMAND_H_
+#ifndef OMUSH_HDRS_OMUSH_COMMAND_ICOMMAND_H_
+#define OMUSH_HDRS_OMUSH_COMMAND_ICOMMAND_H_
 
 #include <string>
 #include <vector>
@@ -56,4 +56,4 @@ namespace omush {
 
 }  // namespace omush
 
-#endif  // OMUSH_HDRS_OMUSH_COMMAND_COMMAND_H_
+#endif  // OMUSH_HDRS_OMUSH_COMMAND_ICOMMAND_H_

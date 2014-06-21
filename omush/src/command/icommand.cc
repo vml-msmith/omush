@@ -2,7 +2,7 @@
  *
  */
 
-#include "omush/command/command.h"
+#include "omush/command/icommand.h"
 #include "omush/notifier.h"
 
 namespace omush {

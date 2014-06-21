@@ -7,7 +7,7 @@
 #include "omush/command/matcher/commandmatcherattributesetter.h"
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
-#include "omush/command/command.h"
+#include "omush/command/icommand.h"
 #include "omush/utility.h"
 
 namespace omush {

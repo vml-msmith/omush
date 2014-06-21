@@ -5,7 +5,7 @@
  */
 
 #include "omush/command/parser/commandparser.h"
-#include "omush/command/command.h"
+#include "omush/command/icommand.h"
 #include <vector>
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>

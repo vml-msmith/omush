@@ -8,9 +8,11 @@
 #define OMUSH_HDRS_OMUSH_COMMAND_MATCHER_ICOMMANDMATCHER_H_
 
 #include <string>
-#include "omush/command/command.h"
+#include "omush/command/icommand.h"
 
 namespace omush {
+  class ICommand;
+
   class ICommandMatcher {
    public:
     explicit ICommandMatcher(bool contextAware)

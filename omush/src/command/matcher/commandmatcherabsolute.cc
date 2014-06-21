@@ -7,7 +7,7 @@
 #include "omush/command/matcher/commandmatcherabsolute.h"
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
-#include "omush/command/command.h"
+#include "omush/command/icommand.h"
 
 namespace omush {
   CommandMatcherAbsolute::CommandMatcherAbsolute()

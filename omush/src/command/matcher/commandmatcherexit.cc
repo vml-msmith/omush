@@ -7,7 +7,7 @@
 #include "omush/command/matcher/commandmatcherexit.h"
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
-#include "omush/command/command.h"
+#include "omush/command/icommand.h"
 #include "omush/database/database.h"
 #include "omush/database/databaseobject.h"
 #include "omush/database/targetmatcher.h"

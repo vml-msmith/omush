@@ -9,7 +9,7 @@
 
 #include <string>
 #include "omush/command/matcher/icommandmatcher.h"
-#include "omush/command/command.h"
+#include "omush/command/icommand.h"
 
 namespace omush {
   class CommandMatcherAttributeSetter : public ICommandMatcher {

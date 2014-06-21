@@ -7,7 +7,7 @@
 #ifndef OMUSH_HDRS_OMUSH_COMMAND_H_
 #define OMUSH_HDRS_OMUSH_COMMAND_H_
 
-#include "omush/command/command.h"
+#include "omush/command/icommand.h"
 #include "omush/command/parser/commandparser.h"
 #include "omush/command/matcher/commandmatcherabsolute.h"
 #include "omush/command/matcher/commandmatcherpattern.h"
