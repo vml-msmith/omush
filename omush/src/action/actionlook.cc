@@ -6,28 +6,21 @@
 
 #include "omush/action/actionlook.h"
 #include "omush/nameformatter.h"
-
 #include "omush/function/function.h"
 
 namespace omush {
-  ActionLook::ActionLook(database::Database *db,
-                         Game *game,
-                         database::DatabaseObject *object) {
-    game_ = game;
-    db_ = db;
-    object_ = object;
-    what_ = NULL;
+  ActionLook::ActionLook(CommandContext& context) : context_(context) {
   }
 
   void ActionLook::enact() {
-    enact(db_->findObjectByDbref(object_->location()));
+    enact((context_.db)->findObjectByDbref(context_.cmdScope.executor->location()));
   }
 
   void ActionLook::enact(database::DatabaseObject* what) {
     what_ = what;
 
     if (what_ == NULL) {
-      what_ = db_->findObjectByDbref(object_->location());
+      what_ = db_->findObjectByDbref(context_.cmdScope.executor->location());
     }
     if (what_ == NULL) {
       std::cout << "Nill" << std::endl;
@@ -35,17 +28,18 @@ namespace omush {
       return;
     }
     std::string response = "";
-    response += NameFormatter(object_).format(what_);
+    response += NameFormatter(context_.cmdScope.executor).format(what_);
 
     database::DatabaseAttribute descAttr = what_->getAttribute("description");
 
     std::string desc = descAttr.value;
     if (desc.length() > 0) {
       response += "\n";
+
       FunctionScope* s = new FunctionScope();
-      s->enactor = what_;;
-      s->caller = what_;;
-      s->executor = object_;
+      s->enactor = context_.cmdScope.executor;
+      s->caller = what_;
+      s->executor = what_;
 
       response += processExpression(desc, s).outString();
       delete s;
@@ -57,15 +51,15 @@ namespace omush {
     for (std::vector<database::Dbref>::iterator iter = contents.begin();
          iter != contents.end();
          ++iter) {
-      database::DatabaseObject *c = db_->findObjectByDbref(*iter);
+      database::DatabaseObject *c = context_.db->findObjectByDbref(*iter);
 
       if (c->type() == database::DbObjectTypeExit) {
-        exitString += "\n" + NameFormatter(object_).noDbref().format(c);
+        exitString += "\n" + NameFormatter(context_.cmdScope.executor).noDbref().format(c);
         std::cout << exitString << std::endl;
       }
-      else if (*iter != object_->dbref()) {
+      else if (*iter != context_.cmdScope.executor->dbref()) {
         contentString += "\n";
-        contentString += NameFormatter(object_).format(c);
+        contentString += NameFormatter(context_.cmdScope.executor).format(c);
       }
     }
     if (exitString.length() > 0) {
@@ -75,6 +69,6 @@ namespace omush {
       response += "\nContents:" + contentString;
     }
 
-    Notifier(*game_, *db_).notify(object_, response);
+    Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor, response);
   }
 }  // namespace omush

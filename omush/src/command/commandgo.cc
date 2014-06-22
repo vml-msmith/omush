@@ -48,10 +48,10 @@ namespace omush {
                                                         "I don't see that here.");
         return true;
       }
-      ActionGo(context.db, context.game, executor).enact(matches[0]);
+      ActionGo(context).enact(matches[0]);
       return true;
     }
-    ActionGo(context.db, context.game, executor).enact();
+    ActionGo(context).enact();
     return true;
 
   }

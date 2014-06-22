@@ -41,6 +41,14 @@ namespace omush {
     }
 
     result.push_back(str);
+    /*
+    if (direction == rightToLeft) {
+      std::vector<std::string> newResult;
+      for (int i = result.size() - 1; i >= 0; --i) {
+        newResult.push_back(result[i]);
+      }
+      return newResult;
+      }*/
     return result;
   }
 

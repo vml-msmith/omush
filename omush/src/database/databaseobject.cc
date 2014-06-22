@@ -4,6 +4,10 @@
 
 namespace omush {
   namespace database {
+    DatabaseObject::DatabaseObject() :
+      password_("") {
+
+    }
     Dbref DatabaseObject::dbref() {
       return dbref_;
     }
@@ -85,6 +89,10 @@ namespace omush {
                     dbref) == contents_.end()) {
         contents_.push_back(dbref);
       }
+    }
+
+    bool DatabaseObject::comparePassword(std::string str) {
+      return str == password_;
     }
   }
 }

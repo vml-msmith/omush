@@ -28,6 +28,7 @@ namespace omush {
    public:
     CommandConnect();
     bool run(CommandContext& context);
+    CommandInfo process(CommandContext& context);
   };
 }  // namespace omush
 

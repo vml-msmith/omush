@@ -9,19 +9,19 @@
 
 #include "omush/database/definitions.h"
 #include "omush/action/action.h"
+#include "omush/command/commandcontext.h"
 
 namespace omush {
   class Game;
 
   class ActionLook : public Action {
    public:
-    ActionLook(database::Database *db,
-               Game *game,
-               database::DatabaseObject *object);
+    ActionLook(CommandContext& context);
     void enact();
     void enact(database::DatabaseObject* what);
 
    protected:
+    CommandContext& context_;
     database::DatabaseObject *what_;
   };
 }  // namespace omush

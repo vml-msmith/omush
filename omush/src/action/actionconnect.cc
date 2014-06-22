@@ -8,15 +8,10 @@
 #import "omush/action/actionlook.h"
 
 namespace omush {
-  ActionConnect::ActionConnect(database::Database *db,
-                               Game *game,
-                               database::DatabaseObject *object) {
-    db_ = db;
-    object_ = object;
-    game_ = game;
+  ActionConnect::ActionConnect(CommandContext& context) : context_(context) {
   }
 
   void ActionConnect::enact() {
-    ActionLook(db_, game_, object_).enact();
+    ActionLook(context_).enact();
   }
 }  // namespace omush

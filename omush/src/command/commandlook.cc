@@ -33,10 +33,10 @@ namespace omush {
                                                         "I don't see that here.");
         return true;
       }
-      ActionLook(context.db, context.game, executor).enact(matches[0]);
+      ActionLook(context).enact(matches[0]);
       return true;
     }
-    ActionLook(context.db, context.game, executor).enact();
+    ActionLook(context).enact();
     return true;
 
   }

@@ -28,7 +28,7 @@ namespace omush {
   CommandInfo CommandDig::process(CommandContext& context) {
     CommandInfo info;
     std::vector<std::string> cmdSplit = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
-    std::cout << "111" << std::endl;
+
     info.switches = splitStringIntoSegments(cmdSplit[0], "/", 10);
     info.switches.erase(info.switches.begin());
 

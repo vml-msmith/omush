@@ -28,6 +28,7 @@ namespace omush {
       friend class DatabaseObjectFactory;
       friend class Database;
      public:
+      explicit DatabaseObject();
       Dbref dbref();
       std::string getProperty(std::string propertyName);
       DatabaseAttribute getAttribute(std::string name);
@@ -47,6 +48,8 @@ namespace omush {
 
       void printAttrs();
 
+      bool comparePassword(std::string str);
+
      protected:
       typedef std::map<std::string,std::string> PropertyMap;
       typedef std::map<std::string,DatabaseAttribute> AttributeMap;
@@ -57,6 +60,7 @@ namespace omush {
       Dbref location_;
       Dbref home_;
       Dbref owner_;
+      std::string password_;
 
       std::vector<Dbref> contents_;
     };

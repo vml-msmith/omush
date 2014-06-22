@@ -9,15 +9,11 @@
 #import "omush/action/actionlook.h"
 #import "omush/action/actionarrive.h"
 #import "omush/action/actionleave.h"
+#import "omush/command/commandcontext.h"
 
 namespace omush {
-  ActionGo::ActionGo(database::Database *db,
-                     Game *game,
-                     database::DatabaseObject *object) {
-    game_ = game;
-    db_ = db;
-    object_ = object;
-    what_ = NULL;
+  ActionGo::ActionGo(CommandContext& context)
+    : context_(context) {
   }
 
   void ActionGo::enact() {
@@ -32,13 +28,13 @@ namespace omush {
       return;
     }
 
-    ActionLeave(db_, game_, object_).enact();
+    ActionLeave(context_).enact();
     if (what_->type() == database::DbObjectTypeExit) {
-      what_ = db_->findObjectByDbref(what_->home());
+      what_ = context_.db->findObjectByDbref(what_->home());
     }
-    db_->moveObject(object_, what_);
+    context_.db->moveObject(object_, what_);
 
-    ActionArrive(db_, game_, object_).enact();
-    ActionLook(db_, game_, object_).enact();
+    ActionArrive(context_).enact();
+    ActionLook(context_).enact();
   }
 }  // namespace omush

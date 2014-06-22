@@ -8,14 +8,10 @@
 #include "omush/nameformatter.h"
 #include "omush/notifier.h"
 #include <boost/bind.hpp>
+#include "omush/command/commandcontext.h"
 
 namespace omush {
-  ActionLeave::ActionLeave(database::Database *db,
-                           Game *game,
-                           database::DatabaseObject *object) {
-    game_ = game;
-    db_ = db;
-    object_ = object;
+  ActionLeave::ActionLeave(CommandContext& context) : context_(context) {
   }
 
   std::string ActionLeave::constructString(database::DatabaseObject *listener,
@@ -28,12 +24,14 @@ std::cout << "Tell someone" << std::endl;
   }
 
   void ActionLeave::enact() {
+/*
 std::cout << "Leave" << std::endl;
-    Notifier notify(*game_, *db_);
+Notifier notify(*(context_.game), *(context_.db));
     notify.notifySurroundings(object_,
                               boost::bind(&omush::ActionLeave::constructString,
                                           this,
                                           ::_1,
                                           ::_2));
+*/
   }
 }  // namespace omush

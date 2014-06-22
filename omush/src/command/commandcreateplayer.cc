@@ -1,10 +1,10 @@
 /**
- * \file commandconnect.cc
+ * \file commandcreateplayer.cc
  *
  * Copyright 2014 Michael Smith
  */
 
-#include "omush/command/commandconnect.h"
+#include "omush/command/commandcreateplayer.h"
 #include <boost/algorithm/string.hpp>
 #include "omush/database/database.h"
 #include "omush/database/playerutilities.h"
@@ -12,15 +12,12 @@
 #include "omush/game.h"
 
 namespace omush {
-  CommandConnect::CommandConnect() : ICommand("CONNECT") {
+  CommandCreatePlayer::CommandCreatePlayer() : ICommand("CREATE") {
   }
 
-  CommandInfo CommandConnect::process(CommandContext& context) {
+  CommandInfo CommandCreatePlayer::process(CommandContext& context) {
     CommandInfo info;
-    std::vector<std::string> cmdSplit;
-    cmdSplit = splitStringIntoSegments(context.cmdScope.currentString,
-                                       " ",
-                                       2);
+    std::vector<std::string> cmdSplit = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
     if (cmdSplit.size() < 2) {
       info.errorString = "There is no player with that name.";
       return info;
@@ -33,7 +30,8 @@ namespace omush {
 
     if (cmdSplit.size() > 1) {
       arg.push_back(cmdSplit[1]);
-    } else {
+    }
+    else {
       arg.push_back("");
     }
 
@@ -42,7 +40,7 @@ namespace omush {
     return info;
   }
 
-  bool CommandConnect::run(CommandContext& context) {
+  bool CommandCreatePlayer::run(CommandContext& context) {
     CommandInfo info = process(context);
     if (info.errorString.length() > 0) {
       context.game->sendNetworkMessage(context.descriptor, info.errorString);

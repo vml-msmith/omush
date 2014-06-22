@@ -7,17 +7,17 @@
 #ifndef OMUSH_HDRS_OMUSH_ACTION_ACTIONCONNECT_H_
 #define OMUSH_HDRS_OMUSH_ACTION_ACTIONCONNECT_H_
 
-#include "omush/database/definitions.h"
 #include "omush/action/action.h"
+#include "omush/command/commandcontext.h"
+
 namespace omush {
-  class Game;
 
   class ActionConnect : public Action {
    public:
-    ActionConnect(database::Database *db,
-                  Game *game,
-                  database::DatabaseObject *object);
+    ActionConnect(CommandContext& context);
     void enact();
+   private:
+    CommandContext& context_;
   };
 }  // namespace omush
 
