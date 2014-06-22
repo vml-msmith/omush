@@ -23,7 +23,7 @@ namespace omush {
    */
   class CommandCreatePlayer : public ICommand {
    public:
-    CommandCreate();
+    CommandCreatePlayer();
     bool run(CommandContext& context);
     CommandInfo process(CommandContext& context);
   };

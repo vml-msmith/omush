@@ -94,5 +94,9 @@ namespace omush {
     bool DatabaseObject::comparePassword(std::string str) {
       return str == password_;
     }
+
+    void DatabaseObject::setPassword(std::string str) {
+      password_ = str;
+    }
   }
 }

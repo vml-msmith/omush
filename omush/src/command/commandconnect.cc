@@ -10,6 +10,7 @@
 #include "omush/database/playerutilities.h"
 #include "omush/action/actionconnect.h"
 #include "omush/game.h"
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace omush {
   CommandConnect::CommandConnect() : ICommand("CONNECT") {
@@ -68,6 +69,8 @@ namespace omush {
     context.client->isConnected = true;
     context.game->sendNetworkMessage(context.descriptor, "** Connected **");
     context.client->dbref = player->dbref();
+    context.client->connectTime = boost::posix_time::second_clock::universal_time();
+
     context.cmdScope.enactor = player;
     context.cmdScope.executor = player;
     context.cmdScope.caller = player;

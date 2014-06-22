@@ -42,6 +42,8 @@ namespace omush {
       registerMatcher(new CommandMatcherPattern());
       registerCommand(new CommandQuit());
       registerCommand(new CommandConnect());
+      registerCommand(new CommandCreatePlayer());
+      registerCommand(new CommandWho());
     }
   };
 
@@ -51,6 +53,7 @@ namespace omush {
     DescriptorCommandParser() {
       registerMatcher(new CommandMatcherAbsolute());
       registerCommand(new CommandQuit());
+      registerCommand(new CommandWho());
     }
   };
 
@@ -173,6 +176,7 @@ namespace omush {
         return false;
 
       Client *c = &(clientList_[msg.id]);
+      c->lastCommandTime = boost::posix_time::second_clock::universal_time();
 
       CommandContext context;
       context.game = this;
@@ -255,6 +259,14 @@ namespace omush {
     options.port = 1701;
 
     server_ = new network::NetworkService(options);
+
+
+    // Setup flags.
+    flags_.addFlag(Flag("Director", 'D'));
+    flags_.addFlag(Flag("Admin", 'A'));
+    flags_.addFlag(Flag("Hidden", 'h'));
+
+
     db_ = new database::Database();
 
     database::DatabaseObject *r1=database::DatabaseObjectFactory::createRoom(db_);

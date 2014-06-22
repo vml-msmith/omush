@@ -49,6 +49,7 @@ namespace omush {
       void printAttrs();
 
       bool comparePassword(std::string str);
+      void setPassword(std::string str);
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;

@@ -18,6 +18,8 @@
 
 #include "omush/command/commandquit.h"
 #include "omush/command/commandconnect.h"
+#include "omush/command/commandcreateplayer.h"
+#include "omush/command/commandwho.h"
 
 #include "omush/command/commandhuh.h"
 #include "omush/command/commandlook.h"

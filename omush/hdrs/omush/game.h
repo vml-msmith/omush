@@ -7,12 +7,14 @@
 #ifndef OMUSH_HDRS_OMUSH_GAME_H_
 #define OMUSH_HDRS_OMUSH_GAME_H_
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 #import "signalhandler.h"
 #include <boost/uuid/uuid.hpp>
 #include <queue>
 #include <map>
 #include <string>
 #include "omush/command/commandcontext.h"
+#include "omush/flag.h"
 
 namespace omush {
 
@@ -29,6 +31,7 @@ namespace omush {
     typedef long Dbref;
   }
 
+
   struct InternalCommand {
     std::string cmd;
     database::Dbref dbref;
@@ -40,8 +43,11 @@ namespace omush {
     std::string name;
     bool isConnected;
     database::Dbref dbref;
+    boost::posix_time::ptime connectTime;
+    boost::posix_time::ptime lastCommandTime;
+    std::string doing;
 
-    Client() : isConnected(false) {}
+    Client() : isConnected(false), doing("") {}
   };
 
 
@@ -130,6 +136,7 @@ namespace omush {
     network::NetworkService *server_;
     bool shutdown_;
     database::Database *db_;
+    FlagDirectory flags_;
 
     Game(const Game&);
     void operator=(const Game&);
