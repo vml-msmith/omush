@@ -16,6 +16,7 @@ namespace omush {
     CommandDig();
     bool run(CommandContext& context);
   private:
+
     CommandInfo process(CommandContext& context);
   };
 

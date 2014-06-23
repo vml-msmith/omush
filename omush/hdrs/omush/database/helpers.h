@@ -10,10 +10,6 @@
 #include "omush/database/definitions.h"
 #include "omush/database/databaseobject.h"
 #include "omush/database/database.h"
-//#include <boost/algorithm/string/case_conv.hpp>
-//#include "omush/database/utility.h"
-//#include <boost/foreach.hpp>
-//#include "omush/utility.h"
 
 namespace omush {
   namespace database {
@@ -24,6 +20,12 @@ namespace omush {
     DatabaseObject* objectOwner(Database& db, DatabaseObject* object);
 
     std::string objectTypeString(DatabaseObject* object);
+
+    bool hasQuota(Database& db, DatabaseObject* object, int quota);
+
+    bool hasCredit(DatabaseObject* object, int quota);
+
+    bool hasPower(Database& db, DatabaseObject* object, std::string name);
 
   }  // namespace database
 }  // namespace omush

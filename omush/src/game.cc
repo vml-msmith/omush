@@ -82,6 +82,7 @@ namespace omush {
      registerCommand(new CommandThink());
      registerCommand(new CommandSet());
      registerCommand(new CommandDig());
+     registerCommand(new CommandInventory());
    }
   };
 
@@ -262,12 +263,19 @@ namespace omush {
 
 
     // Setup flags.
+    /*
     flags_.addFlag(Flag("Director", 'D'));
     flags_.addFlag(Flag("Admin", 'A'));
     flags_.addFlag(Flag("Hidden", 'h'));
-
+    */
 
     db_ = new database::Database();
+    db_->flags.addFlag(Flag("Director", 'D'));
+    db_->flags.addFlag(Flag("Admin", 'A'));
+    db_->flags.addFlag(Flag("Hidden", 'h'));
+    db_->powers.add(Power("Unlimited Quota"));
+    db_->powers.add(Power("Unlimited Credit"));
+
 
     database::DatabaseObject *r1=database::DatabaseObjectFactory::createRoom(db_);
     database::DatabaseObject *p1=database::DatabaseObjectFactory::createPlayer(db_);
@@ -279,7 +287,7 @@ namespace omush {
     p1->setProperty("name", "One");
     r2->setProperty("name", "Room Two");
     p2->setProperty("name", "Michael");
-    e1->setProperty("name", "Out One");
+    e1->setProperty("name", "Out");
     e2->setProperty("name", "Out");
     db_->moveObject(p1, r1);
     db_->moveObject(p2, r1);

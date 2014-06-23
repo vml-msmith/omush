@@ -30,5 +30,6 @@
 #include "omush/command/commandthink.h"
 #include "omush/command/commandset.h"
 #include "omush/command/commanddig.h"
+#include "omush/command/commandinventory.h"
 
 #endif  // OMUSH_HDRS_OMUSH_COMMAND_H_

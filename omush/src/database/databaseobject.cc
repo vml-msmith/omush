@@ -1,11 +1,12 @@
 #include "omush/database/databaseobject.h"
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 
 namespace omush {
   namespace database {
     DatabaseObject::DatabaseObject() :
-      password_("") {
+      password_(""), flags_(0), powers_(0) {
 
     }
     Dbref DatabaseObject::dbref() {
@@ -35,6 +36,40 @@ namespace omush {
       return properties_[propertyName];
     }
 
+    int DatabaseObject::getPropertyInt(std::string propertyName) {
+      try {
+        return boost::lexical_cast<int>(getProperty(propertyName));
+      } catch (boost::bad_lexical_cast&) {
+        return 0;
+      }
+    }
+
+    int DatabaseObject::getQuotaLimit() {
+      return getPropertyInt("quotaLimit");
+    }
+    int DatabaseObject::getCreditLimit() {
+      return getPropertyInt("creditLimit");
+    }
+    int DatabaseObject::getQuota() {
+      return getPropertyInt("quota");
+    }
+    int DatabaseObject::getCredit() {
+      return getPropertyInt("credit");
+    }
+    int DatabaseObject::getAvailableQuota() {
+      return getQuotaLimit() - getQuota();
+    }
+    int DatabaseObject::getAvailableCredit() {
+      return getCreditLimit() - getCredit();
+    }
+    void DatabaseObject::addCredit(int credit) {
+      setPropertyInt("credit", getCredit() + credit);
+    }
+    void DatabaseObject::addQuota(int quota) {
+      setPropertyInt("quota", getQuota() + quota);
+    }
+
+
     DatabaseAttribute DatabaseObject::getAttribute(std::string name) {
       boost::to_upper(name);
 
@@ -48,6 +83,17 @@ namespace omush {
     void DatabaseObject::setProperty(std::string name, std::string value) {
       boost::to_upper(name);
       properties_[name] = value;
+    }
+
+    void DatabaseObject::setPropertyInt(std::string name, int value) {
+      std::string val = "";
+      try {
+        val = boost::lexical_cast<std::string>(value);
+      } catch (boost::bad_lexical_cast&) {
+        val = "0";
+      }
+
+      setProperty(name, val);
     }
 
     void DatabaseObject::setAttribute(std::string name, std::string value) {
@@ -70,6 +116,10 @@ namespace omush {
     Dbref DatabaseObject::location() { return location_; }
     Dbref DatabaseObject::home() { return home_; }
     Dbref DatabaseObject::owner() { return owner_; }
+
+    void DatabaseObject::setOwner(DatabaseObject* obj) {
+      owner_ = obj->dbref();
+    }
 
     std::vector<Dbref> DatabaseObject::contents() { return contents_; }
 
@@ -97,6 +147,12 @@ namespace omush {
 
     void DatabaseObject::setPassword(std::string str) {
       password_ = str;
+    }
+
+    bool DatabaseObject::hasPowerByBit(uint32_t bit) {
+      std::cout << "Try Bit: " << bit << std::endl;
+      std::cout << "With : " << powers_ << std::endl;
+      return (powers_ & bit) == bit;
     }
   }
 }

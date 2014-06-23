@@ -31,8 +31,10 @@ namespace omush {
       explicit DatabaseObject();
       Dbref dbref();
       std::string getProperty(std::string propertyName);
+      int getPropertyInt(std::string propertyName);
       DatabaseAttribute getAttribute(std::string name);
       void setProperty(std::string name, std::string value);
+      void setPropertyInt(std::string name, int value);
       void setAttribute(std::string name, std::string value);
       DbObjectType type();
       Dbref location();
@@ -43,6 +45,7 @@ namespace omush {
       void home(Dbref dbref);
       Dbref home();
       Dbref owner();
+      void setOwner(DatabaseObject* obj);
       AttributeMap attributes();
       PropertyMap properties();
 
@@ -50,6 +53,18 @@ namespace omush {
 
       bool comparePassword(std::string str);
       void setPassword(std::string str);
+
+
+      int getQuotaLimit();
+      int getCreditLimit();
+      int getQuota();
+      int getCredit();
+      int getAvailableQuota();
+      int getAvailableCredit();
+      void addCredit(int credit);
+      void addQuota(int quota);
+
+      bool hasPowerByBit(uint32_t bit);
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;
@@ -62,8 +77,10 @@ namespace omush {
       Dbref home_;
       Dbref owner_;
       std::string password_;
-
       std::vector<Dbref> contents_;
+      uint64_t flags_;
+      uint64_t powers_;
+
     };
   }  // namespace database
 }  // namespace omush

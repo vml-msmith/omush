@@ -56,6 +56,18 @@ namespace omush {
       return top_;
     }
 
+    void Database::changeOwnership(DatabaseObject* obj, DatabaseObject *owner) {
+      DatabaseObject *oldOwner = findObjectByDbref(obj->owner());
+
+      if (oldOwner != NULL) {
+        oldOwner->addQuota(-1);
+      }
+
+      owner->addQuota(1);
+
+      obj->setOwner(owner);
+    }
+
 
   }  // namespace database
 }  // namespace omush

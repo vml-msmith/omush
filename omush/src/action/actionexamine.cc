@@ -60,7 +60,23 @@ namespace omush {
     if (target == NULL || enactor == NULL || db_ == NULL)
       return "";
 
-    return "\nOwner: " + NameFormatter(enactor).format(objectOwner(*(db_), target));
+    std::string creditLine = "Credits: ";
+    if (hasPower(*(db_), target, "unlimited credit")) {
+      creditLine += "UNLIMITED";
+    } else {
+      creditLine += boost::lexical_cast<std::string>(target->getAvailableQuota());
+    }
+
+
+    std::string quotaLine = "Quota: ";
+    if (hasPower(*(db_), target, "unlimited quota")) {
+      quotaLine += "UNLIMITED";
+    } else {
+      quotaLine += boost::lexical_cast<std::string>(target->getAvailableQuota());
+    }
+
+    return "\nOwner: " + NameFormatter(enactor).format(objectOwner(*(db_), target)) +
+      "   " + creditLine + "   " + quotaLine;
   }
 
   std::string ActionExamine::attributesLine() {

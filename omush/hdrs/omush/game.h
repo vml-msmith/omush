@@ -14,7 +14,6 @@
 #include <map>
 #include <string>
 #include "omush/command/commandcontext.h"
-#include "omush/flag.h"
 
 namespace omush {
 
@@ -136,7 +135,6 @@ namespace omush {
     network::NetworkService *server_;
     bool shutdown_;
     database::Database *db_;
-    FlagDirectory flags_;
 
     Game(const Game&);
     void operator=(const Game&);

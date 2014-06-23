@@ -27,6 +27,13 @@ namespace omush {
    protected:
     CommandContext& context_;
     std::string name_;
+
+    bool hasPermission();
+    bool hasQuota();
+    bool hasCredit();
+
+    int quotaCost();
+    int creditCost();
   };
 }  // namespace omush
 

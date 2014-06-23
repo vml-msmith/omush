@@ -9,6 +9,8 @@
 
 #include <map>
 #include "omush/database/definitions.h"
+#include "omush/flag.h"
+#include "omush/power.h"
 
 namespace omush {
   namespace database {
@@ -88,6 +90,11 @@ namespace omush {
        */
       DatabaseObject* findObjectByDbref(Dbref dbref);
 
+      void changeOwnership(DatabaseObject* obj,
+                           DatabaseObject *owner);
+
+      FlagDirectory flags;
+      PowerDirectory powers;
      private:
       DbMap allObjects_;
       DbTypeMap typedObjects_;

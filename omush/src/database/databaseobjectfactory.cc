@@ -5,16 +5,16 @@
 namespace omush {
   namespace database {
     DatabaseObject*  DatabaseObjectFactory::createPlayer(Database* db) {
-        DatabaseObject* obj = new DatabaseObject();
-        obj->type_ = DbObjectTypePlayer;
-        obj->setProperty("name", "Guest");
-        obj->dbref_ = db->getNextDbref();
-        obj->owner_ = obj->dbref_;
-        obj->location_ = obj->dbref_;
-        obj->home_ = obj->dbref_;
-        db->addObject(obj);
+      DatabaseObject* obj = new DatabaseObject();
+      obj->type_ = DbObjectTypePlayer;
+      obj->setProperty("name", "Guest");
+      obj->dbref_ = db->getNextDbref();
 
-        return obj;
+      obj->location_ = obj->dbref_;
+      obj->home_ = obj->dbref_;
+      db->addObject(obj);
+      db->changeOwnership(obj, obj);
+      return obj;
     }
 
     DatabaseObject* DatabaseObjectFactory::createRoom(Database* db) {
@@ -22,11 +22,11 @@ namespace omush {
       obj->type_ = DbObjectTypeRoom;
       obj->setProperty("name", "room");
       obj->dbref_ = db->getNextDbref();
-      obj->owner_ = obj->dbref_;
+
       obj->location_ = obj->dbref_;
       obj->home_ = obj->dbref_;
       db->addObject(obj);
-
+      db->changeOwnership(obj, obj);
       return obj;
     }
 
@@ -35,10 +35,11 @@ namespace omush {
       obj->type_ = DbObjectTypeExit;
       obj->setProperty("name", "room");
       obj->dbref_ = db->getNextDbref();
-      obj->owner_ = obj->dbref_;
+
       obj->location_ = obj->dbref_;
       obj->home_ = obj->dbref_;
       db->addObject(obj);
+      db->changeOwnership(obj, obj);
       return obj;
     }
   }
