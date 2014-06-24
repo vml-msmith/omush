@@ -150,9 +150,17 @@ namespace omush {
     }
 
     bool DatabaseObject::hasPowerByBit(uint32_t bit) {
-      std::cout << "Try Bit: " << bit << std::endl;
-      std::cout << "With : " << powers_ << std::endl;
       return (powers_ & bit) == bit;
+    }
+
+    void DatabaseObject::addPowerByBit(uint32_t bit) {
+      powers_ = (powers_ | bit);
+    }
+
+    void DatabaseObject::removePowerByBit(uint32_t bit) {
+      if (hasPowerByBit(bit)) {
+        powers_ = (powers_ ^ bit);
+      }
     }
   }
 }

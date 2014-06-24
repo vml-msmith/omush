@@ -3,6 +3,7 @@
  */
 #include "omush/database/helpers.h"
 #include "omush/power.h"
+#include <iostream>
 
 namespace omush {
   namespace database {
@@ -52,12 +53,31 @@ namespace omush {
     }
 
     bool hasPower(Database& db, DatabaseObject* object, std::string name) {
+      // Add provision to give God all the powers, just in case.
       Power* p = db.powers.getPower(name);
       if (p == NULL) {
         return false;
       }
 
       return object->hasPowerByBit(p->bit);
+    }
+
+    void addPower(Database& db, DatabaseObject* object, std::string name) {
+      Power* p = db.powers.getPower(name);
+      if (p == NULL) {
+        return;
+      }
+
+      return object->addPowerByBit(p->bit);
+    }
+
+    void removePower(Database& db, DatabaseObject* object, std::string name) {
+      Power* p = db.powers.getPower(name);
+      if (p == NULL) {
+        return;
+      }
+
+      return object->removePowerByBit(p->bit);
     }
   }
 }

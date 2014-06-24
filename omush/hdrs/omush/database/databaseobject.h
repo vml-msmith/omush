@@ -65,6 +65,8 @@ namespace omush {
       void addQuota(int quota);
 
       bool hasPowerByBit(uint32_t bit);
+      void addPowerByBit(uint32_t bit);
+      void removePowerByBit(uint32_t bit);
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;
