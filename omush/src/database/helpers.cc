@@ -28,8 +28,9 @@ namespace omush {
       return (object->getAvailableQuota() - quota) >= 0;
     }
 
-    bool hasCredit(DatabaseObject* object, int credit) {
-      // Has power unlimited credit.
+    bool hasCredit(Database& db, DatabaseObject* object, int credit) {
+     if (hasPower(db, object, "unlimited credits"))
+        return true;
 
       return (object->getAvailableCredit() - credit) >= 0;
     }

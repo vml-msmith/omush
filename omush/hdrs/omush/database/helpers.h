@@ -22,8 +22,7 @@ namespace omush {
     std::string objectTypeString(DatabaseObject* object);
 
     bool hasQuota(Database& db, DatabaseObject* object, int quota);
-
-    bool hasCredit(DatabaseObject* object, int quota);
+    bool hasCredit(Database& db, DatabaseObject* object, int quota);
 
     bool hasPower(Database& db, DatabaseObject* object, std::string name);
     void addPower(Database& db, DatabaseObject* object, std::string name);

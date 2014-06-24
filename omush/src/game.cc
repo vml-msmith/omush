@@ -275,7 +275,7 @@ namespace omush {
     db_->flags.addFlag(Flag("Admin", 'A'));
     db_->flags.addFlag(Flag("Hidden", 'h'));
     db_->powers.add(Power("Unlimited Quota"));
-    db_->powers.add(Power("Unlimited Credit"));
+    db_->powers.add(Power("Unlimited Credits"));
 
 
     database::DatabaseObject *r1=database::DatabaseObjectFactory::createRoom(db_);

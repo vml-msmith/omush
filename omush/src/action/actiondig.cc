@@ -30,7 +30,8 @@ namespace omush {
   }
 
   bool ActionDig::hasCredit() {
-    return database::hasCredit(context_.cmdScope.executor,
+    return database::hasCredit(*(context_.db),
+                               context_.cmdScope.executor,
                                creditCost());
   }
 
