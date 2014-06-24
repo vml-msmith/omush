@@ -29,9 +29,9 @@ namespace omush {
     database::removePowerByBit(player_, power_->bit);
     // Test powers.
     Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                                      "Power '" + power_->name + "' removed from '" + NameFormatter(context_.cmdScope.executor).formatInline(player_) + ".");
+                                                      "Power '" + power_->name + "' removed from " + NameFormatter(context_.cmdScope.executor).formatInline(player_) + ".");
     Notifier(*(context_.game), *(context_.db)).notify(player_,
-                                                      "You power '" + power_->name + "' has been removed by '" + NameFormatter(player_).formatInline(context_.cmdScope.executor) + ".");
+                                                      "You power '" + power_->name + "' has been removed by " + NameFormatter(player_).formatInline(context_.cmdScope.executor) + ".");
   }
 
   ActionPowerRemove& ActionPowerRemove::player(database::DatabaseObject *player) {

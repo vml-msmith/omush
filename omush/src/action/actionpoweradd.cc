@@ -30,9 +30,9 @@ namespace omush {
     database::addPowerByBit(player_, power_->bit);
     // Test powers.
     Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                                      "Power '" + power_->name + "' granted to '" + NameFormatter(context_.cmdScope.executor).formatInline(player_) + ".");
+                                                      "Power '" + power_->name + "' granted to " + NameFormatter(context_.cmdScope.executor).formatInline(player_) + ".");
     Notifier(*(context_.game), *(context_.db)).notify(player_,
-                                                      "You have been granted the power '" + power_->name + "' by '" + NameFormatter(player_).formatInline(context_.cmdScope.executor) + ".");
+                                                      "You have been granted the power '" + power_->name + "' by " + NameFormatter(player_).formatInline(context_.cmdScope.executor) + ".");
   }
 
   ActionPowerAdd& ActionPowerAdd::player(database::DatabaseObject *player) {
