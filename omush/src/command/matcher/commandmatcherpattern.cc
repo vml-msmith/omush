@@ -53,7 +53,14 @@ namespace omush {
       return "";
     }
 
-    std::string command = inputParts[0];
+    std::vector<std::string> slashParts;
+    boost::split(slashParts, inputParts[0], boost::is_any_of("/"));
+
+    if (slashParts.size() == 0) {
+      return inputParts[0];
+    }
+
+    std::string command = slashParts[0];
     return command;
   }
 

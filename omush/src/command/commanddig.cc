@@ -14,12 +14,6 @@
 #include "omush/function/function.h"
 #include "omush/database/helpers.h"
 
-/*
-#include "omush/utility.h"
-#include "omush/database/database.h"
-#include "omush/action/actionsetattribute.h"
-#include "omush/database/targetmatcher.h"
-*/
 namespace omush {
 
   CommandDig::CommandDig() : ICommand("@DIG") {

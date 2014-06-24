@@ -83,6 +83,7 @@ namespace omush {
      registerCommand(new CommandSet());
      registerCommand(new CommandDig());
      registerCommand(new CommandInventory());
+     registerCommand(new CommandPower());
    }
   };
 

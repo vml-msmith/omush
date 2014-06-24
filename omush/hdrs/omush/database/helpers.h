@@ -26,9 +26,10 @@ namespace omush {
     bool hasCredit(DatabaseObject* object, int quota);
 
     bool hasPower(Database& db, DatabaseObject* object, std::string name);
-    void  addPower(Database& db, DatabaseObject* object, std::string name);
+    void addPower(Database& db, DatabaseObject* object, std::string name);
+    void addPowerByBit(DatabaseObject* object, uint32_t bit);
     void removePower(Database& db, DatabaseObject* object, std::string name);
-
+    void removePowerByBit(DatabaseObject* object, uint32_t bit);
 
   }  // namespace database
 }  // namespace omush

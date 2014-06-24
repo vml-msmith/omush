@@ -71,6 +71,14 @@ namespace omush {
       return object->addPowerByBit(p->bit);
     }
 
+    void addPowerByBit(DatabaseObject* object, uint32_t bit) {
+      return object->addPowerByBit(bit);
+    }
+
+    void removePowerByBit(DatabaseObject* object, uint32_t bit) {
+      return object->removePowerByBit(bit);
+    }
+
     void removePower(Database& db, DatabaseObject* object, std::string name) {
       Power* p = db.powers.getPower(name);
       if (p == NULL) {

@@ -8,7 +8,6 @@
 #define OMUSH_HDRS_OMUSH_COMMAND_COMMANDDIG_H_
 
 #include "omush/command/icommand.h"
-#include <string>
 
 namespace omush {
   class CommandDig : public ICommand {
