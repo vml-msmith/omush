@@ -34,9 +34,11 @@ namespace omush {
 
   class PowerDirectory {
    public:
+    PowerDirectory();
     uint64_t add(Power p);
     uint64_t getPowerBit(std::string p);
     Power* getPower(std::string p);
+    std::map<std::string, Power> getAllPowers();
 
    private:
     uint64_t highBit;

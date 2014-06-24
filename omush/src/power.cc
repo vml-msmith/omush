@@ -11,14 +11,19 @@
 #include <boost/algorithm/string.hpp>
 
 namespace omush {
+  PowerDirectory::PowerDirectory() {
+    highBit = 1;
+  }
   uint64_t PowerDirectory::add(Power p) {
     std::string name = p.name;
     boost::to_upper(name);
 
     if (powerMap.find(name) == powerMap.end()) {
-      powerMap.insert(std::pair<std::string, Power>(name, p));
       highBit = highBit << 1;
+
       p.bit = highBit;
+
+      powerMap.insert(std::pair<std::string, Power>(name, p));
       powerBitMap.insert(std::pair<uint64_t, Power*>(highBit, &(powerMap[p.name])));
     }
 
@@ -46,4 +51,9 @@ namespace omush {
 
     return &(powerMap[name]);
   }
+
+  std::map<std::string, Power> PowerDirectory::getAllPowers() {
+    return powerMap;
+  }
+
 }  // namespace omush
