@@ -30,6 +30,7 @@
 #include "omush/command/commandthink.h"
 #include "omush/command/commandset.h"
 #include "omush/command/commanddig.h"
+#include "omush/command/commandcreate.h"
 #include "omush/command/commandinventory.h"
 #include "omush/command/commandpower.h"
 

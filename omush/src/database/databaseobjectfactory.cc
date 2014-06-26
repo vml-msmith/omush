@@ -33,9 +33,21 @@ namespace omush {
     DatabaseObject* DatabaseObjectFactory::createExit(Database* db) {
       DatabaseObject* obj = new DatabaseObject();
       obj->type_ = DbObjectTypeExit;
-      obj->setProperty("name", "room");
+      obj->setProperty("name", "exit");
       obj->dbref_ = db->getNextDbref();
 
+      obj->location_ = obj->dbref_;
+      obj->home_ = obj->dbref_;
+      db->addObject(obj);
+      db->changeOwnership(obj, obj);
+      return obj;
+    }
+
+    DatabaseObject* DatabaseObjectFactory::createThing(Database* db) {
+      DatabaseObject* obj = new DatabaseObject();
+      obj->type_ = DbObjectTypeThing;
+      obj->setProperty("name", "thing");
+      obj->dbref_ = db->getNextDbref();
       obj->location_ = obj->dbref_;
       obj->home_ = obj->dbref_;
       db->addObject(obj);

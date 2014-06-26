@@ -60,7 +60,7 @@ namespace omush {
       return getQuotaLimit() - getQuota();
     }
     int DatabaseObject::getAvailableCredit() {
-      return getCreditLimit() - getCredit();
+      return getCredit();
     }
     void DatabaseObject::addCredit(int credit) {
       setPropertyInt("credit", getCredit() + credit);

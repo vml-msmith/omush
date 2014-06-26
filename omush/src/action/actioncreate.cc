@@ -1,81 +1,83 @@
 /**
- * \file actiondig.cc
+ * \file actioncreate.cc
  *
  * Copyright 2014 Michael Smith
  */
 
-#include "omush/action/actiondig.h"
+#include "omush/action/actioncreate.h"
 #include "omush/database/database.h"
 #include "omush/database/databaseobjectfactory.h"
 #include "omush/database/helpers.h"
 #include "omush/nameformatter.h"
 
 namespace omush {
-  ActionDig::ActionDig(CommandContext& context) : context_(context), name_(""), newRoom(NULL) {
+  ActionCreate::ActionCreate(CommandContext& context) : context_(context), name_(""), newRoom(NULL) {
   }
 
-  ActionDig& ActionDig::name(std::string value) {
+  ActionCreate& ActionCreate::name(std::string value) {
     name_ = value;
     return *this;
   }
 
 
-  bool ActionDig::hasPermission() {
+  bool ActionCreate::hasPermission() {
     return true;
   }
 
-  bool ActionDig::hasQuota() {
+  bool ActionCreate::hasQuota() {
     return database::hasQuota(*(context_.db),
                               context_.cmdScope.executor,
                               quotaCost());
   }
 
-  bool ActionDig::hasCredit() {
+  bool ActionCreate::hasCredit() {
     return database::hasCredit(*(context_.db),
                                context_.cmdScope.executor,
                                creditCost());
   }
 
-  int ActionDig::quotaCost() {
+  int ActionCreate::quotaCost() {
     return 1;
   }
 
-  int ActionDig::creditCost() {
+  int ActionCreate::creditCost() {
     return 10;
   }
 
-  void ActionDig::enact() {
+  void ActionCreate::enact() {
     if (name_.length() == 0) {
       Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                                        "That's a silly name for a room.");
+                                                        "That's a silly name for a thing.");
       // Not gonna work.
     }
 
     if (!hasPermission()) {
             Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                                                "You don't have permission to dig a room.");
+                                                              "You don't have permission to create an object.");
       return;
     }
 
     if (!hasQuota()) {
       Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                                          "You don't have the available quota to dig a room.");
+                                                          "You don't have the available quota to create an object.");
       return;
     }
 
     if (!hasCredit()) {
       Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                                          "You don't have the available credit to dig a roomm.");
+                                                          "You don't have the available credit to create an object.");
       return;
     }
 
 
-    database::DatabaseObject *r1 = database::DatabaseObjectFactory::createRoom(context_.db);
+    database::DatabaseObject *r1 = database::DatabaseObjectFactory::createThing(context_.db);
     r1->setProperty("name", name_);
 
     context_.db->changeOwnership(r1, context_.cmdScope.executor);
+    context_.db->moveObject(r1, context_.cmdScope.executor);
+
     Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                  NameFormatter(object_).format(r1) + " has been dug.");
+                                  "Created " + NameFormatter(object_).format(r1) + ".");
 
     newRoom = r1;
   }

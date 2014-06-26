@@ -12,44 +12,26 @@
 
 namespace omush {
 
-  CommandInventory::CommandInventory() : ICommand("@INVENTORY") {
+  CommandInventory::CommandInventory() : ICommand("INVENTORY") {
   }
 
   CommandInfo CommandInventory::process(CommandContext& context) {
     CommandInfo info;
-    /*
     std::vector<std::string> cmdSplit = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
+
+    if (cmdSplit.size() > 1) {
+      info.errorString = "Inventory takes no arguments.";
+      return info;
+    }
 
     info.switches = splitStringIntoSegments(cmdSplit[0], "/", 10);
     info.switches.erase(info.switches.begin());
 
-    if (cmdSplit.size() <= 1) {
-      info.errorString = "Dig what?";
+    if (info.switches.size() > 0) {
+      info.errorString = "Inventory takes no switches.";
       return info;
     }
-    info.rawArgs = cmdSplit[1];
 
-    std::vector<std::string> eqSplit = splitStringIntoSegments(info.rawArgs, "=", 2);
-    if (eqSplit.size() > 0) {
-      std::vector<std::string> arg0;
-      arg0.push_back(processExpression(eqSplit[0], context.funcScope).basicString());
-      info.eqArgs.push_back(arg0);
-    }
-
-    if (eqSplit.size() > 1) {
-
-      std::vector<std::string> arg0;
-      std::string arg1  = processExpression(eqSplit[1], context.funcScope).basicString();
-      std::vector<std::string> cSplit = splitStringIntoSegments(arg1, ",", 2);
-
-      BOOST_FOREACH(std::string value, cSplit) {
-        boost::trim(value);
-        arg0.push_back(value);
-      }
-
-      info.eqArgs.push_back(arg0);
-    }
-    */
     return info;
   }
 

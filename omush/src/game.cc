@@ -82,6 +82,7 @@ namespace omush {
      registerCommand(new CommandThink());
      registerCommand(new CommandSet());
      registerCommand(new CommandDig());
+     registerCommand(new CommandCreate());
      registerCommand(new CommandInventory());
      registerCommand(new CommandPower());
    }
@@ -263,19 +264,19 @@ namespace omush {
     server_ = new network::NetworkService(options);
 
 
-    // Setup flags.
-    /*
-    flags_.addFlag(Flag("Director", 'D'));
-    flags_.addFlag(Flag("Admin", 'A'));
-    flags_.addFlag(Flag("Hidden", 'h'));
-    */
+
 
     db_ = new database::Database();
     db_->flags.addFlag(Flag("Director", 'D'));
     db_->flags.addFlag(Flag("Admin", 'A'));
     db_->flags.addFlag(Flag("Hidden", 'h'));
+
+
     db_->powers.add(Power("Unlimited Quota"));
     db_->powers.add(Power("Unlimited Credits"));
+    db_->powers.add(Power("@hide from everyone"));
+
+
 
 
     database::DatabaseObject *r1=database::DatabaseObjectFactory::createRoom(db_);
