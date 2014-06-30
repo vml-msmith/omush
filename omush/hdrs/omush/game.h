@@ -125,10 +125,10 @@ namespace omush {
      */
     void shutdown();
 
-
     ClientMap& clientList() {
       return clientList_;
     }
+
    protected:
     std::queue<InternalCommand> commandList_;
     ClientMap clientList_;

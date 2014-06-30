@@ -32,6 +32,8 @@
 #include "omush/notifier.h"
 #include "omush/database/targetmatcher.h"
 #include "omush/function/function.h"
+#include "omush/database/databasefactory.h"
+#include "omush/database/storage.h"
 
 namespace omush {
 
@@ -266,43 +268,7 @@ namespace omush {
 
 
 
-    db_ = new database::Database();
-    db_->flags.addFlag(Flag("Director", 'D'));
-    db_->flags.addFlag(Flag("Admin", 'A'));
-    db_->flags.addFlag(Flag("Hidden", 'h'));
-
-
-    db_->powers.add(Power("Unlimited Quota"));
-    db_->powers.add(Power("Unlimited Credits"));
-    db_->powers.add(Power("Teleport Any Object"));
-    db_->powers.add(Power("Teleport Anywhere"));
-    db_->powers.add(Power("Modify Any Object"));
-    db_->powers.add(Power("Link Anywhere"));
-    db_->powers.add(Power("Hide From Everyone"));
-    db_->powers.add(Power("Examine Any Object"));
-    db_->powers.add(Power("Broadcast"));
-    db_->powers.add(Power("Boot"));
-
-    database::DatabaseObject *r1=database::DatabaseObjectFactory::createRoom(db_);
-    database::DatabaseObject *p1=database::DatabaseObjectFactory::createPlayer(db_);
-    database::DatabaseObject *r2=database::DatabaseObjectFactory::createRoom(db_);
-    database::DatabaseObject *p2=database::DatabaseObjectFactory::createPlayer(db_);
-    database::DatabaseObject *e1=database::DatabaseObjectFactory::createExit(db_);
-    database::DatabaseObject *e2=database::DatabaseObjectFactory::createExit(db_);
-
-    r1->setProperty("name", "Room Zero");
-    p1->setProperty("name", "One");
-    r2->setProperty("name", "Room Two");
-    p2->setProperty("name", "Michael");
-    e1->setProperty("name", "Out");
-    e2->setProperty("name", "Out");
-    db_->moveObject(p1, r1);
-    db_->moveObject(p2, r1);
-    e1->home(r2->dbref());
-    e2->home(r1->dbref());
-    db_->moveObject(e1, r1);
-    db_->moveObject(e2, r2);
-
+    db_ = database::DatabaseFactory::createDatabase();
 
     GameTimer timer(.05f, 0);
     timer.registerInterupt(boost::bind(&Game::inShutdown, this));
@@ -321,6 +287,22 @@ namespace omush {
     server_->start();
     timer.run();
     shutdown();
+
+    database::Storage storage;
+    if (!storage.openFile("objects.db"))
+      return;
+
+    storage.createTables();
+
+    for (int i = 0; i < db_->getNextDbref(); ++i) {
+      database::DatabaseObject* object = db_->findObjectByDbref(i);
+      if (object == NULL)
+        continue;
+
+      database::ObjectPersister p(object);
+      p.write(storage);
+    }
+    storage.closeFile();
 
     delete db_;
     delete server_;

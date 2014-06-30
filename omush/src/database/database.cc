@@ -68,6 +68,14 @@ namespace omush {
       obj->setOwner(owner);
     }
 
+    void Database::setRoot(DatabaseObject *object) {
+      root_ = object->dbref();
+    }
+
+    DatabaseObject* Database::root() {
+      return findObjectByDbref(root_);
+    }
+
 
   }  // namespace database
 }  // namespace omush

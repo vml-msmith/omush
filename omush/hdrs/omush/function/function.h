@@ -191,6 +191,8 @@ namespace omush {
       if (args.size() == 3) {
         return findSelfContained(args[2], context);
       }
+
+      return ColorString("");
     }
   };
 

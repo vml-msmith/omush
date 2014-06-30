@@ -11,6 +11,7 @@
 #include "omush/database/definitions.h"
 #include "omush/flag.h"
 #include "omush/power.h"
+#include "omush/database/attributetable.h"
 
 namespace omush {
   namespace database {
@@ -90,16 +91,34 @@ namespace omush {
        */
       DatabaseObject* findObjectByDbref(Dbref dbref);
 
+      /**
+       *
+       */
       void changeOwnership(DatabaseObject* obj,
                            DatabaseObject *owner);
+
+
+      /**
+       * Set the root object for the Database. This is God.
+       */
+      void setRoot(DatabaseObject *object);
+
+      /**
+       * Retrive the root object.
+       */
+      DatabaseObject* root();
+
 
       FlagDirectory flags;
       FlagDirectory attributeFlags;
       PowerDirectory powers;
+      AttributeTable attributes;
      private:
       DbMap allObjects_;
       DbTypeMap typedObjects_;
       Dbref top_;
+
+      Dbref root_;
     };
 
   }  // namespace database

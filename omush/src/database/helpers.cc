@@ -78,6 +78,10 @@ namespace omush {
                       DatabaseObject* object,
                       DatabaseObject* target,
                       std::string name) {
+
+      if (db.root() == object)
+        return true;
+
       std::vector<bool> powers;
 
       for (int i = 0; i <= 5; ++i) {
@@ -168,6 +172,9 @@ namespace omush {
     }
 
     bool hasPower(Database& db, DatabaseObject* object, std::string name, int level) {
+      if (db.root() == object)
+        return true;
+
       // Add provision to give God all the powers, just in case.
       Power* p = db.powers.getPower(name);
       if (p == NULL) {

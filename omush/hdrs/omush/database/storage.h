@@ -15,15 +15,18 @@
 
 namespace omush {
   namespace database {
-    static int rNodeCallback(void *data, int argc, char **argv, char **azColName);
+    static int rNodeCallback(void *data,
+                             int argc,
+                             char **argv,
+                             char **azColName);
 
-struct SQLRecord {
-  std::map<std::string, std::string> values;
-};
+    struct SQLRecord {
+      std::map<std::string, std::string> values;
+    };
 
-struct SQLResults {
-  std::vector<SQLRecord> rows;
-};
+    struct SQLResults {
+      std::vector<SQLRecord> rows;
+    };
 
     struct RNode;
 
@@ -32,7 +35,6 @@ struct SQLResults {
       std::map<std::string, std::string> values;
       RNode* next;
     };
-
 
     class Storage {
      public:

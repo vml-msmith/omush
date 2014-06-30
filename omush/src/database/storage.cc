@@ -1,11 +1,13 @@
 #include "omush/database/storage.h"
+#include "omush/database/helpers.h"
+#include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
 namespace omush {
   namespace database {
     static int rNodeCallback(void *data, int argc, char **argv, char **azColName) {
       int i;
-      std::cerr << "Callback" << std::endl;
+      //std::cerr << "Callback" << std::endl;
       RNode *d = (RNode*)data;
       RNode *n = NULL;
       if (data == NULL) {
@@ -25,17 +27,16 @@ namespace omush {
       }
 
       //   fprintf(stderr, "%s: ", (const char*)data);
-      std::cerr << "Callback" << std::endl;
+      //      std::cerr << "Callback" << std::endl;
       for(i=0; i<argc; i++){
         n->record.values.insert(std::pair<std::string,std::string>(std::string(azColName[i]), std::string(argv[i])));
         //        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
       }
-      printf("\n");
+      //      printf("\n");
       return 0;
     }
 
     Storage::Storage() {
-      std::cout << "Test" << std::endl;
       isOpen_ = false;
     }
 
@@ -44,7 +45,6 @@ namespace omush {
         // TODO(msmith) Log this. Need to close before we can open.
         return false;
       }
-      std::cout << "here" << std::endl;
 
       fileName_ = fileName;
       int error;
@@ -128,7 +128,7 @@ namespace omush {
         sql += ") VALUES " + val + ")";
 
 
-        std::cout << sql << std::endl;
+        //        std::cout << sql << std::endl;
         statement(sql);
       }
       else {
@@ -146,7 +146,7 @@ namespace omush {
         sql += " WHERE " + conditions;;
 
 
-        std::cout << sql << std::endl;
+        //        std::cout << sql << std::endl;
         statement(sql);
       }
     }
@@ -181,7 +181,7 @@ namespace omush {
         while (result != NULL) {
           results.rows.push_back(result->record);
           for (std::map<std::string,std::string>::iterator iter = result->record.values.begin(); iter != result->record.values.end(); ++iter) {
-            std::cout << iter->first << " = " << iter->second << std::endl;
+             std::cout << "COUT " <<  iter->first << " = " << iter->second << std::endl;
           }
           result = result->next;
         }
@@ -271,7 +271,9 @@ namespace omush {
       std::map<std::string,std::string> values;
       values.insert(std::pair<std::string,std::string>("NAME", object_->getProperty("name")));
       values.insert(std::pair<std::string,std::string>("ID", boost::lexical_cast<std::string>(object_->dbref())));
-      values.insert(std::pair<std::string,std::string>("TYPE", "THING"));
+      std::string type = objectTypeString(object_);
+      boost::to_upper(type);
+      values.insert(std::pair<std::string,std::string>("TYPE", type));
 
       std::vector<std::string> unique;
       unique.push_back("NAME");

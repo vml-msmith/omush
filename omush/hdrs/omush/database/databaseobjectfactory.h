@@ -15,10 +15,21 @@ namespace omush {
   namespace database {
     class DatabaseObjectFactory {
      public:
+      static std::map<std::string,DbObjectType> types;
+
+      static DatabaseObject* createObject(Database* db,
+                                          std::string type);
+      static DatabaseObject* createObject(Database* db,
+                                          std::string type,
+                                          Dbref dbref);
       static DatabaseObject* createPlayer(Database* db);
+      static DatabaseObject* createPlayer(Database* db, Dbref dbref);
       static DatabaseObject* createRoom(Database* db);
+      static DatabaseObject* createRoom(Database* db, Dbref dbref);
       static DatabaseObject* createExit(Database* db);
+      static DatabaseObject* createExit(Database* db, Dbref dbref);
       static DatabaseObject* createThing(Database* db);
+      static DatabaseObject* createThing(Database* db, Dbref dbref);
     };
 
   }  // namespace database
