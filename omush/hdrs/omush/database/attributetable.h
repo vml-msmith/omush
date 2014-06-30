@@ -11,9 +11,9 @@ namespace omush {
   struct Atrribute {
     std::string name;
 
-    bool special;
     uint32_t setPermission;
     uint32_t viewPermission;
+    uint32_t flags;
     Attribute()
     Attribute(std::string name) {} : special(false), name(n) {}
   };
