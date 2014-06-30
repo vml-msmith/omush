@@ -274,10 +274,14 @@ namespace omush {
 
     db_->powers.add(Power("Unlimited Quota"));
     db_->powers.add(Power("Unlimited Credits"));
-    db_->powers.add(Power("@hide from everyone"));
-
-
-
+    db_->powers.add(Power("Teleport Any Object"));
+    db_->powers.add(Power("Teleport Anywhere"));
+    db_->powers.add(Power("Modify Any Object"));
+    db_->powers.add(Power("Link Anywhere"));
+    db_->powers.add(Power("Hide From Everyone"));
+    db_->powers.add(Power("Examine Any Object"));
+    db_->powers.add(Power("Broadcast"));
+    db_->powers.add(Power("Boot"));
 
     database::DatabaseObject *r1=database::DatabaseObjectFactory::createRoom(db_);
     database::DatabaseObject *p1=database::DatabaseObjectFactory::createPlayer(db_);
@@ -285,6 +289,7 @@ namespace omush {
     database::DatabaseObject *p2=database::DatabaseObjectFactory::createPlayer(db_);
     database::DatabaseObject *e1=database::DatabaseObjectFactory::createExit(db_);
     database::DatabaseObject *e2=database::DatabaseObjectFactory::createExit(db_);
+
     r1->setProperty("name", "Room Zero");
     p1->setProperty("name", "One");
     r2->setProperty("name", "Room Two");

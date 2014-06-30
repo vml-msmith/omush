@@ -103,17 +103,19 @@ namespace omush {
 
     std::vector<std::string> inputParts = splitStringIntoSegments(str, " ", 2);
     if (inputParts.size() < 2) {
-      context.modifiedInput = "@SET";
+      context.cmdScope.currentString = "@SET";
     }
     else {
       std::vector<std::string> eqParts = splitStringIntoSegments(inputParts[1], "=", 2);
       if (eqParts.size() == 2) {
-        context.modifiedInput = "@SET " + eqParts[0] + "=" + newCommand + ":" + eqParts[1];
+        context.cmdScope.currentString = "@SET " + eqParts[0] + "=" + newCommand + ":" + eqParts[1];
       }
     }
 
     return cachedMap_["@SET"];
   }
+
+
 
   bool CommandMatcherAttributeSetter::isCached() {
     return false;

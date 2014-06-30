@@ -63,7 +63,6 @@ namespace omush {
 
         if (database::Utility::isDbref(target)) {
           Dbref dbref = database::Utility::parseDbrefFromString(target);
-
           DatabaseObject *obj = db_->findObjectByDbref(dbref);
           if (obj != NULL && matchType(obj)) {
             response.push_back(obj);

@@ -27,13 +27,35 @@ namespace omush {
     Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
                                                       "Power List..\n----------");
 
+    std::vector<std::string> powerLevels;
+    powerLevels.push_back("");
+    powerLevels.push_back(", Lower Class");
+    powerLevels.push_back(" In Empire");
+    powerLevels.push_back(" In Empire, Lower Class");
+    powerLevels.push_back(" In Division");
+    powerLevels.push_back(" In Division, Lower Class");
+
     std::map<std::string,Power> allPowers = context_.db->powers.getAllPowers();
     for (std::map<std::string,Power>::iterator it = allPowers.begin();
          it != allPowers.end();
          ++it) {
-      if (database::hasPower(*context_.db, player_, it->first)) {
-        Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                                          it->second.name);
+      std::string msg = "";
+      for (int level = 1; level <= 5; ++level) {
+        if (database::hasPower(*context_.db, player_, it->first, level)) {
+          msg = context_.db->powers.powerToName(&(it->second), level);
+          break;
+        }
+      }
+      if (msg.length() == 0) {
+        if (database::hasPower(*context_.db, player_, it->first)) {
+          msg = context_.db->powers.powerToName(&(it->second), 0);
+        }
+      }
+      std::cout << "Power " << it->first << std::endl;
+      std::cout << "MEssage: " << msg << std::endl;
+      if (msg.length() > 0) {
+          Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
+                                                            msg);
       }
     }
 

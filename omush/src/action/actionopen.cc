@@ -29,7 +29,7 @@ namespace omush {
   }
 
   void ActionOpen::enact() {
-    std::cout << " 111" << std::endl;
+
     if (name_.length() == 0) {
       Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
                                                         "That's a silly name for an exit.");

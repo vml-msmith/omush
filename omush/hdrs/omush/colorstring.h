@@ -2,6 +2,22 @@
  * \file utility.h
  *
  * Copyright 2014 Michael Smith
+ *
+ * The ColorString class represents an intermal MUSH string that has been
+ * sent throug the expression engine or otherwise includes meta-data about how
+ * it should be displayed.
+ *
+ * Just adding tags to strings for color, underlines or other options will
+ * create strings that we can't utilize MUHS softcode operations on. GEtting
+ * the string length of a string should not return the length of the string
+ * with all the extra information for instance, it should only return the number
+ * of characters in the visible string.
+ *
+ * Most (if not all) MUSH functions dealing with extracting data or manipulating
+ * a string should have a counterpart method on the ColorString class.
+ *
+ * Ex:
+ *  strlen(<span color="red">Hi</span>) should only return "2".
  */
 
 #ifndef OMUSH_HDRS_OMUSH_COLORSTRING_H_
@@ -14,7 +30,6 @@
 #include <vector>
 
 namespace omush {
-
 
   class ColorSequence {
    public:

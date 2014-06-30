@@ -94,6 +94,7 @@ namespace omush {
                            DatabaseObject *owner);
 
       FlagDirectory flags;
+      FlagDirectory attributeFlags;
       PowerDirectory powers;
      private:
       DbMap allObjects_;

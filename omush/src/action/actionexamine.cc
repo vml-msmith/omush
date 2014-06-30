@@ -189,16 +189,26 @@ namespace omush {
     // TODO(msmith): Put these in a vector and join at the end.
     //               That way maybe we can shuffle things around.
     response += nameLine();
-    response += descriptionLine();
-    response += typeLine();
-    response += " Flags: ";
-    response += ownerLine();
-    response += "\nParents: ";
-    response += attributesLine();
-    response += exitsLine();
-    response += contentsLine();
-    response += "\nHome: ";
-    response += "\nLocation: ";
+    /*
+    if (!hasPermission()) {
+            Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
+                                                                "You don't have permission to dig a room.");
+      return;
+    }
+    */
+
+    if (target->owner() == enactor->owner() || hasPowerOver(*(db_), enactor, target, "Examine Any Object")) {
+        response += descriptionLine();
+        response += typeLine();
+        response += " Flags: ";
+        response += ownerLine();
+        response += "\nParents: ";
+        response += attributesLine();
+        response += exitsLine();
+        response += contentsLine();
+        response += "\nHome: ";
+        response += "\nLocation: ";
+      }
 
 
     notifyEnactor(response);

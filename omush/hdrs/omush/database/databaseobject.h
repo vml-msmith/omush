@@ -67,6 +67,8 @@ namespace omush {
       bool hasPowerByBit(uint32_t bit);
       void addPowerByBit(uint32_t bit);
       void removePowerByBit(uint32_t bit);
+      bool hasPowerByBit(uint32_t bit, int level);
+      void addPowerByBit(uint32_t bit, int level);
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;
@@ -81,7 +83,7 @@ namespace omush {
       std::string password_;
       std::vector<Dbref> contents_;
       uint64_t flags_;
-      uint64_t powers_;
+      std::vector<uint64_t> powers_;
 
     };
   }  // namespace database

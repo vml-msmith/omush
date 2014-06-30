@@ -6,8 +6,9 @@
 namespace omush {
   namespace database {
     DatabaseObject::DatabaseObject() :
-      password_(""), flags_(0), powers_(0) {
-
+      password_(""), flags_(0) {
+      for (int i = 0; i <= 5; ++i)
+        powers_.push_back(0);
     }
     Dbref DatabaseObject::dbref() {
       return dbref_;
@@ -150,16 +151,34 @@ namespace omush {
     }
 
     bool DatabaseObject::hasPowerByBit(uint32_t bit) {
-      return (powers_ & bit) == bit;
+      return hasPowerByBit(bit, 0);
+    }
+
+    bool DatabaseObject::hasPowerByBit(uint32_t bit, int level) {
+      if (level < 0 || level > 5)
+        return false;
+
+      return (powers_[level] & bit) == bit;
     }
 
     void DatabaseObject::addPowerByBit(uint32_t bit) {
-      powers_ = (powers_ | bit);
+      addPowerByBit(bit, 0);
+    }
+
+
+    void DatabaseObject::addPowerByBit(uint32_t bit, int level) {
+      if (level < 0 || level > 5)
+        return;
+
+      powers_[level] = (powers_[level] | bit);
+
+      if (level != 0)
+        powers_[0] = (powers_[0] | bit);
     }
 
     void DatabaseObject::removePowerByBit(uint32_t bit) {
       if (hasPowerByBit(bit)) {
-        powers_ = (powers_ ^ bit);
+        powers_[0] = (powers_[0] ^ bit);
       }
     }
   }

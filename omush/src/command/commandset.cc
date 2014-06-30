@@ -22,7 +22,7 @@ namespace omush {
                           database::DatabaseObject *enactor,
                           std::string msg) {
     Notifier(*(context.game), *(context.db)).notify(enactor,
-                                                    "I can't see that here.");
+                                                    msg);
   }
 
   bool CommandSet::run(CommandContext& context) {
@@ -39,6 +39,7 @@ namespace omush {
     database::TargetMatcher matcher(context.db, executor);
 
     matches = matcher.match(eqParts[0]);
+
     if (matches.size() == 0) {
       Notifier(*(context.game), *(context.db)).notify(executor,
                                                       "I can't see that here.");

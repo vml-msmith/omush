@@ -34,13 +34,19 @@ namespace omush {
 
   class PowerDirectory {
    public:
+    static std::string makePowerNameFromLevel(std::string name, int level);
+
     PowerDirectory();
     uint64_t add(Power p);
     uint64_t getPowerBit(std::string p);
     Power* getPower(std::string p);
+    int getLevelFromString(std::string p);
+    std::string powerToName(Power *p, int level);
     std::map<std::string, Power> getAllPowers();
 
    private:
+    std::vector<std::string> powerLevels_;
+
     uint64_t highBit;
     std::map<uint64_t, Power*> powerBitMap;
     std::map<std::string, Power> powerMap;

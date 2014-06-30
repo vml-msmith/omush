@@ -97,10 +97,12 @@ namespace omush {
       return true;
     }
 
+    int level = context.db->powers.getLevelFromString(info.eqArgs[1][0]);
+    std::cout << "LEveL " << level << std::endl;
     // TODO: Add power checking. I dunno if this should be in action,
     // or command.
 
-    ActionPowerAdd(context).player(player).power(p).enact();
+    ActionPowerAdd(context).player(player).power(p).level(level).enact();
     return true;
   }
 

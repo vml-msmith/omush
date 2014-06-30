@@ -23,10 +23,12 @@ namespace omush {
     void enact();
     ActionPowerAdd& player(database::DatabaseObject* player);
     ActionPowerAdd& power(Power *p);
+    ActionPowerAdd& level(int level);
    private:
     database::DatabaseObject* player_;
     CommandContext& context_;
     Power* power_;
+    int level_;
   };
 
 } // omush
