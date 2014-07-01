@@ -246,14 +246,13 @@ namespace omush {
   }
 
   void Game::closeNetworkConnection(network::ConnectionId id) {
-    sendNetworkMessage(id, "Going Down");
+    //    sendNetworkMessage(id, "Going Down");
     server_->closeNetworkConnection(id);
   }
 
   bool Game::inShutdown() {
     return shutdown_;
   }
-
 
   void Game::run() {
     // Setup signals.
@@ -286,7 +285,6 @@ namespace omush {
 
     server_->start();
     timer.run();
-    shutdown();
 
     database::Storage storage;
     if (!storage.openFile("objects.db"))
@@ -304,19 +302,20 @@ namespace omush {
     }
     storage.closeFile();
 
-    delete db_;
-    delete server_;
-  }
-
-  void Game::shutdown() {
     std::map<network::ConnectionId, Client>::iterator iter;
     for (iter = clientList_.begin();
          iter != clientList_.end();
          ++iter) {
       closeNetworkConnection((iter->first));
     }
+
     server_->poll();
 
+    delete db_;
+    delete server_;
+  }
+
+  void Game::shutdown() {
     shutdown_ = true;
   }
 
