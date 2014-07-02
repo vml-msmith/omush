@@ -26,6 +26,7 @@ namespace omush {
     uint64_t addFlag(Flag f);
     uint64_t getFlagBit(std::string f);
     Flag* getFlag(std::string f);
+    std::map<std::string, Flag> getAllFlags();
 
    private:
     uint64_t highBit;

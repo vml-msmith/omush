@@ -36,4 +36,8 @@ namespace omush {
 
     return &(flagMap[f]);
   }
+
+  std::map<std::string, Flag> FlagDirectory::getAllFlags() {
+    return flagMap;
+  }
 }  // namespace omush

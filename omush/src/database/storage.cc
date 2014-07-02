@@ -2,6 +2,8 @@
 #include "omush/database/helpers.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 namespace omush {
   namespace database {
@@ -198,8 +200,9 @@ namespace omush {
     }
 
 
-    ObjectPersister::ObjectPersister(DatabaseObject* object) {
+    ObjectPersister::ObjectPersister(Database* db, DatabaseObject* object) {
       object_ = object;
+      database_ = db;
     }
 
     void ObjectPersister::write(Storage& s) {
@@ -251,6 +254,18 @@ namespace omush {
       }
     }
 
+    void ObjectPersister::writeProperty(Storage& s,
+                                        std::string name,
+                                        std::vector<std::string> value) {
+      std::stringstream ss;
+      boost::archive::text_oarchive ar(ss);
+
+      // Save the data
+      ar & value;
+      std::cout << ss.str().data() << std::endl;
+      writeProperty(s, name, std::string(ss.str().data()));
+    }
+
     void ObjectPersister::writeProperties(Storage& s) {
       PropertyMap props = object_->properties();
       writePropertyMap(s, props);
@@ -258,8 +273,9 @@ namespace omush {
       writeProperty(s, "location", boost::lexical_cast<std::string>(object_->location()));
       writeProperty(s, "owner", boost::lexical_cast<std::string>(object_->owner()));
 
+      writeProperty(s, "powers", getPowerList(*(database_),object_));
+      writeProperty(s, "flags", getFlagList(*(database_),object_));
     }
-
 
     void ObjectPersister::writeAttributes(Storage& s) {
       AttributeMap attrs = object_->attributes();

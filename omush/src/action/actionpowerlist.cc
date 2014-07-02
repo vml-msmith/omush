@@ -51,8 +51,7 @@ namespace omush {
           msg = context_.db->powers.powerToName(&(it->second), 0);
         }
       }
-      std::cout << "Power " << it->first << std::endl;
-      std::cout << "MEssage: " << msg << std::endl;
+
       if (msg.length() > 0) {
           Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
                                                             msg);

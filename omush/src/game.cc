@@ -307,7 +307,7 @@ namespace omush {
       if (object == NULL)
         continue;
 
-      database::ObjectPersister p(object);
+      database::ObjectPersister p(db_, object);
       p.write(storage);
     }
     storage.closeFile();

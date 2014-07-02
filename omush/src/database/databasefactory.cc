@@ -13,6 +13,9 @@
 #include "omush/database/databaseobject.h"
 #include "omush/database/databaseobjectfactory.h"
 #include "omush/database/storage.h"
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 namespace omush {
   namespace database {
@@ -101,6 +104,27 @@ namespace omush {
             dbref = boost::lexical_cast<int>(record.values["VALUE"]);
             object->home(dbref);
           } catch (const boost::bad_lexical_cast &) {
+          }
+        }
+        else if (boost::iequals(record.values["NAME"], "POWERS")) {
+          std::string v  = record.values["VALUE"];
+
+          std::stringstream ss;
+          ss << v.c_str();
+
+          boost::archive::text_iarchive ia(ss);
+          std::vector<std::string> list;
+          ia >> list;
+          BOOST_FOREACH(std::string str, list) {
+            std::string levelStr = str.substr(0,1);
+            std::string powerStr = str.substr(2,str.length());
+            uint64_t f = db->powers.getPowerBit(powerStr);
+            if (f != 0) {
+              try {
+                int level = boost::lexical_cast<int>(levelStr);
+                object->addPowerByBit(f, level);
+              } catch (const boost::bad_lexical_cast &) {}
+            }
           }
         }
         else if (boost::iequals(record.values["NAME"], "OWNER")) {

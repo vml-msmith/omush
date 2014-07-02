@@ -191,6 +191,32 @@ namespace omush {
       return object->hasFlagByBit(f->bit);
     }
 
+    void addFlag(Database& db, DatabaseObject* object, std::string name) {
+      Flag* f = db.flags.getFlag(name);
+      if (f == NULL) {
+        return;
+      }
+
+      return object->addFlagByBit(f->bit);
+    }
+
+    void addFlagByBit(DatabaseObject* object, uint64_t bit) {
+      return object->addPowerByBit(bit);
+    }
+
+    void removeFlagByBit(DatabaseObject* object, uint64_t bit) {
+      return object->removeFlagByBit(bit);
+    }
+
+    void removeFlag(Database& db, DatabaseObject* object, std::string name) {
+      Flag* f = db.flags.getFlag(name);
+      if (f == NULL) {
+        return;
+      }
+
+      return object->removeFlagByBit(f->bit);
+    }
+
 
     bool hasPower(Database& db, DatabaseObject* object, std::string name) {
       return hasPower(db, object, name, 0);
@@ -276,6 +302,51 @@ namespace omush {
           return true;
       }
       return false;
+    }
+
+
+
+    std::vector<std::string> getPowerList(database::Database& db,
+                                         database::DatabaseObject* object) {
+      std::vector<std::string> powers;
+      std::vector<std::string> levels;
+      levels.push_back("0");
+      levels.push_back("1");
+      levels.push_back("2");
+      levels.push_back("3");
+      levels.push_back("4");
+      levels.push_back("5");
+
+      std::map<std::string,Power> allPowers = db.powers.getAllPowers();
+      for (std::map<std::string,Power>::iterator it = allPowers.begin();
+           it != allPowers.end();
+           ++it) {
+        for (int i = 5; i >= 0; --i) {
+          if (object->hasPowerByBit(it->second.bit, i)) {
+            powers.push_back(levels[i] + ":" + it->first);
+            continue;
+          }
+        }
+      }
+
+      return powers;
+    }
+
+    std::vector<std::string> getFlagsList(database::Database& db,
+                                          database::DatabaseObject* object) {
+      std::vector<std::string> flags;
+
+      std::map<std::string,Flag> allFlags = db.flags.getAllFlags();
+      for (std::map<std::string,Flag>::iterator it = allFlags.begin();
+           it != allFlages.end();
+           ++it) {
+        if (object->hasFlagByBit(it->second.bit)) {
+          flags.push_back(it->first);
+          continue;
+        }
+      }
+
+      return flags;
     }
   }
 }

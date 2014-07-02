@@ -58,22 +58,25 @@ namespace omush {
     };
 
     class ObjectPersister {
-    public:
-     ObjectPersister(DatabaseObject* object);
+     public:
+      ObjectPersister(Database* db, DatabaseObject* object);
 
       void write(Storage& s);
       //      ObjectPersister()
-    private:
-void writeAttribute(Storage &s, std::string name, std::string value);
-void writeAttributeMap(Storage& s, AttributeMap map);
-void writeAttributes(Storage& s);
-void writeObject(Storage& s);
-void writeProperty(Storage &s, std::string name, std::string value);
-void writePropertyMap(Storage& s, PropertyMap map);
-void writeProperties(Storage& s);
+     private:
+      void writeAttribute(Storage &s, std::string name, std::string value);
+      void writeAttributeMap(Storage& s, AttributeMap map);
+      void writeAttributes(Storage& s);
+      void writeObject(Storage& s);
+      void writeProperty(Storage &s, std::string name, std::string value);
+      void writeProperty(Storage& s,
+                         std::string name,
+                         std::vector<std::string> value);
+      void writePropertyMap(Storage& s, PropertyMap map);
+      void writeProperties(Storage& s);
 
       DatabaseObject *object_;
-
+      Database* database_;
     };
   }  // namespace database
 }  // namespace omush

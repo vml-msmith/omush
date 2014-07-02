@@ -64,12 +64,15 @@ namespace omush {
       void addCredit(int credit);
       void addQuota(int quota);
 
-      bool hasPowerByBit(uint32_t bit);
       bool hasFlagByBit(uint64_t bit);
-      void addPowerByBit(uint32_t bit);
-      void removePowerByBit(uint32_t bit);
-      bool hasPowerByBit(uint32_t bit, int level);
-      void addPowerByBit(uint32_t bit, int level);
+      void addFlagByBit(uint64_t bit);
+      void removeFlagByBit(uint64_t bit);
+
+      bool hasPowerByBit(uint64_t bit);
+      void addPowerByBit(uint64_t bit);
+      void removePowerByBit(uint64_t bit);
+      bool hasPowerByBit(uint64_t bit, int level);
+      void addPowerByBit(uint64_t bit, int level);
 
      protected:
       typedef std::map<std::string,std::string> PropertyMap;

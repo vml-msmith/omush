@@ -38,6 +38,10 @@ namespace omush {
     void removePower(Database& db, DatabaseObject* object, std::string name);
     void removePowerByBit(DatabaseObject* object, uint32_t bit);
     bool hasFlag(Database& db, DatabaseObject* object, std::string name);
+    void addFlagByBit(DatabaseObject* object, uint64_t bit);
+    void removeFlagByBit(DatabaseObject* object, uint64_t bit);
+    void removeFlag(Database& db, DatabaseObject* object, std::string name);
+
     database::DatabaseObject* getAncestorEmpire(database::Database& db, database::DatabaseObject *object);
     std::vector<database::DatabaseObject*> divisionAncestors(Database& db, database::DatabaseObject *object);
     database::DatabaseObject* getObjectFromAttribute(Database& db,
@@ -46,6 +50,10 @@ namespace omush {
     bool objectInDivisionTree(database::Database& db,
                               database::DatabaseObject* object,
                               database::DatabaseObject* division);
+    std::vector<std::string> getPowerList(database::Database& db,
+                                          database::DatabaseObject* object);
+    std::vector<std::string> getFlagsList(database::Database& db,
+                                          database::DatabaseObject* object);
   }  // namespace database
 }  // namespace omush
 

@@ -154,24 +154,33 @@ namespace omush {
       return (flags_ & bit) == bit;
     }
 
+    void DatabaseObject::addFlagByBit(uint64_t bit) {
+      flags_ = (flags_ | bit);
+    }
 
-    bool DatabaseObject::hasPowerByBit(uint32_t bit) {
+    void DatabaseObject::removeFlagByBit(uint64_t bit) {
+      if (hasFlagByBit(bit)) {
+        flags_ = (flags_ ^ bit);
+      }
+    }
+
+    bool DatabaseObject::hasPowerByBit(uint64_t bit) {
       return hasPowerByBit(bit, 0);
     }
 
-    bool DatabaseObject::hasPowerByBit(uint32_t bit, int level) {
+    bool DatabaseObject::hasPowerByBit(uint64_t bit, int level) {
       if (level < 0 || level > 5)
         return false;
 
       return (powers_[level] & bit) == bit;
     }
 
-    void DatabaseObject::addPowerByBit(uint32_t bit) {
+    void DatabaseObject::addPowerByBit(uint64_t bit) {
       addPowerByBit(bit, 0);
     }
 
 
-    void DatabaseObject::addPowerByBit(uint32_t bit, int level) {
+    void DatabaseObject::addPowerByBit(uint64_t bit, int level) {
       if (level < 0 || level > 5)
         return;
 
@@ -181,7 +190,7 @@ namespace omush {
         powers_[0] = (powers_[0] | bit);
     }
 
-    void DatabaseObject::removePowerByBit(uint32_t bit) {
+    void DatabaseObject::removePowerByBit(uint64_t bit) {
       if (hasPowerByBit(bit)) {
         powers_[0] = (powers_[0] ^ bit);
       }
