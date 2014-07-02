@@ -15,6 +15,7 @@ namespace omush {
   namespace network {
     NetworkService::NetworkService(NetworkServiceConfig options)
       : config_(options), isRunning_(false) {
+      server_.set_reuse_addr(true);
     }
 
     NetworkService::~NetworkService() {
@@ -22,13 +23,22 @@ namespace omush {
       for (it = descriptors_.begin();
            it != descriptors_.end();
            ++it) {
+        std::cout << "Drop" << std::endl;
         websocketpp::lib::error_code ec;
+        /*
         server_.close(it->second.hdl,
                       websocketpp::close::status::going_away,
                       "",
-                      ec);
+                      ec);*/
+        server_.close(it->second.hdl,
+                      websocketpp::close::status::going_away,
+                      "Shutdown");
+        std::cout << "After drop" << std::endl;
       }
+      std::cout << "Stop listening" << std::endl;
       server_.stop_listening();
+      std::cout << "After stop listening" << std::endl;
+      server_.stop();
     }
 
     void NetworkService::start() {

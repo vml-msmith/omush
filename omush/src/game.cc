@@ -295,7 +295,7 @@ namespace omush {
 
     server_->start();
     timer.run();
-
+    /*
     database::Storage storage;
     if (!storage.openFile("objects.db"))
       return;
@@ -307,19 +307,11 @@ namespace omush {
       if (object == NULL)
         continue;
 
-      database::ObjectPersister p(db_, object);
-      p.write(storage);
+      //database::ObjectPersister p(db_, object);
+      //      p.write(storage);
     }
     storage.closeFile();
-
-    std::map<network::ConnectionId, Client>::iterator iter;
-    for (iter = clientList_.begin();
-         iter != clientList_.end();
-         ++iter) {
-      closeNetworkConnection((iter->first));
-    }
-
-    //   server_->poll();
+    */
 
     delete db_;
     delete server_;
