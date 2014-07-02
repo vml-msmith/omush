@@ -88,6 +88,8 @@ namespace omush {
      registerCommand(new CommandInventory());
      registerCommand(new CommandPower());
      registerCommand(new CommandDivision());
+     registerCommand(new CommandDrop());
+     registerCommand(new CommandGet());
    }
   };
 
