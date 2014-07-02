@@ -65,6 +65,7 @@ namespace omush {
       void addQuota(int quota);
 
       bool hasPowerByBit(uint32_t bit);
+      bool hasFlagByBit(uint64_t bit);
       void addPowerByBit(uint32_t bit);
       void removePowerByBit(uint32_t bit);
       bool hasPowerByBit(uint32_t bit, int level);

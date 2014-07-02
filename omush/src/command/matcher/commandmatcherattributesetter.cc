@@ -67,10 +67,8 @@ namespace omush {
                                                                 CommandContext& context,
                                                                 std::string str) {
     char firstChar = str.c_str()[0];
-    std::cout << str << std::endl;
-    std::cout << firstChar << std::endl;
+
     if (firstChar != '@' && firstChar != '&') {
-      std::cout << "Die here" << std::endl;
       return NULL;
     }
 
@@ -79,13 +77,10 @@ namespace omush {
 
     std::string newCommand = first;
     if (firstChar == '@') {
-      std::cout << "It's a @" << std::endl;
       if (cachedAttributeMap_.find(first) == cachedAttributeMap_.end())
         return NULL;
       newCommand = cachedAttributeMap_[first];
     }
-
-    std::cout << "Comamnd: " << newCommand << std::endl;
 
     // TODO: Move this out.
     if (cachedMap_.empty()) {
@@ -96,7 +91,6 @@ namespace omush {
     }
 
     if (cachedMap_.find("@SET") == cachedMap_.end()) {
-      std::cout << "No set?" << std::endl;
       return NULL;
     }
 

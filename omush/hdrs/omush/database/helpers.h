@@ -10,6 +10,7 @@
 #include "omush/database/definitions.h"
 #include "omush/database/databaseobject.h"
 #include "omush/database/database.h"
+#include <vector>
 
 namespace omush {
   namespace database {
@@ -36,7 +37,15 @@ namespace omush {
     void addPowerByBit(DatabaseObject* object, uint32_t bit, int level);
     void removePower(Database& db, DatabaseObject* object, std::string name);
     void removePowerByBit(DatabaseObject* object, uint32_t bit);
-
+    bool hasFlag(Database& db, DatabaseObject* object, std::string name);
+    database::DatabaseObject* getAncestorEmpire(database::Database& db, database::DatabaseObject *object);
+    std::vector<database::DatabaseObject*> divisionAncestors(Database& db, database::DatabaseObject *object);
+    database::DatabaseObject* getObjectFromAttribute(Database& db,
+                                                     DatabaseObject* object,
+                                                     std::string name);
+    bool objectInDivisionTree(database::Database& db,
+                              database::DatabaseObject* object,
+                              database::DatabaseObject* division);
   }  // namespace database
 }  // namespace omush
 

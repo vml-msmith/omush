@@ -22,7 +22,6 @@ namespace omush {
       for (it = descriptors_.begin();
            it != descriptors_.end();
            ++it) {
-        std::cout << "Closing .. " << std::endl;
         websocketpp::lib::error_code ec;
         server_.close(it->second.hdl,
                       websocketpp::close::status::going_away,
@@ -65,7 +64,6 @@ namespace omush {
 
     void NetworkService::onMessage(ConnectionHdl hdl,
                             WSServer::message_ptr msg) {
-      std::cout << "Received Message" << std::endl;
       IncommingMessage iMsg;
       iMsg.id = hdlToConnectionId(hdl);
       iMsg.rawString = msg->get_payload();
@@ -77,7 +75,6 @@ namespace omush {
     void NetworkService::onOpen(ConnectionHdl hdl) {
       NetworkDescriptor desc = createDescriptor(hdl);
       descriptors_[desc.uniqueId] = desc;
-      std::cout << "Opened" << std::endl;
     }
 
     void NetworkService::onClose(ConnectionHdl hdl) {

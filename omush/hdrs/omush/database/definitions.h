@@ -16,6 +16,7 @@ namespace omush {
       DbObjectTypeThing,
       DbObjectTypeRoom,
       DbObjectTypeExit,
+      DbObjectTypeDivision,
     };
     struct DatabaseAttribute;
     class DatabaseObject;

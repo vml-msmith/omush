@@ -5,6 +5,7 @@
 #include "omush/power.h"
 #include <iostream>
 #include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 
 namespace omush {
   namespace database {
@@ -55,6 +56,16 @@ namespace omush {
       return (object->getAvailableCredit() - credit) >= 0;
     }
 
+    database::DatabaseObject* getObjectFromAttribute(Database& db,
+                                                     DatabaseObject* object,
+                                                     std::string name) {
+      int dbref = parseStringDbref(object->getAttribute(name).value);
+      if (dbref >= 0) {
+        return dbrefToObject(db, dbref);
+      }
+      return NULL;
+    }
+
     std::string objectTypeString(DatabaseObject* object) {
       switch(object->type()) {
       case database::DbObjectTypePlayer:
@@ -68,6 +79,9 @@ namespace omush {
         break;
       case database::DbObjectTypeThing:
         return "Thing";
+        break;
+      case database::DbObjectTypeDivision:
+        return "Division";
         break;
       }
       return "Unknown";
@@ -117,18 +131,19 @@ namespace omush {
       int objectClass = 0;
 
       if (objectOwner != NULL) {
-        std::cout << "object owner: " << objectOwner->getProperty("name") << std::endl;
+        objectDivision = getObjectFromAttribute(db, objectOwner, "division");
+
         int objectEmpireDbref = parseStringDbref(objectOwner->getAttribute("empire").value);
         if (objectEmpireDbref >= 0)
           objectEmpire = dbrefToObject(db, objectEmpireDbref);
-        int objectDivDbref = parseStringDbref(objectOwner->getAttribute("division").value);
-        if (objectDivDbref >= 0)
-          objectDivision = dbrefToObject(db, objectDivDbref);
+
         try {
           objectClass = boost::lexical_cast<int>(objectOwner->getAttribute("classvalue").value);
         }
         catch (boost::bad_lexical_cast&) {}
       }
+
+      bool inDivision = objectInDivisionTree(db, targetOwner, objectDivision);
 
       if (powers[1]) {
         if (objectClass > targetClass)
@@ -149,13 +164,13 @@ namespace omush {
       }
 
       if (powers[4]) {
-        if (targetDivision == objectDivision && objectDivision != NULL)
+        if (inDivision && objectDivision != NULL)
           return true;
         return false;
       }
 
       if (powers[5]) {
-        if (objectClass > targetClass && targetDivision == objectDivision && objectDivision != NULL)
+        if (objectClass > targetClass && inDivision && objectDivision != NULL)
           return true;
         return false;
       }
@@ -167,6 +182,16 @@ namespace omush {
       return false;
     }
 
+    bool hasFlag(Database& db, DatabaseObject* object, std::string name) {
+      Flag* f = db.flags.getFlag(name);
+      if (f == NULL) {
+        return false;
+      }
+
+      return object->hasFlagByBit(f->bit);
+    }
+
+
     bool hasPower(Database& db, DatabaseObject* object, std::string name) {
       return hasPower(db, object, name, 0);
     }
@@ -175,7 +200,6 @@ namespace omush {
       if (db.root() == object)
         return true;
 
-      // Add provision to give God all the powers, just in case.
       Power* p = db.powers.getPower(name);
       if (p == NULL) {
         return false;
@@ -221,10 +245,37 @@ namespace omush {
     bool canTeleportTo(Database& db, DatabaseObject *object, DatabaseObject* where) {
       return true;
     }
-    /*
-    bool controls(Database& db, DatabaseObject* object, DatabaseObject* what) {
-      if (what->owner
-      return true;
-      }*/
+
+    std::vector<database::DatabaseObject*> divisionAncestors(database::Database& db, database::DatabaseObject *object) {
+      std::vector<DatabaseObject*> divisions;
+      while (object != NULL) {
+        divisions.push_back(object);
+        object = getObjectFromAttribute(db, object, "division");
+      }
+      return divisions;
+    }
+
+    database::DatabaseObject* getAncestorEmpire(database::Database& db, database::DatabaseObject *object) {
+      std::vector<database::DatabaseObject*> divs = divisionAncestors(db, object);
+      BOOST_FOREACH(database::DatabaseObject* target, divs) {
+        if (hasFlag(db, target, "empire"))
+          return target;
+      }
+
+      return NULL;
+    }
+
+    bool objectInDivisionTree(database::Database& db,
+                              database::DatabaseObject* object,
+                              database::DatabaseObject* division) {
+      std::vector<database::DatabaseObject*> divs = divisionAncestors(db, object);
+      DatabaseObject* targetDiv = getObjectFromAttribute(db, object, "division");
+
+      BOOST_FOREACH(DatabaseObject* div, divs) {
+        if (div == targetDiv)
+          return true;
+      }
+      return false;
+    }
   }
 }

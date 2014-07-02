@@ -60,7 +60,6 @@ namespace omush {
       currentNode->cmd = cmd;
     }
 
-
     return matchByString(str);
   }
 
@@ -84,7 +83,6 @@ namespace omush {
   ICommand* CommandMatcherPartial::matchByString(std::string str) {
     if (nodes_ == NULL)
       return NULL;
-
 
     std::vector<ICommand*> cmds;
     std::queue<CommandPrefixNode*> nodes;

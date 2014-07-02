@@ -28,8 +28,13 @@ namespace omush {
 
   ICommand* CommandParser::findCommand(std::string cmd,
                                        CommandContext& context) {
+    boost::trim(cmd);
+    if (cmd.length() == 0)
+      return NULL;
+
     context.modifiedInput = cmd;
     BOOST_FOREACH(ICommandMatcher* matcher, commandMatchers_) {
+
       ICommand* c = NULL;
       if (matcher->hasContextMatch()) {
         c = matcher->contextMatchByString(commandList_, context, cmd);

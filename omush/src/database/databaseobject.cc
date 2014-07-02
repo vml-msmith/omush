@@ -150,6 +150,11 @@ namespace omush {
       password_ = str;
     }
 
+    bool DatabaseObject::hasFlagByBit(uint64_t bit) {
+      return (flags_ & bit) == bit;
+    }
+
+
     bool DatabaseObject::hasPowerByBit(uint32_t bit) {
       return hasPowerByBit(bit, 0);
     }

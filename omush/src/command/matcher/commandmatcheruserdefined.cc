@@ -33,7 +33,6 @@ namespace omush {
                                                             CommandContext& context,
                                                             std::string str) {
     using namespace database;
-    // Process expression!
 
     DatabaseObject* executor = dbrefToObject(*(context.db), context.executor);
     DatabaseObject* location = dbrefToObject(*(context.db), executor->location());

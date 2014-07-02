@@ -30,6 +30,8 @@ namespace omush {
       static DatabaseObject* createExit(Database* db, Dbref dbref);
       static DatabaseObject* createThing(Database* db);
       static DatabaseObject* createThing(Database* db, Dbref dbref);
+      static DatabaseObject* createDivision(Database* db);
+      static DatabaseObject* createDivision(Database* db, Dbref dbref);
     };
 
   }  // namespace database

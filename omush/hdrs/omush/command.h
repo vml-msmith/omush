@@ -33,5 +33,6 @@
 #include "omush/command/commandcreate.h"
 #include "omush/command/commandinventory.h"
 #include "omush/command/commandpower.h"
+#include "omush/command/commanddivision.h"
 
 #endif  // OMUSH_HDRS_OMUSH_COMMAND_H_

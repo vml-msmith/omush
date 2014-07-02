@@ -20,6 +20,7 @@ namespace omush {
         DatabaseObjectFactory::types["THING"] = DbObjectTypeThing;
         DatabaseObjectFactory::types["ROOM"] = DbObjectTypeRoom;
         DatabaseObjectFactory::types["EXIT"] = DbObjectTypeExit;
+        DatabaseObjectFactory::types["DIVISION"] = DbObjectTypeDivision;
       }
 
 
@@ -37,6 +38,9 @@ namespace omush {
         break;
       case DbObjectTypeRoom:
         return DatabaseObjectFactory::createRoom(db, dbref);
+        break;
+      case DbObjectTypeDivision:
+        return DatabaseObjectFactory::createDivision(db, dbref);
         break;
       case DbObjectTypeThing:
       default:
@@ -103,12 +107,28 @@ namespace omush {
       return createThing(db, db->getNextDbref());
     }
 
-
     DatabaseObject* DatabaseObjectFactory::createThing(Database* db,
                                                        Dbref dbref) {
       DatabaseObject* obj = new DatabaseObject();
       obj->type_ = DbObjectTypeThing;
       obj->setProperty("name", "thing");
+      obj->dbref_ = dbref;
+      obj->location_ = obj->dbref_;
+      obj->home_ = obj->dbref_;
+      db->addObject(obj);
+      db->changeOwnership(obj, obj);
+      return obj;
+    }
+
+    DatabaseObject* DatabaseObjectFactory::createDivision(Database* db) {
+      return createDivision(db, db->getNextDbref());
+    }
+
+    DatabaseObject* DatabaseObjectFactory::createDivision(Database* db,
+                                                          Dbref dbref) {
+      DatabaseObject* obj = new DatabaseObject();
+      obj->type_ = DbObjectTypeDivision;
+      obj->setProperty("name", "division");
       obj->dbref_ = dbref;
       obj->location_ = obj->dbref_;
       obj->home_ = obj->dbref_;
