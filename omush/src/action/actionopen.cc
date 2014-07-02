@@ -7,7 +7,7 @@
 #include "omush/action/actionopen.h"
 #include "omush/database/database.h"
 #include "omush/database/databaseobjectfactory.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 
 namespace omush {
   ActionOpen::ActionOpen(CommandContext& context) : context_(context) {
@@ -56,18 +56,14 @@ namespace omush {
 
     Notifier(*(context_.game), *(context_.db)).
       notify(context_.cmdScope.executor,
-             "Opened exit " + NameFormatter(context_.cmdScope.executor).format(e1) + ".");
+             "Opened exit " + nameFormatter(*(context_.db), context_.cmdScope.executor).format(e1) + ".");
 
     if (to_ != NULL) {
       e1->home(to_->dbref());
       Notifier(*(context_.game), *(context_.db)).
         notify(context_.cmdScope.executor,
-               "Linked exit " + NameFormatter(context_.cmdScope.executor).format(e1) + " to " + NameFormatter(context_.cmdScope.executor).format(to_) + ".");
+               "Linked exit " + nameFormatter(*(context_.db), context_.cmdScope.executor).format(e1) + " to " + nameFormatter(*(context_.db),context_.cmdScope.executor).format(to_) + ".");
     }
-    /*
-    database::DatabaseObject *e1=database::DatabaseObjectFactory::createExit(db_);
-    e1->setProperty("name", str);
-    Notifier(*game_, *db_).notify(object_, NameFormatter(object_).format(r1) + " has been opened.");
-    */
+
   }
 }  // namespace omush

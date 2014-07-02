@@ -158,6 +158,7 @@ namespace omush {
     s->enactor = command.context.cmdScope.enactor;
     s->caller = command.context.cmdScope.caller;
     s->executor = command.context.cmdScope.executor;
+    s->cmdContext = &(command.context);
     command.context.funcScope = s;
 
     ColorString colorStringCmd = processExpression(ColorString(command.cmd), s, 1);

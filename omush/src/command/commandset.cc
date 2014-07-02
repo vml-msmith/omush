@@ -21,6 +21,7 @@ namespace omush {
 
   CommandInfo CommandSet::process(CommandContext& context) {
     CommandInfo info;
+    bool noeval = false;
 
     std::vector<std::string> cmdSplit = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
 
@@ -28,12 +29,17 @@ namespace omush {
     info.switches.erase(info.switches.begin());
 
     std::map<std::string, bool> possibleSwitches;
+    possibleSwitches["NOEVAL"] = 1;
+
     BOOST_FOREACH(std::string key, info.switches) {
       boost::to_upper(key);
       if (possibleSwitches.find(key) == possibleSwitches.end()) {
         info.errorString = "Unrecognized switch: " + key;
         return info;
       }
+
+      if (key.compare("NOEVAL") == 0)
+        noeval = true;
     }
 
     if (cmdSplit.size() == 1)
@@ -44,7 +50,10 @@ namespace omush {
     std::vector<std::string> eqSplit = splitStringIntoSegments(info.rawArgs, "=", 2);
     BOOST_FOREACH(std::string key, eqSplit) {
       std::vector<std::string> arg;
-      arg.push_back(processExpression(key, context.funcScope).basicString());
+      std::string result = key;
+      if (!noeval)
+        result = processExpression(key, context.funcScope).basicString();
+      arg.push_back(result);
       info.eqArgs.push_back(arg);
     }
 

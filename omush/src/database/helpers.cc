@@ -201,7 +201,7 @@ namespace omush {
     }
 
     void addFlagByBit(DatabaseObject* object, uint64_t bit) {
-      return object->addPowerByBit(bit);
+      return object->addFlagByBit(bit);
     }
 
     void removeFlagByBit(DatabaseObject* object, uint64_t bit) {

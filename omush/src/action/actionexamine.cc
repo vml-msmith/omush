@@ -5,7 +5,7 @@
  */
 
 #include "omush/action/actionexamine.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 
 #include "omush/function/function.h"
 #include "omush/database/helpers.h"
@@ -31,7 +31,7 @@ namespace omush {
     if (target == NULL || enactor == NULL)
       return "";
 
-    return NameFormatter(enactor).format(target);
+    return nameFormatter(*(db_),enactor).format(target);
   }
 
   std::string ActionExamine::descriptionLine() {
@@ -45,6 +45,25 @@ namespace omush {
     }
 
     return "";
+  }
+
+  std::string ActionExamine::flagLine() {
+    if (target == NULL)
+      return "";
+
+    std::string response = "  Flags: ";
+    std::map<std::string,Flag> allFlags = db_->flags.getAllFlags();
+    for (std::map<std::string,Flag>::iterator it = allFlags.begin();
+         it != allFlags.end();
+         ++it) {
+
+      if (target->hasFlagByBit(it->second.bit)) {
+        response += it->first + " ";
+        continue;
+      }
+    }
+
+    return response;
   }
 
   std::string ActionExamine::typeLine() {
@@ -75,7 +94,7 @@ namespace omush {
       quotaLine += boost::lexical_cast<std::string>(target->getAvailableQuota());
     }
 
-    return "\nOwner: " + NameFormatter(enactor).format(objectOwner(*(db_), target)) +
+    return "\nOwner: " + nameFormatter(*(db_),enactor).format(objectOwner(*(db_), target)) +
       "   " + creditLine + "   " + quotaLine;
   }
 
@@ -117,7 +136,7 @@ namespace omush {
 
       if (*iter != object_->dbref()) {
         contentString += "\n";
-        contentString += NameFormatter(enactor).format(c);
+        contentString += nameFormatter(*(db_), enactor).format(c);
       }
     }
 
@@ -143,7 +162,7 @@ namespace omush {
       database::DatabaseObject *c = dbrefToObject(*(db_), *iter);
 
       if (c->type() == database::DbObjectTypeExit && *iter != object_->dbref()) {
-        contentString += "\n" + NameFormatter(enactor).noDbref().format(c);
+        contentString += "\n" + nameFormatter(*(db_), enactor).noDbref().format(c);
       }
     }
 
@@ -200,7 +219,7 @@ namespace omush {
     if (target->owner() == enactor->owner() || hasPowerOver(*(db_), enactor, target, "Examine Any Object")) {
         response += descriptionLine();
         response += typeLine();
-        response += " Flags: ";
+        response += flagLine();
         response += ownerLine();
         response += "\nParents: ";
         response += attributesLine();

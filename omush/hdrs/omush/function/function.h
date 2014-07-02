@@ -18,7 +18,6 @@
 #include "omush/colorstring.h"
 #include "omush/database/definitions.h"
 
-
 namespace omush {
   std::string floatToString(float x);
   typedef std::vector<ColorString> ArgList;
@@ -73,11 +72,12 @@ namespace omush {
 
   typedef std::map<std::string, IFunction*> FunctionMap;
 
-
+  struct CommandContext;
   struct FunctionScope {
     database::DatabaseObject* enactor;
     database::DatabaseObject* executor;
     database::DatabaseObject* caller;
+    CommandContext* cmdContext;
     //    FunctionScope(database::Dbref dbref) :  enactor(dbref), executor(dbref), caller(dbref) {}
     FunctionScope() {}
   };

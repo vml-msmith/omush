@@ -195,20 +195,18 @@ namespace omush {
       database::DatabaseObject *r1=database::DatabaseObjectFactory::createRoom(db);
       database::DatabaseObject *p1=database::DatabaseObjectFactory::createPlayer(db);
       database::DatabaseObject *r2=database::DatabaseObjectFactory::createRoom(db);
-      database::DatabaseObject *p2=database::DatabaseObjectFactory::createPlayer(db);
       database::DatabaseObject *e1=database::DatabaseObjectFactory::createExit(db);
       database::DatabaseObject *e2=database::DatabaseObjectFactory::createExit(db);
 
       r1->setProperty("name", "Room Zero");
       p1->setProperty("name", "One");
-      r2->setProperty("name", "Room Two");
-      p2->setProperty("name", "Michael");
+      r2->setProperty("name", "Master Room");
       e1->setProperty("name", "Out");
       e2->setProperty("name", "Out");
-      db->moveObject(p1, r1);
-      db->moveObject(p2, r1);
+
       e1->home(r2->dbref());
       e2->home(r1->dbref());
+      db->moveObject(p1, r1);
       db->moveObject(e1, r1);
       db->moveObject(e2, r2);
 

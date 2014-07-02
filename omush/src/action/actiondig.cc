@@ -8,7 +8,7 @@
 #include "omush/database/database.h"
 #include "omush/database/databaseobjectfactory.h"
 #include "omush/database/helpers.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 
 namespace omush {
   ActionDig::ActionDig(CommandContext& context) : context_(context), name_(""), newRoom(NULL) {
@@ -75,7 +75,7 @@ namespace omush {
 
     context_.db->changeOwnership(r1, context_.cmdScope.executor);
     Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                  NameFormatter(object_).format(r1) + " has been dug.");
+                                                      nameFormatter(*(context_.db), object_).format(r1) + " has been dug.");
 
     newRoom = r1;
   }

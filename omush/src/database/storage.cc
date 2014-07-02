@@ -282,7 +282,6 @@ namespace omush {
       writeAttributeMap(s, attrs);
     }
 
-
     void ObjectPersister::writeObject(Storage& s) {
       std::map<std::string,std::string> values;
       values.insert(std::pair<std::string,std::string>("NAME", object_->getProperty("name")));

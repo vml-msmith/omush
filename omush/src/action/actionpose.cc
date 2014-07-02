@@ -5,8 +5,8 @@
  */
 
 #include <boost/bind.hpp>
-#import "omush/action/actionpose.h"
-#import "omush/nameformatter.h"
+#include "omush/action/actionpose.h"
+#include "omush/database/utilityfactories.h"
 
 namespace omush {
   ActionPose::ActionPose(database::Database *db,
@@ -26,7 +26,7 @@ namespace omush {
   std::string ActionPose::constructString(database::DatabaseObject *listener,
                                           StringDictionary dictionary) {
 
-    return NameFormatter(listener).formatInline(object_) + " " + what_;
+    return nameFormatter(*(db_), listener).formatInline(object_) + " " + what_;
   }
 
   void ActionPose::enact() {

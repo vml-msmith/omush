@@ -23,7 +23,7 @@ namespace omush {
     void enact();
     ActionCreate& name(std::string value);
 
-    database::DatabaseObject* newRoom;
+    database::DatabaseObject* newObject;
    protected:
     CommandContext& context_;
     std::string name_;

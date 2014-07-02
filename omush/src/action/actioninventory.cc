@@ -6,7 +6,7 @@
 
 #include "omush/action/actioninventory.h"
 #include <boost/foreach.hpp>
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 #include "omush/database/helpers.h"
 
 //#include "omush/function/function.h"
@@ -30,7 +30,7 @@ namespace omush {
           continue;
         }
 
-        message += "\n" + NameFormatter(context_.cmdScope.executor).format(item);
+        message += "\n" + nameFormatter(*(context_.db), context_.cmdScope.executor).format(item);
       }
     }
 

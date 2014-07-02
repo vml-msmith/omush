@@ -8,10 +8,11 @@
 #include "omush/database/database.h"
 #include "omush/database/databaseobjectfactory.h"
 #include "omush/database/helpers.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 
 namespace omush {
-  ActionCreate::ActionCreate(CommandContext& context) : context_(context), name_(""), newRoom(NULL) {
+  ActionCreate::ActionCreate(CommandContext& context)
+    : context_(context), name_(""), newObject(NULL) {
   }
 
   ActionCreate& ActionCreate::name(std::string value) {
@@ -77,8 +78,8 @@ namespace omush {
     context_.db->moveObject(r1, context_.cmdScope.executor);
 
     Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                  "Created " + NameFormatter(object_).format(r1) + ".");
+                                                      "Created " + nameFormatter(*(context_.db), object_).format(r1) + ".");
 
-    newRoom = r1;
+    newObject = r1;
   }
 }  // namespace omush

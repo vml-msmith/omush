@@ -9,7 +9,7 @@
 #include "omush/database/database.h"
 #include "omush/power.h"
 #include "omush/database/helpers.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 
 namespace omush {
 
@@ -31,9 +31,9 @@ namespace omush {
     std::string name = context_.db->powers.powerToName(power_, level_);
 
     Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
-                                                      "Power '" + name + "' granted to " + NameFormatter(context_.cmdScope.executor).formatInline(player_) + ".");
+                                                      "Power '" + name + "' granted to " + nameFormatter(*(context_.db), context_.cmdScope.executor).formatInline(player_) + ".");
     Notifier(*(context_.game), *(context_.db)).notify(player_,
-                                                      "You have been granted the power '" + name + "' by " + NameFormatter(player_).formatInline(context_.cmdScope.executor) + ".");
+                                                      "You have been granted the power '" + name + "' by " + nameFormatter(*(context_.db),player_).formatInline(context_.cmdScope.executor) + ".");
   }
 
   ActionPowerAdd& ActionPowerAdd::player(database::DatabaseObject *player) {

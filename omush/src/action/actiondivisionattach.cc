@@ -8,7 +8,7 @@
 #include "omush/database/database.h"
 #include "omush/database/databaseobjectfactory.h"
 #include "omush/database/helpers.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 #include <boost/foreach.hpp>
 
 namespace omush {
@@ -76,16 +76,17 @@ namespace omush {
 
     //    database::DatabaseObject *targetEmpire
 
+    database::NameFormatter nf = nameFormatter(*(context_.db), object_);
 
-    target_->setAttribute("DIVISION", NameFormatter(object_).formatDbref(division_->dbref()));
+    target_->setAttribute("DIVISION", nf.formatDbref(division_->dbref()));
     Notifier(*(context_.game), *(context_.db)).notify(context_.cmdScope.executor,
                                                       "You have attached " +
-                                                      NameFormatter(object_).format(target_) +
-                                                      " to " + NameFormatter(object_).format(division_) + ".");
+                                                      nf.format(target_) +
+                                                      " to " + nf.format(division_) + ".");
     Notifier(*(context_.game), *(context_.db)).notify(target_,
                                                       "You have been attached to " +
-                                                      NameFormatter(object_).format(division_) +
-                                                      " by " + NameFormatter(object_).format(target_) + ".");
+                                                      nf.format(division_) +
+                                                      " by " + nf.format(target_) + ".");
 
     /*
     database::DatabaseObject *r1 = database::DatabaseObjectFactory::createThing(context_.db);

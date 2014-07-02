@@ -1,6 +1,10 @@
 #include "omush/function/function.h"
 #include "omush/database/databaseobject.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
+
+#include "omush/function/functioncreate.h"
+#include "omush/function/functionset.h"
+#include "omush/command/commandcontext.h"
 
 namespace omush {
 
@@ -21,6 +25,12 @@ namespace omush {
     FunctionContext context;
     context.limit = limit;
     context.scope = scope;
+
+    // Database
+    context.functions.insert(std::pair<std::string,IFunction*>("create", new FunctionCreate()));
+    context.functions.insert(std::pair<std::string,IFunction*>("set", new FunctionSet()));
+
+    // Programming
     context.functions.insert(std::pair<std::string,IFunction*>("if", new MyFunctionIf()));
 
     // Math
@@ -50,7 +60,7 @@ namespace omush {
   ColorString runReplacements(ColorString str, FunctionContext& context) {
     database::DatabaseAttribute sexAttr = context.scope->enactor->getAttribute("sex");
 
-    std::string enactorName = NameFormatter(context.scope->enactor).formatInline(context.scope->enactor);
+    std::string enactorName = nameFormatter(*(context.scope->cmdContext->db), context.scope->enactor).formatInline(context.scope->enactor);
     std::string enactorSubPronoun = "it";
     std::string enactorObjPronoun = "it";
     std::string enactorPosPronoun = "its";
@@ -76,7 +86,7 @@ namespace omush {
     boost::replace_first(internal, "%R", "\n");
     boost::replace_first(internal, "%b", " ");
     boost::replace_first(internal, "%t", "    ");
-    boost::replace_first(internal, "%#", NameFormatter(context.scope->enactor).formatDbref(context.scope->enactor->dbref()));
+    boost::replace_first(internal, "%#", nameFormatter(*(context.scope->cmdContext->db), context.scope->enactor).formatDbref(context.scope->enactor->dbref()));
     boost::replace_first(internal, "%n", enactorName);
     boost::replace_first(internal, "%N", capstr(enactorName));
     boost::replace_first(internal, "%s", enactorSubPronoun);
@@ -87,8 +97,8 @@ namespace omush {
     boost::replace_first(internal, "%P", capstr(enactorPosPronoun));
     boost::replace_first(internal, "%a", enactorAbsPronoun);
     boost::replace_first(internal, "%A", capstr(enactorAbsPronoun));
-    boost::replace_first(internal, "%@", NameFormatter(context.scope->caller).formatDbref(context.scope->caller->dbref()));
-    boost::replace_first(internal, "%!", NameFormatter(context.scope->executor).formatDbref(context.scope->executor->dbref()));
+    boost::replace_first(internal, "%@", nameFormatter(*(context.scope->cmdContext->db), context.scope->caller).formatDbref(context.scope->caller->dbref()));
+    boost::replace_first(internal, "%!", nameFormatter(*(context.scope->cmdContext->db), context.scope->executor).formatDbref(context.scope->executor->dbref()));
 
     return ColorString(internal);
   }

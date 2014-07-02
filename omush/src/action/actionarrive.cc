@@ -5,7 +5,7 @@
  */
 
 #include "omush/action/actionarrive.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 #include "omush/notifier.h"
 #include <boost/bind.hpp>
 #include "omush/command/commandcontext.h"
@@ -22,7 +22,7 @@ namespace omush {
       return "You have arrived.";
     }
 
-    return NameFormatter(listener).formatInline(object_) + " arrives.";
+    return nameFormatter(*(context_.db),listener).formatInline(object_) + " arrives.";
   }
 
   void ActionArrive::enact() {

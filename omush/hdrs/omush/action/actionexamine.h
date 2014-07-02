@@ -29,6 +29,7 @@ namespace omush {
     std::string nameLine();
     std::string descriptionLine();
     std::string typeLine();
+    std::string flagLine();
     std::string ownerLine();
     std::string parentLine();
     std::string attributesLine();

@@ -29,12 +29,16 @@ namespace omush {
     }
 
     ActionLeave(context_).enact();
+
     if (what_->type() == database::DbObjectTypeExit) {
+      std::cout << "HERE" << std::endl;
       what_ = context_.db->findObjectByDbref(what_->home());
     }
-    context_.db->moveObject(object_, what_);
 
+    context_.db->moveObject(context_.cmdScope.executor, what_);
+    std::cout << "2After" << std::endl;
     ActionArrive(context_).enact();
+    std::cout << "3After" << std::endl;
     ActionLook(context_).enact();
   }
 }  // namespace omush

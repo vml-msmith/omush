@@ -155,6 +155,7 @@ namespace omush {
     }
 
     void DatabaseObject::addFlagByBit(uint64_t bit) {
+      std::cout << "Add flag by bit!" << std::endl;
       flags_ = (flags_ | bit);
     }
 

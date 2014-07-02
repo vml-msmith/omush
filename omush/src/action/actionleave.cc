@@ -5,7 +5,7 @@
  */
 
 #include "omush/action/actionleave.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 #include "omush/notifier.h"
 #include <boost/bind.hpp>
 #include "omush/command/commandcontext.h"
@@ -19,8 +19,8 @@ namespace omush {
     if (listener == object_) {
       return "You have left.";
     }
-std::cout << "Tell someone" << std::endl;
-    return NameFormatter(listener).formatInline(object_) + " leaves.";
+
+    return nameFormatter(*(context_.db), listener).formatInline(object_) + " leaves.";
   }
 
   void ActionLeave::enact() {

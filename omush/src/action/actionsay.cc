@@ -6,7 +6,7 @@
 
 #include <boost/bind.hpp>
 #import "omush/action/actionsay.h"
-#import "omush/nameformatter.h"
+#import "omush/database/utilityfactories.h"
 
 namespace omush {
   ActionSay::ActionSay(CommandContext& context) : context_(context) {
@@ -24,7 +24,7 @@ namespace omush {
       return "You say, \"" + what_ + "\"";
     }
 
-    return NameFormatter(listener).formatInline(context_.cmdScope.executor) + " says \"" + what_ + "\"";
+    return nameFormatter(*(context_.db),listener).formatInline(context_.cmdScope.executor) + " says \"" + what_ + "\"";
   }
 
   void ActionSay::enact() {

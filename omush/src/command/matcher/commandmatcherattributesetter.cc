@@ -102,7 +102,9 @@ namespace omush {
     else {
       std::vector<std::string> eqParts = splitStringIntoSegments(inputParts[1], "=", 2);
       if (eqParts.size() == 2) {
-        context.cmdScope.currentString = "@SET " + eqParts[0] + "=" + newCommand + ":" + eqParts[1];
+        context.cmdScope.currentString = "@SET";
+        context.cmdScope.currentString += "/NOEVAL";
+        context.cmdScope.currentString += " " + eqParts[0] + "=" + newCommand + ":" + eqParts[1];
       }
     }
 

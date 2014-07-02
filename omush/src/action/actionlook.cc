@@ -5,7 +5,7 @@
  */
 
 #include "omush/action/actionlook.h"
-#include "omush/nameformatter.h"
+#include "omush/database/utilityfactories.h"
 #include "omush/function/function.h"
 
 namespace omush {
@@ -28,21 +28,14 @@ namespace omush {
       return;
     }
     std::string response = "";
-    response += NameFormatter(context_.cmdScope.executor).format(what_);
+    response += nameFormatter(*(context_.db), context_.cmdScope.executor).format(what_);
 
     database::DatabaseAttribute descAttr = what_->getAttribute("description");
 
     std::string desc = descAttr.value;
     if (desc.length() > 0) {
       response += "\n";
-
-      FunctionScope* s = new FunctionScope();
-      s->enactor = context_.cmdScope.executor;
-      s->caller = what_;
-      s->executor = what_;
-
-      response += processExpression(desc, s).outString();
-      delete s;
+      response += processExpression(desc, context_.funcScope).outString();
     }
 
     std::vector<database::Dbref> contents = what_->contents();
@@ -54,12 +47,12 @@ namespace omush {
       database::DatabaseObject *c = context_.db->findObjectByDbref(*iter);
 
       if (c->type() == database::DbObjectTypeExit) {
-        exitString += "\n" + NameFormatter(context_.cmdScope.executor).noDbref().format(c);
+        exitString += "\n" + nameFormatter(*(context_.db), context_.cmdScope.executor).noDbref().format(c);
         std::cout << exitString << std::endl;
       }
       else if (*iter != context_.cmdScope.executor->dbref()) {
         contentString += "\n";
-        contentString += NameFormatter(context_.cmdScope.executor).format(c);
+        contentString += nameFormatter(*(context_.db), context_.cmdScope.executor).format(c);
       }
     }
     if (exitString.length() > 0) {
