@@ -10,7 +10,7 @@
 #include <string>
 #include "omush/database/definitions.h"
 #include "omush/action/action.h"
-#include "omush/notifier.h"
+#include "omush/command/commandcontext.h"
 
 namespace omush {
   class Game;
@@ -21,19 +21,17 @@ namespace omush {
 
   class ActionSetAttribute : public Action {
    public:
-    ActionSetAttribute(database::Database *db,
-                       Game *game,
-                       database::DatabaseObject *object);
-    ActionSetAttribute& object(database::DatabaseObject* object);
+    ActionSetAttribute(CommandContext& context);
+    ActionSetAttribute& target(database::DatabaseObject* object);
     ActionSetAttribute& attribute(std::string attribute);
     ActionSetAttribute& value(std::string value);
     void enact();
 
    protected:
-    database::DatabaseObject* what_;
+    database::DatabaseObject* target_;
     std::string attribute_;
     std::string  value_;
-
+    CommandContext context_;
   };
 }  // namespace omush
 

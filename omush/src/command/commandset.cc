@@ -13,85 +13,130 @@
 #include "omush/action/actionsetattribute.h"
 #include "omush/action/actionsetflag.h"
 #include "omush/database/targetmatcher.h"
+#include "omush/function/function.h"
 
 namespace omush {
   CommandSet::CommandSet() : ICommand("@SET") {
   }
 
+  CommandInfo CommandSet::process(CommandContext& context) {
+    CommandInfo info;
 
-  void CommandSet::notify(CommandContext context,
-                          database::DatabaseObject *enactor,
-                          std::string msg) {
-    Notifier(*(context.game), *(context.db)).notify(enactor,
-                                                    msg);
+    std::vector<std::string> cmdSplit = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
+
+    info.switches = splitStringIntoSegments(cmdSplit[0], "/", 10);
+    info.switches.erase(info.switches.begin());
+
+    std::map<std::string, bool> possibleSwitches;
+    BOOST_FOREACH(std::string key, info.switches) {
+      boost::to_upper(key);
+      if (possibleSwitches.find(key) == possibleSwitches.end()) {
+        info.errorString = "Unrecognized switch: " + key;
+        return info;
+      }
+    }
+
+    if (cmdSplit.size() == 1)
+      return info;
+
+    info.rawArgs = cmdSplit[1];
+
+    std::vector<std::string> eqSplit = splitStringIntoSegments(info.rawArgs, "=", 2);
+    BOOST_FOREACH(std::string key, eqSplit) {
+      std::vector<std::string> arg;
+      arg.push_back(processExpression(key, context.funcScope).basicString());
+      info.eqArgs.push_back(arg);
+    }
+
+    if (info.eqArgs.size() > 1) {
+      // Handle ":"
+      std::vector<std::string> colonSplit = splitStringIntoSegments(info.eqArgs[1][0], ":", 2);
+      if (colonSplit[0].length() > 0) {
+        std::vector<std::string> spaceSplit = splitStringIntoSegments(colonSplit[0], " ", 2);
+        if (spaceSplit.size() == 1) {
+          info.eqArgs[1][0] = colonSplit[0];
+          if (colonSplit.size() > 1) {
+            info.eqArgs[1].push_back(colonSplit[1]);
+          }
+        }
+      }
+    }
+    return info;
   }
 
-  bool CommandSet::run(CommandContext& context) {
-    database::DatabaseObject* executor = context.db->findObjectByDbref(context.executor);
 
-    std::vector<std::string> inputParts = splitStringIntoSegments(context.cmdScope.currentString, " ", 2);
-    if (inputParts.size() < 2) {
-      this->notify(context,executor,"I can't see that here.");
+  bool CommandSet::run(CommandContext& context) {
+    CommandInfo info = process(context);
+    if (info.errorString.length() > 0) {
+      notifyExecutor(context, info.errorString);
       return true;
     }
 
-    std::vector<std::string> eqParts = splitStringIntoSegments(inputParts[1], "=", 2);
-    std::vector<database::DatabaseObject*> matches;
-    database::TargetMatcher matcher(context.db, executor);
+    if (info.eqArgs.size() != 2) {
+      notifyExecutor(context, "@SET requires two arguments.");
+      return true;
+    }
 
-    matches = matcher.match(eqParts[0]);
+    std::vector<database::DatabaseObject*> matches;
+    database::TargetMatcher matcher = database::TargetMatcher(context.db,
+                                                              context.cmdScope.executor);
+    matches = matcher.match(info.eqArgs[0][0]);
 
     if (matches.size() == 0) {
-      Notifier(*(context.game), *(context.db)).notify(executor,
-                                                      "I can't see that here.");
+      notifyExecutor(context, "I can't see that here.");
       return true;
     }
 
     if (matches.size() > 1) {
-      Notifier(*(context.game), *(context.db)).notify(executor,
-                                                      "I don't know which one you mean.");
+      notifyExecutor(context, "I don't know which one you mean.");
       return true;
     }
 
-    if (eqParts.size() < 2) {
-      Notifier(*(context.game), *(context.db)).notify(executor,
-                                                      "What do you want to set?");
+    if (info.eqArgs[1].size() == 1) {
+      return setFlag(context, info, matches[0]);
     }
 
-    // This is wher we need to decide if the first word is @set.
-    std::vector<std::string> colonParts = splitStringIntoSegments(eqParts[1], ":", 2);
+    return setAttribute(context, info, matches[0]);
+  }
 
-    if (colonParts.size() > 1) {
-      // Attribute set
-      ActionSetAttribute(context.db, context.game, executor)
-        .object(matches[0])
-        .attribute(colonParts[0])
-        .value(colonParts[1])
-        .enact();
+  bool CommandSet::setAttribute(CommandContext& context,
+                                CommandInfo &info,
+                                database::DatabaseObject* target) {
+    ActionSetAttribute(context)
+      .target(target)
+      .attribute(info.eqArgs[1][0])
+      .value(info.eqArgs[1][1])
+      .enact();
+    return true;
+  }
+
+  bool CommandSet::setFlag(CommandContext& context,
+                           CommandInfo &info,
+                           database::DatabaseObject* target) {
+    bool unset = false;
+    std::string flagName = info.eqArgs[1][0];
+    const char *firstChar = flagName.c_str();
+
+    if (*firstChar == '!' && flagName.length() > 1) {
+      unset = true;
+      flagName = flagName.substr(1, flagName.length());
+    }
+
+    Flag* flag = context.db->flags.getFlag(flagName);
+    if (flag == NULL) {
+      notifyExecutor(context, "I don't know that flag.");
       return true;
     }
-    else {
-      bool unset = false;
-      const char *firstChar = colonParts[0].c_str();
-      if (*firstChar == '!' && colonParts[0].length() > 1) {
-        unset = true;
-        colonParts[0] = colonParts[0].substr(1,colonParts[0].length());
-      }
-      Flag* flag = context.db->flags.getFlag(colonParts[0]);
-      if (flag == NULL) {
-        this->notify(context,executor, "I don't know that flag.");
-        return true;
-      }
-      ActionSetFlag action = ActionSetFlag(context).object(matches[0]).flag(flag);
+    ActionSetFlag action = ActionSetFlag(context);
+    action.target(target);
+    action.flag(flag);
 
-      if (unset) {
-        action.unset();
-      }
-
-      action.enact();
+    if (unset) {
+      action.unset();
     }
 
-//    ActionThink(context.db, context.game, context.db->findObjectByDbref(context.dbref)).what(words).enact();
+    action.enact();
+
     return true;
   }
 

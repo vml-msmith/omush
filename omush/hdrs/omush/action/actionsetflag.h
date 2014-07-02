@@ -11,7 +11,6 @@
 #include "omush/database/definitions.h"
 #include "omush/command/commandcontext.h"
 #include "omush/action/action.h"
-#include "omush/notifier.h"
 
 namespace omush {
   class Game;
@@ -23,7 +22,7 @@ namespace omush {
   class ActionSetFlag : public Action {
    public:
     ActionSetFlag(CommandContext& context);
-    ActionSetFlag& object(database::DatabaseObject* object);
+    ActionSetFlag& target(database::DatabaseObject* object);
     ActionSetFlag& flag(Flag* flag);
     ActionSetFlag& unset();
 

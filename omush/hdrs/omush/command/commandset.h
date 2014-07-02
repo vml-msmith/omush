@@ -20,9 +20,13 @@ namespace omush {
     CommandSet();
     bool run(CommandContext& context);
   private:
-    void notify(CommandContext context,
-                database::DatabaseObject *enactor,
-                std::string msg);
+    bool setFlag(CommandContext& context,
+                 CommandInfo &info,
+                 database::DatabaseObject* target);
+    bool setAttribute(CommandContext& context,
+                      CommandInfo &info,
+                      database::DatabaseObject* target);
+    CommandInfo process(CommandContext& context);
   };
 
 }  // namespace omush

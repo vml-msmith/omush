@@ -32,8 +32,6 @@ namespace omush {
       }
     }
 
-    notifyExecutor(context, "Not implemented");
-
     if (info.eqArgs.size() != 2) {
       notifyExecutor(context, "@DIVISION requires two arguments (@division <player>=<division>).");
       return true;

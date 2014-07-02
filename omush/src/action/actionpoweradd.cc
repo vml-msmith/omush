@@ -26,7 +26,6 @@ namespace omush {
     if (power_ == NULL)
       return;
 
-
     database::addPowerByBit(player_, power_->bit, level_);
     // Test powers.
     std::string name = context_.db->powers.powerToName(power_, level_);

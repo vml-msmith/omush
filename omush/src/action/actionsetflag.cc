@@ -11,13 +11,10 @@
 
 namespace omush {
   ActionSetFlag::ActionSetFlag(CommandContext& context)
-    : context_(context) {
-    flag_ = NULL;
-    set_ = true;
-    target_ = NULL;
+    : context_(context), flag_(NULL), set_(true), target_(NULL) {
   }
 
-  ActionSetFlag& ActionSetFlag::object(database::DatabaseObject* object) {
+  ActionSetFlag& ActionSetFlag::target(database::DatabaseObject* object) {
     target_ = object;
     return *this;
   }
@@ -47,7 +44,7 @@ namespace omush {
                       flag_->name)) {
       Notifier(*(context_.game),
                *(context_.db)).notify(context_.cmdScope.executor,
-                                      "You don't have permission.");
+                                      "You don't have permission to set flags on that objects.");
       return;
     }
 

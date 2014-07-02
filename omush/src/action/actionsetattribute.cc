@@ -8,17 +8,12 @@
 #include "omush/action/actionsetattribute.h"
 
 namespace omush {
-  ActionSetAttribute::ActionSetAttribute(database::Database *db,
-                                         Game *game,
-                                         database::DatabaseObject *object) {
-    db_ = db;
-    object_ = object;
-    game_ = game;
-    //    what_ = "";
+  ActionSetAttribute::ActionSetAttribute(CommandContext& context)
+    : context_(context), target_(NULL), attribute_(""), value_("") {
   }
 
-  ActionSetAttribute& ActionSetAttribute::object(database::DatabaseObject* object) {
-    what_ = object;
+  ActionSetAttribute& ActionSetAttribute::target(database::DatabaseObject* object) {
+    target_ = object;
     return *this;
   }
   ActionSetAttribute& ActionSetAttribute::attribute(std::string attribute) {
@@ -32,9 +27,14 @@ namespace omush {
 
 
   void ActionSetAttribute::enact() {
-    what_->setAttribute(attribute_, value_);
+    std::cout << target_->getAttribute("name").value << std::endl;
+    std::cout << "Attr: " << attribute_ << std::endl;
+    std::cout << "Value: " << value_ << std::endl;
+
+    target_->setAttribute(attribute_, value_);
     std::string message = attribute_ + " set.";
-    what_->printAttrs();
-    Notifier(*game_, *db_).notify(object_, message);
+    Notifier(*(context_.game),
+             *(context_.db)).notify(context_.cmdScope.executor,
+                                    message);
   }
 }  // namespace omush
