@@ -8,36 +8,47 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <boost/algorithm/string.hpp>
 
 namespace omush {
-  uint64_t FlagDirectory::addFlag(Flag f) {
+  FlagBit FlagDirectory::addFlag(Flag f) {
+    std::string name = f.name;
+    boost::to_upper(name);
+
     if (flagMap.find(f.name) == flagMap.end()) {
-      flagMap.insert(std::pair<std::string,Flag>(f.name, f));
+      flagMap.insert(std::pair<std::string,Flag>(name, f));
       highBit = highBit << 1;
       f.bit = highBit;
-      flagBitMap.insert(std::pair<uint64_t, Flag*>(highBit, &(flagMap[f.name])));
+      flagBitMap.insert(std::pair<FlagBit, Flag*>(highBit, &(flagMap[name])));
     }
 
-    return flagMap[f.name].bit;
+    return flagMap[name].bit;
   }
 
-  uint64_t FlagDirectory::getFlagBit(std::string f) {
-    if (flagMap.find(f) == flagMap.end()) {
+  FlagBit FlagDirectory::getFlagBit(std::string f) {
+    std::string name = f;
+    boost::to_upper(name);
+
+    if (flagMap.find(name) == flagMap.end()) {
       return 0;
     }
 
-    return flagMap[f].bit;
+    return flagMap[name].bit;
   }
 
   Flag* FlagDirectory::getFlag(std::string f) {
-    if (flagMap.find(f) == flagMap.end()) {
+    std::string name = f;
+    boost::to_upper(name);
+
+    if (flagMap.find(name) == flagMap.end()) {
       return NULL;
     }
 
-    return &(flagMap[f]);
+    return &(flagMap[name]);
   }
 
-  std::map<std::string, Flag> FlagDirectory::getAllFlags() {
+  FlagDirectory::FlagMap FlagDirectory::getAllFlags() {
     return flagMap;
   }
+
 }  // namespace omush

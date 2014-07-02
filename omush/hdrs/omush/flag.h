@@ -12,27 +12,34 @@
 #include <map>
 
 namespace omush {
+  typedef uint64_t FlagBit;
+
   struct Flag {
     std::string name;
     std::vector<std::string> alias;
     char letter;
-    uint64_t bit;
-    Flag() {};
+    FlagBit bit;
+
+    Flag() {}
     Flag(std::string n, char a) : name(n), letter(a) {}
   };
 
   class FlagDirectory {
    public:
-    uint64_t addFlag(Flag f);
-    uint64_t getFlagBit(std::string f);
+    typedef std::map<std::string, Flag> FlagMap;
+    typedef std::map<FlagBit, Flag> BitFlagMap;
+    typedef std::map<FlagBit, Flag*> BitFlagPtrMap;
+
+    FlagBit addFlag(Flag f);
+    FlagBit getFlagBit(std::string f);
     Flag* getFlag(std::string f);
-    std::map<std::string, Flag> getAllFlags();
+    FlagMap getAllFlags();
 
    private:
-    uint64_t highBit;
-    std::map<uint64_t, Flag*> flagBitMap;
-    std::map<std::string, Flag> flagMap;
+    FlagBit highBit;
+    BitFlagPtrMap flagBitMap;
+    FlagMap flagMap;
   };
 }  // namespace omush
 
-#endif  //  OMUSH_HDRS_OMUSH_FLAG_H_
+#endif  // OMUSH_HDRS_OMUSH_FLAG_H_
