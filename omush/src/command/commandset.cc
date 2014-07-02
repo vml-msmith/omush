@@ -11,6 +11,7 @@
 #include "omush/utility.h"
 #include "omush/database/database.h"
 #include "omush/action/actionsetattribute.h"
+#include "omush/action/actionsetflag.h"
 #include "omush/database/targetmatcher.h"
 
 namespace omush {
@@ -70,7 +71,24 @@ namespace omush {
       return true;
     }
     else {
-      this->notify(context,executor,"Flag set: Not implemented");
+      bool unset = false;
+      const char *firstChar = colonParts[0].c_str();
+      if (*firstChar == '!' && colonParts[0].length() > 1) {
+        unset = true;
+        colonParts[0] = colonParts[0].substr(1,colonParts[0].length());
+      }
+      Flag* flag = context.db->flags.getFlag(colonParts[0]);
+      if (flag == NULL) {
+        this->notify(context,executor, "I don't know that flag.");
+        return true;
+      }
+      ActionSetFlag action = ActionSetFlag(context).object(matches[0]).flag(flag);
+
+      if (unset) {
+        action.unset();
+      }
+
+      action.enact();
     }
 
 //    ActionThink(context.db, context.game, context.db->findObjectByDbref(context.dbref)).what(words).enact();

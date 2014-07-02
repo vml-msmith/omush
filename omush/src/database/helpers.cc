@@ -338,7 +338,7 @@ namespace omush {
 
       std::map<std::string,Flag> allFlags = db.flags.getAllFlags();
       for (std::map<std::string,Flag>::iterator it = allFlags.begin();
-           it != allFlages.end();
+           it != allFlags.end();
            ++it) {
         if (object->hasFlagByBit(it->second.bit)) {
           flags.push_back(it->first);

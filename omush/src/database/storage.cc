@@ -274,7 +274,7 @@ namespace omush {
       writeProperty(s, "owner", boost::lexical_cast<std::string>(object_->owner()));
 
       writeProperty(s, "powers", getPowerList(*(database_),object_));
-      writeProperty(s, "flags", getFlagList(*(database_),object_));
+      writeProperty(s, "flags", getFlagsList(*(database_),object_));
     }
 
     void ObjectPersister::writeAttributes(Storage& s) {
