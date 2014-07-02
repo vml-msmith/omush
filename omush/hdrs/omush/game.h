@@ -18,6 +18,7 @@
 namespace omush {
 
   class Game;
+
   namespace database {
     class Database;
   };
@@ -130,6 +131,7 @@ namespace omush {
     }
 
    protected:
+    std::queue<network::ConnectionId> quitList_;
     std::queue<InternalCommand> commandList_;
     ClientMap clientList_;
     network::NetworkService *server_;

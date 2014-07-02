@@ -136,6 +136,11 @@ namespace omush {
       std::cout << "New Connections: " << newConnections.size() << std::endl;
     }
 
+    while (!quitList_.empty()) {
+      server_->closeNetworkConnection(quitList_.front());
+      quitList_.pop();
+    }
+
     return false;
   }
 
@@ -247,8 +252,12 @@ namespace omush {
   }
 
   void Game::closeNetworkConnection(network::ConnectionId id) {
+    quitList_.push(id);
+    if (clientList_.find(id) != clientList_.end()) {
+      clientList_.erase(id);
+    }
     //    sendNetworkMessage(id, "Going Down");
-    server_->closeNetworkConnection(id);
+    //    server_->closeNetworkConnection(id);
   }
 
   bool Game::inShutdown() {
@@ -310,7 +319,7 @@ namespace omush {
       closeNetworkConnection((iter->first));
     }
 
-    server_->poll();
+    //   server_->poll();
 
     delete db_;
     delete server_;
